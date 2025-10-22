@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons'; // 👈 Importa Ionicons
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -63,11 +64,11 @@ export default function ProfileScreen() {
             {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => router.back()}>
-                    <Text style={styles.backIcon}>←</Text>
+                    <Ionicons name="arrow-back" size={24} color="#333" />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Profile</Text>
                 <TouchableOpacity onPress={handleSettings}>
-                    <Text style={styles.settingsIcon}>⚙️</Text>
+                    <Ionicons name="settings" size={24} color="#333" />
                 </TouchableOpacity>
             </View>
 
@@ -101,7 +102,7 @@ export default function ProfileScreen() {
                         )}
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.cameraIcon} onPress={() => takePhoto('profile')}>
-                        <Text style={styles.cameraText}>📷</Text>
+                        <Ionicons name="camera" size={18} color="#fff" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -131,15 +132,15 @@ export default function ProfileScreen() {
             {/* Contenido */}
             <ScrollView style={styles.content}>
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Información Personal</Text>
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionTitle}>Información Personal</Text>
+                        <TouchableOpacity style={styles.addIconContainer} onPress={handleAddInfo}>
+                            <Ionicons name="add" size={24} color="#10b981" /> {/* 👈 Icono de + */}
+                        </TouchableOpacity>
+                    </View>
                     <Text style={styles.noDataText}>No se visualiza ninguna información</Text>
                 </View>
             </ScrollView>
-
-            {/* Botón flotante + */}
-            <TouchableOpacity style={styles.fab} onPress={handleAddInfo}>
-                <Text style={styles.fabText}>+</Text>
-            </TouchableOpacity>
         </View>
     );
 }
@@ -159,17 +160,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#ddd',
     },
-    backIcon: {
-        fontSize: 20,
-        color: '#333',
-    },
     headerTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#333',
-    },
-    settingsIcon: {
-        fontSize: 20,
         color: '#333',
     },
     bannerContainer: {
@@ -221,10 +214,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    cameraText: {
-        color: '#fff',
-        fontSize: 16,
-    },
     userInfo: {
         alignItems: 'center',
         marginTop: 20,
@@ -271,37 +260,29 @@ const styles = StyleSheet.create({
     section: {
         marginBottom: 20,
     },
+    sectionHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 12,
+    },
     sectionTitle: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#333',
-        marginBottom: 12,
+    },
+    addIconContainer: {
+        backgroundColor: '#d4f5e0', // Verde claro como en la imagen
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     noDataText: {
         fontSize: 16,
         color: '#666',
         textAlign: 'center',
         marginTop: 20,
-    },
-    fab: {
-        position: 'absolute',
-        right: 20,
-        bottom: 20,
-        backgroundColor: '#d4f5e0', // Verde claro como en la imagen
-        width: 56,
-        height: 56,
-        borderRadius: 28,
-        justifyContent: 'center',
-        alignItems: 'center',
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-    },
-    fabText: {
-        fontSize: 24,
-        color: '#10b981', // Verde oscuro para el símbolo
-        fontWeight: 'bold',
     },
 });
