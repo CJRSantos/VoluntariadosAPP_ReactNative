@@ -11,6 +11,12 @@ export default function AccountScreen() {
     const { user, loading } = useAuth();
     const router = useRouter();
 
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
     const [news] = useState([
         {
             id: 1,
@@ -30,7 +36,7 @@ export default function AccountScreen() {
             topics: ["Monitoreo de carbono", "Servicios ecosistémicos", "Cambio climático"],
             status: "Cerrado",
             color: "#F44336",
-            image: require('../assets/images/news1.png'),
+            image: require('../assets/images/news2.jpeg'),
         },
     ]);
 
@@ -57,7 +63,6 @@ export default function AccountScreen() {
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>volunteer account</Text>
                 <View style={styles.headerRight}>
-                    {/* Avatar: usa tu imagen local, pero con fallback seguro */}
                     <Image
                         source={
                             user.photoURL
@@ -67,11 +72,62 @@ export default function AccountScreen() {
                         style={styles.avatar}
                         onError={(e) => console.log('Error al cargar avatar:', e.nativeEvent.error)}
                     />
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={toggleMenu}>
                         <Ionicons name="menu" size={24} color="#333" />
                     </TouchableOpacity>
                 </View>
             </View>
+
+            {/* Menú desplegable */}
+            {isMenuOpen && (
+                <View style={styles.menuOverlay}>
+                    <View style={styles.menuContainer}>
+                        <TouchableOpacity
+                            style={styles.menuItem}
+                            onPress={() => {
+                                router.push('/profile');
+                                setIsMenuOpen(false);
+                            }}
+                        >
+                            <Ionicons name="person" size={20} color="#333" />
+                            <Text style={styles.menuText}>Profile</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={styles.menuItem}
+                            onPress={() => {
+                                router.push('/settings');
+                                setIsMenuOpen(false);
+                            }}
+                        >
+                            <Ionicons name="settings" size={20} color="#333" />
+                            <Text style={styles.menuText}>Settings</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={styles.menuItem}
+                            onPress={() => {
+                                router.push('/help');
+                                setIsMenuOpen(false);
+                            }}
+                        >
+                            <Ionicons name="help-circle" size={20} color="#333" />
+                            <Text style={styles.menuText}>Help</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={styles.menuItem}
+                            onPress={() => {
+                                router.push('/login');
+                                setIsMenuOpen(false);
+                            }}
+                        >
+                            <Ionicons name="log-out" size={20} color="#333" />
+                            <Text style={styles.menuText}>Log-out</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )}
 
             {/* Banner */}
             <View style={styles.banner}>
@@ -186,6 +242,35 @@ const styles = StyleSheet.create({
         borderColor: '#ddd',
         backgroundColor: '#f0f0f0',
     },
+    menuOverlay: {
+        position: 'absolute',
+        top: 60,
+        right: 16,
+        zIndex: 1000,
+        backgroundColor: 'white',
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    menuContainer: {
+        padding: 8,
+        minWidth: 160,
+    },
+    menuItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 4,
+    },
+    menuText: {
+        marginLeft: 8,
+        fontSize: 14,
+        color: '#333',
+    },
     banner: {
         position: 'relative',
         marginHorizontal: 16,
@@ -197,7 +282,7 @@ const styles = StyleSheet.create({
     bannerImage: {
         width: '100%',
         height: '100%',
-        resizeMode: 'cover', // 👈 Ajusta la imagen sin distorsión
+        resizeMode: 'cover',
     },
     bannerContent: {
         position: 'absolute',
@@ -251,7 +336,7 @@ const styles = StyleSheet.create({
     newsImage: {
         width: 100,
         height: 100,
-        resizeMode: 'cover', // 👈 Evita distorsión
+        resizeMode: 'cover',
         borderTopLeftRadius: 8,
         borderBottomLeftRadius: 8,
     },
@@ -318,7 +403,7 @@ const styles = StyleSheet.create({
     guideImage: {
         width: '100%',
         height: '100%',
-        resizeMode: 'cover', // 👈 Ajusta sin distorsión
+        resizeMode: 'cover',
     },
     bottomNav: {
         flexDirection: 'row',
@@ -336,7 +421,7 @@ const styles = StyleSheet.create({
         width: 24,
         height: 24,
         marginBottom: 4,
-        resizeMode: 'contain', // 👈 Evita distorsión de iconos
+        resizeMode: 'contain',
     },
     navLabel: {
         fontSize: 10,

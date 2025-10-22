@@ -1,4 +1,5 @@
 // app/login.tsx
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -17,13 +18,26 @@ export default function LoginScreen() {
 
     const router = useRouter();
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!email || !password) {
             Alert.alert('Error', 'Por favor completa todos los campos');
             return;
         }
-        console.log('Login:', email, password);
-        // router.replace('/home'); // descomenta cuando tengas la pantalla principal
+
+        try {
+            const mockUser = {
+                uid: 'vol_123',
+                email: email,
+                displayName: email.split('@')[0] || 'Voluntario',
+                photoURL: 'https://via.placeholder.com/40/4CAF50/FFFFFF?text=V',
+            };
+
+            await AsyncStorage.setItem('user', JSON.stringify(mockUser));
+            router.replace('/account');
+        } catch (error) {
+            console.error('Error al iniciar sesión:', error);
+            Alert.alert('Error', 'No se pudo iniciar sesión');
+        }
     };
 
     const handleGoogleLogin = () => {
@@ -37,15 +51,15 @@ export default function LoginScreen() {
     return (
         <View style={styles.container}>
             <View style={styles.content}>
-                {/* Imagen superior */}
+                {/* Título */}
                 <Text style={styles.title}>Volunteer Intranet</Text>
+
+                {/* Imagen de cabecera */}
                 <Image
                     source={require('../assets/images/Volunteer_Intranet.png')}
                     style={styles.headerImage}
                     resizeMode="cover"
                 />
-
-                
 
                 {/* Campo Email */}
                 <Text style={styles.label}>Email</Text>
@@ -80,9 +94,9 @@ export default function LoginScreen() {
                     <Text style={styles.loginButtonText}>Iniciar sesión</Text>
                 </TouchableOpacity>
 
-                {/* Crear cuenta - Usa Link */}
-                <Link href="/register" style={styles.createAccount}>
-                    Crear una cuenta
+                {/* Crear cuenta - CORREGIDO: Link envuelve a Text */}
+                <Link href="/register">
+                    <Text style={styles.createAccount}>Crear una cuenta</Text>
                 </Link>
 
                 {/* Separador "Or" */}
@@ -109,13 +123,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        justifyContent: 'center', // 👈 Centra verticalmente
-        alignItems: 'center',      // 👈 Centra horizontalmente
+        justifyContent: 'center',
+        alignItems: 'center',
         padding: 20,
     },
     content: {
         width: '100%',
-        maxWidth: 400, // Mejor experiencia en tablets
+        maxWidth: 400,
     },
     headerImage: {
         width: '100%',
