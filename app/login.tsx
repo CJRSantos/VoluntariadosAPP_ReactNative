@@ -3,13 +3,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Alert,
-    Image,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function LoginScreen() {
@@ -18,27 +18,27 @@ export default function LoginScreen() {
 
   const router = useRouter();
 
-  const handleLogin = async () => {
-  if (!email || !password) {
-    Alert.alert('Error', 'Por favor completa todos los campos');
-    return;
-  }
+    const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert('Error', 'Por favor completa todos los campos');
+            return;
+        }
 
-  try {
-    const mockUser = {
-      uid: 'vol_123',
-      email: email,
-      displayName: email.split('@')[0] || 'Voluntario',
-      photoURL: 'https://via.placeholder.com/40/4CAF50/FFFFFF?text=V',
+        try {
+            const mockUser = {
+                uid: 'vol_123',
+                email: email,
+                displayName: email.split('@')[0] || 'Voluntario',
+                photoURL: 'https://via.placeholder.com/40/4CAF50/FFFFFF?text=V',
+            };
+
+            await AsyncStorage.setItem('user', JSON.stringify(mockUser));
+            router.replace('/account');
+        } catch (error) {
+            console.error('Error al iniciar sesión:', error);
+            Alert.alert('Error', 'No se pudo iniciar sesión');
+        }
     };
-
-    await AsyncStorage.setItem('user', JSON.stringify(mockUser));
-    router.replace('/account');
-  } catch (error) {
-    console.error('Error al iniciar sesión:', error);
-    Alert.alert('Error', 'No se pudo iniciar sesión');
-  }
-};
 
   const handleGoogleLogin = () => {
     Alert.alert('Google Login', 'Funcionalidad no implementada aún');
@@ -48,18 +48,18 @@ export default function LoginScreen() {
     Alert.alert('Recuperar contraseña', 'Pronto podrás recuperar tu contraseña');
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        {/* Título */}
-        <Text style={styles.title}>Volunteer Intranet</Text>
+    return (
+        <View style={styles.container}>
+            <View style={styles.content}>
+                {/* Título */}
+                <Text style={styles.title}>Volunteer Intranet</Text>
 
-        {/* Imagen de cabecera */}
-        <Image
-          source={require('../assets/images/Volunteer_Intranet.png')}
-          style={styles.headerImage}
-          resizeMode="cover"
-        />
+                {/* Imagen de cabecera */}
+                <Image
+                    source={require('../assets/images/Volunteer_Intranet.png')}
+                    style={styles.headerImage}
+                    resizeMode="cover"
+                />
 
         {/* Campo Email */}
         <Text style={styles.label}>Email</Text>
@@ -94,10 +94,10 @@ export default function LoginScreen() {
           <Text style={styles.loginButtonText}>Iniciar sesión</Text>
         </TouchableOpacity>
 
-        {/* Crear cuenta - CORREGIDO: Link envuelve a Text */}
-        <Link href="/register">
-          <Text style={styles.createAccount}>Crear una cuenta</Text>
-        </Link>
+                {/* Crear cuenta - CORREGIDO: Link envuelve a Text */}
+                <Link href="/register">
+                    <Text style={styles.createAccount}>Crear una cuenta</Text>
+                </Link>
 
         {/* Separador "Or" */}
         <View style={styles.orContainer}>
@@ -120,101 +120,101 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  content: {
-    width: '100%',
-    maxWidth: 400,
-  },
-  headerImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 12,
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 30,
-    color: '#333',
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 5,
-    color: '#333',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 14,
-    borderRadius: 12,
-    marginBottom: 20,
-    backgroundColor: '#f8f9fa',
-    fontSize: 16,
-  },
-  forgotPassword: {
-    textAlign: 'right',
-    color: '#666',
-    fontSize: 14,
-    marginBottom: 20,
-  },
-  loginButton: {
-    backgroundColor: '#1e293b',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  createAccount: {
-    textAlign: 'center',
-    color: '#4f46e5',
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  orContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#ddd',
-  },
-  orText: {
-    marginHorizontal: 10,
-    color: '#999',
-    fontSize: 14,
-  },
-  googleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    paddingVertical: 14,
-    borderRadius: 12,
-    backgroundColor: '#fff',
-  },
-  googleIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 10,
-  },
-  googleButtonText: {
-    fontSize: 16,
-    color: '#333',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    content: {
+        width: '100%',
+        maxWidth: 400,
+    },
+    headerImage: {
+        width: '100%',
+        height: 200,
+        borderRadius: 12,
+        marginBottom: 20,
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 30,
+        color: '#333',
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: 5,
+        color: '#333',
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ddd',
+        padding: 14,
+        borderRadius: 12,
+        marginBottom: 20,
+        backgroundColor: '#f8f9fa',
+        fontSize: 16,
+    },
+    forgotPassword: {
+        textAlign: 'right',
+        color: '#666',
+        fontSize: 14,
+        marginBottom: 20,
+    },
+    loginButton: {
+        backgroundColor: '#1e293b',
+        paddingVertical: 16,
+        borderRadius: 12,
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    loginButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '600',
+    },
+    createAccount: {
+        textAlign: 'center',
+        color: '#4f46e5',
+        fontSize: 16,
+        marginBottom: 20,
+    },
+    orContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 20,
+    },
+    line: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#ddd',
+    },
+    orText: {
+        marginHorizontal: 10,
+        color: '#999',
+        fontSize: 14,
+    },
+    googleButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: '#ddd',
+        paddingVertical: 14,
+        borderRadius: 12,
+        backgroundColor: '#fff',
+    },
+    googleIcon: {
+        width: 24,
+        height: 24,
+        marginRight: 10,
+    },
+    googleButtonText: {
+        fontSize: 16,
+        color: '#333',
+    },
 });
