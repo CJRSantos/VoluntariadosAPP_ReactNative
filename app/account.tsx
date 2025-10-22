@@ -30,7 +30,15 @@ export default function AccountScreen() {
             topics: ["Monitoreo de carbono", "Servicios ecosistémicos", "Cambio climático"],
             status: "Cerrado",
             color: "#F44336",
-            image: require('../assets/images/news1.png'),
+            image: require('../assets/images/news2.png'),
+        },
+        {   id: 3,
+            title: "Monitoreo de carbono en bosques amazónicos",
+            date: "12/10/2025, Hr: 00:00            12/11/20, Hr: 11:59",
+            topics: ["Lineas temáticas: Monitoreo de carbono, Servicios ecosistémicos, Cambio climático"],
+            status: "Abierto",
+            color: "#4CAF50",
+            image: require('../assets/images/news3.png'),
         },
     ]);
 

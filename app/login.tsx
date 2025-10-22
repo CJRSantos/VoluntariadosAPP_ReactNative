@@ -1,4 +1,5 @@
 // app/login.tsx
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -12,195 +13,208 @@ import {
 } from 'react-native';
 
 export default function LoginScreen() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    const router = useRouter();
+  const router = useRouter();
 
-    const handleLogin = () => {
-        if (!email || !password) {
-            Alert.alert('Error', 'Por favor completa todos los campos');
-            return;
-        }
-        console.log('Login:', email, password);
-        // router.replace('/home'); // descomenta cuando tengas la pantalla principal
+  const handleLogin = async () => {
+  if (!email || !password) {
+    Alert.alert('Error', 'Por favor completa todos los campos');
+    return;
+  }
+
+  try {
+    const mockUser = {
+      uid: 'vol_123',
+      email: email,
+      displayName: email.split('@')[0] || 'Voluntario',
+      photoURL: 'https://via.placeholder.com/40/4CAF50/FFFFFF?text=V',
     };
 
-    const handleGoogleLogin = () => {
-        Alert.alert('Google Login', 'Funcionalidad no implementada aún');
-    };
+    await AsyncStorage.setItem('user', JSON.stringify(mockUser));
+    router.replace('/account');
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error);
+    Alert.alert('Error', 'No se pudo iniciar sesión');
+  }
+};
 
-    const handleForgotPassword = () => {
-        Alert.alert('Recuperar contraseña', 'Pronto podrás recuperar tu contraseña');
-    };
+  const handleGoogleLogin = () => {
+    Alert.alert('Google Login', 'Funcionalidad no implementada aún');
+  };
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.content}>
-                {/* Imagen superior */}
-                <Text style={styles.title}>Volunteer Intranet</Text>
-                <Image
-                    source={require('../assets/images/Volunteer_Intranet.png')}
-                    style={styles.headerImage}
-                    resizeMode="cover"
-                />
+  const handleForgotPassword = () => {
+    Alert.alert('Recuperar contraseña', 'Pronto podrás recuperar tu contraseña');
+  };
 
-                
+  return (
+    <View style={styles.container}>
+      <View style={styles.content}>
+        {/* Título */}
+        <Text style={styles.title}>Volunteer Intranet</Text>
 
-                {/* Campo Email */}
-                <Text style={styles.label}>Email</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your email"
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    placeholderTextColor="#999"
-                />
+        {/* Imagen de cabecera */}
+        <Image
+          source={require('../assets/images/Volunteer_Intranet.png')}
+          style={styles.headerImage}
+          resizeMode="cover"
+        />
 
-                {/* Campo Password */}
-                <Text style={styles.label}>Password</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                    placeholderTextColor="#999"
-                />
+        {/* Campo Email */}
+        <Text style={styles.label}>Email</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          placeholderTextColor="#999"
+        />
 
-                {/* Olvidó contraseña */}
-                <TouchableOpacity onPress={handleForgotPassword}>
-                    <Text style={styles.forgotPassword}>¿Olvidó su contraseña?</Text>
-                </TouchableOpacity>
+        {/* Campo Password */}
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          placeholderTextColor="#999"
+        />
 
-                {/* Botón Iniciar Sesión */}
-                <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                    <Text style={styles.loginButtonText}>Iniciar sesión</Text>
-                </TouchableOpacity>
+        {/* Olvidó contraseña */}
+        <TouchableOpacity onPress={handleForgotPassword}>
+          <Text style={styles.forgotPassword}>¿Olvidó su contraseña?</Text>
+        </TouchableOpacity>
 
-                {/* Crear cuenta - Usa Link */}
-                <Link href="/register" style={styles.createAccount}>
-                    Crear una cuenta
-                </Link>
+        {/* Botón Iniciar Sesión */}
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <Text style={styles.loginButtonText}>Iniciar sesión</Text>
+        </TouchableOpacity>
 
-                {/* Separador "Or" */}
-                <View style={styles.orContainer}>
-                    <View style={styles.line} />
-                    <Text style={styles.orText}>Or</Text>
-                    <View style={styles.line} />
-                </View>
+        {/* Crear cuenta - CORREGIDO: Link envuelve a Text */}
+        <Link href="/register">
+          <Text style={styles.createAccount}>Crear una cuenta</Text>
+        </Link>
 
-                {/* Botón Google */}
-                <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
-                    <Image
-                        source={require('../assets/images/Logo_Google.png')}
-                        style={styles.googleIcon}
-                    />
-                    <Text style={styles.googleButtonText}>Continuar con Google</Text>
-                </TouchableOpacity>
-            </View>
+        {/* Separador "Or" */}
+        <View style={styles.orContainer}>
+          <View style={styles.line} />
+          <Text style={styles.orText}>Or</Text>
+          <View style={styles.line} />
         </View>
-    );
+
+        {/* Botón Google */}
+        <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
+          <Image
+            source={require('../assets/images/Logo_Google.png')}
+            style={styles.googleIcon}
+          />
+          <Text style={styles.googleButtonText}>Continuar con Google</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        justifyContent: 'center', // 👈 Centra verticalmente
-        alignItems: 'center',      // 👈 Centra horizontalmente
-        padding: 20,
-    },
-    content: {
-        width: '100%',
-        maxWidth: 400, // Mejor experiencia en tablets
-    },
-    headerImage: {
-        width: '100%',
-        height: 200,
-        borderRadius: 12,
-        marginBottom: 20,
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 30,
-        color: '#333',
-    },
-    label: {
-        fontSize: 16,
-        fontWeight: '600',
-        marginBottom: 5,
-        color: '#333',
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ddd',
-        padding: 14,
-        borderRadius: 12,
-        marginBottom: 20,
-        backgroundColor: '#f8f9fa',
-        fontSize: 16,
-    },
-    forgotPassword: {
-        textAlign: 'right',
-        color: '#666',
-        fontSize: 14,
-        marginBottom: 20,
-    },
-    loginButton: {
-        backgroundColor: '#1e293b',
-        paddingVertical: 16,
-        borderRadius: 12,
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    loginButtonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: '600',
-    },
-    createAccount: {
-        textAlign: 'center',
-        color: '#4f46e5',
-        fontSize: 16,
-        marginBottom: 20,
-    },
-    orContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 20,
-    },
-    line: {
-        flex: 1,
-        height: 1,
-        backgroundColor: '#ddd',
-    },
-    orText: {
-        marginHorizontal: 10,
-        color: '#999',
-        fontSize: 14,
-    },
-    googleButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 1,
-        borderColor: '#ddd',
-        paddingVertical: 14,
-        borderRadius: 12,
-        backgroundColor: '#fff',
-    },
-    googleIcon: {
-        width: 24,
-        height: 24,
-        marginRight: 10,
-    },
-    googleButtonText: {
-        fontSize: 16,
-        color: '#333',
-    },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  content: {
+    width: '100%',
+    maxWidth: 400,
+  },
+  headerImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 30,
+    color: '#333',
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 5,
+    color: '#333',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 14,
+    borderRadius: 12,
+    marginBottom: 20,
+    backgroundColor: '#f8f9fa',
+    fontSize: 16,
+  },
+  forgotPassword: {
+    textAlign: 'right',
+    color: '#666',
+    fontSize: 14,
+    marginBottom: 20,
+  },
+  loginButton: {
+    backgroundColor: '#1e293b',
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  createAccount: {
+    textAlign: 'center',
+    color: '#4f46e5',
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  orContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#ddd',
+  },
+  orText: {
+    marginHorizontal: 10,
+    color: '#999',
+    fontSize: 14,
+  },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    paddingVertical: 14,
+    borderRadius: 12,
+    backgroundColor: '#fff',
+  },
+  googleIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 10,
+  },
+  googleButtonText: {
+    fontSize: 16,
+    color: '#333',
+  },
 });
