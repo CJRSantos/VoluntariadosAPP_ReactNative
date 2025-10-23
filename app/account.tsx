@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native'; // 👈 NUEVO
 import { Redirect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
@@ -123,10 +123,11 @@ export default function AccountScreen() {
                             <Text style={styles.menuText}>Profile</Text>
                         </TouchableOpacity>
 
+                        {/* Settings - sin error */}
                         <TouchableOpacity
                             style={styles.menuItem}
                             onPress={() => {
-                                router.push('/settings');
+                                Alert.alert('Próximamente', 'Configuración estará disponible pronto');
                                 setIsMenuOpen(false);
                             }}
                         >
@@ -134,10 +135,11 @@ export default function AccountScreen() {
                             <Text style={styles.menuText}>Settings</Text>
                         </TouchableOpacity>
 
+                        {/* Help - sin error */}
                         <TouchableOpacity
                             style={styles.menuItem}
                             onPress={() => {
-                                router.push('/help');
+                                Alert.alert('Próximamente', 'Ayuda estará disponible pronto');
                                 setIsMenuOpen(false);
                             }}
                         >
