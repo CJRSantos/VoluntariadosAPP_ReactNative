@@ -1,6 +1,6 @@
 // app/profile.tsx
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // 👈 Importa AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
@@ -51,24 +51,22 @@ export default function ProfileScreen() {
         setShowPersonalInfoForm(true);
     };
 
-    // 👇 Cargar fotos guardadas al iniciar
+    // Cargar fotos guardadas al iniciar
     useEffect(() => {
         const loadSavedData = async () => {
             const savedBanner = await AsyncStorage.getItem('userBannerURL');
             if (savedBanner) {
                 setBannerImage(savedBanner);
             }
-
             const savedPhoto = await AsyncStorage.getItem('userPhotoURL');
             if (savedPhoto) {
                 setProfileImage(savedPhoto);
             }
         };
-
         loadSavedData();
     }, []);
 
-    // 👇 MODIFICADO: Guarda la portada en AsyncStorage
+    // MODIFICADO: Guarda la portada en AsyncStorage
     const pickImage = async (type: 'banner' | 'profile') => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -76,20 +74,19 @@ export default function ProfileScreen() {
             aspect: type === 'banner' ? [16, 9] : [1, 1],
             quality: 1,
         });
-
         if (!result.canceled && result.assets && result.assets.length > 0) {
             const uri = result.assets[0].uri;
             if (type === 'banner') {
                 setBannerImage(uri);
-                await AsyncStorage.setItem('userBannerURL', uri); // 👈 GUARDA LA PORTADA
+                await AsyncStorage.setItem('userBannerURL', uri);
             } else {
                 setProfileImage(uri);
-                await AsyncStorage.setItem('userPhotoURL', uri); // 👈 GUARDA LA FOTO DE PERFIL
+                await AsyncStorage.setItem('userPhotoURL', uri);
             }
         }
     };
 
-    // 👇 MODIFICADO: Guarda la portada en AsyncStorage
+    // MODIFICADO: Guarda la portada en AsyncStorage
     const takePhoto = async (type: 'banner' | 'profile') => {
         let result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -97,15 +94,14 @@ export default function ProfileScreen() {
             aspect: type === 'banner' ? [16, 9] : [1, 1],
             quality: 1,
         });
-
         if (!result.canceled && result.assets && result.assets.length > 0) {
             const uri = result.assets[0].uri;
             if (type === 'banner') {
                 setBannerImage(uri);
-                await AsyncStorage.setItem('userBannerURL', uri); // 👈 GUARDA LA PORTADA
+                await AsyncStorage.setItem('userBannerURL', uri);
             } else {
                 setProfileImage(uri);
-                await AsyncStorage.setItem('userPhotoURL', uri); // 👈 GUARDA LA FOTO DE PERFIL
+                await AsyncStorage.setItem('userPhotoURL', uri);
             }
         }
     };
@@ -320,44 +316,50 @@ export default function ProfileScreen() {
             {/* Modal: Agregar Formación Académica */}
             {showAcademicModal && (
                 <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
+                    <View
+                        style={{
+                            width: '90%',
+                            maxWidth: 400,
+                            maxHeight: '80%',
+                            minHeight: 200,
+                            backgroundColor: '#e8d7d7',
+                            borderRadius: 12,
+                            padding: 20,
+                            elevation: 5,
+                            overflow: 'hidden',
+                        }}
+                    >
                         <Text style={styles.modalTitle}>Añadir formación Académica</Text>
-
                         <Text style={styles.label}>Grado</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Ingrese el nombre de su grado"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Institución</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Ingrese el nombre de su carrera"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>País</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Ingrese su país"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Año de inicio</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="YYYY"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Año de fin</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="YYYY"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Estado</Text>
                         <View style={styles.radioGroup}>
                             {['Actualmente', 'Graduado', 'Titulado'].map((option) => (
@@ -371,7 +373,6 @@ export default function ProfileScreen() {
                                 </TouchableOpacity>
                             ))}
                         </View>
-
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
                                 style={[styles.button, styles.cancelButton]}
@@ -396,37 +397,44 @@ export default function ProfileScreen() {
             {/* Modal: Formación Técnica */}
             {showTechnicalModal && (
                 <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
+                    <View
+                        style={{
+                            width: '90%',
+                            maxWidth: 400,
+                            maxHeight: '80%',
+                            minHeight: 200,
+                            backgroundColor: '#e8d7d7',
+                            borderRadius: 12,
+                            padding: 20,
+                            elevation: 5,
+                            overflow: 'hidden',
+                        }}
+                    >
                         <Text style={styles.modalTitle}>Añadir Formación Técnica / Especializada</Text>
-
                         <Text style={styles.label}>Nombre del curso o certificación</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Ej: Curso de React Native"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Institución o plataforma</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Ej: Udemy, Coursera"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Duración (meses)</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Ej: 6"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Año de finalización</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="YYYY"
                             placeholderTextColor="#999"
                         />
-
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
                                 style={[styles.button, styles.cancelButton]}
@@ -451,30 +459,38 @@ export default function ProfileScreen() {
             {/* Modal: Formación Complementaria */}
             {showComplementaryModal && (
                 <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
+                    <View
+                        style={{
+                            width: '90%',
+                            maxWidth: 400,
+                            maxHeight: '80%',
+                            minHeight: 200,
+                            backgroundColor: '#e8d7d7',
+                            borderRadius: 12,
+                            padding: 20,
+                            elevation: 5,
+                            overflow: 'hidden',
+                        }}
+                    >
                         <Text style={styles.modalTitle}>Añadir Formación Complementaria</Text>
-
                         <Text style={styles.label}>Nombre de la actividad</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Ej: Voluntariado, idiomas, talleres"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Descripción breve</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Describe brevemente tu experiencia"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Fecha de realización</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="MM/YYYY"
                             placeholderTextColor="#999"
                         />
-
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
                                 style={[styles.button, styles.cancelButton]}
@@ -496,33 +512,41 @@ export default function ProfileScreen() {
                 </View>
             )}
 
-            {/* Modal de Información Personal (ya existente) */}
+            {/* Modal de Información Personal */}
             {showPersonalInfoForm && (
                 <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
+                    <View
+                        style={{
+                            width: '90%',
+                            maxWidth: 400,
+                            maxHeight: '80%',
+                            minHeight: 200,
+                            backgroundColor: '#e8d7d7',
+                            borderRadius: 12,
+                            padding: 20,
+                            elevation: 5,
+                            overflow: 'hidden',
+                        }}
+                    >
                         <Text style={styles.modalTitle}>Información Personal</Text>
-
                         <Text style={styles.label}>Nombre y Apellido</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Introduzca su nombre completo"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Fecha de Nacimiento</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="dd/mm/yyyy"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Celular N°</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Introducir número de celular"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Seleccione su tipo de documento:</Text>
                         <View style={styles.row}>
                             <View style={styles.pickerWrapper}>
@@ -542,7 +566,6 @@ export default function ProfileScreen() {
                                 placeholderTextColor="#999"
                             />
                         </View>
-
                         <Text style={styles.label}>Género</Text>
                         <View style={styles.radioGroup}>
                             {['Masculino', 'Femenino', 'Otros'].map((option) => (
@@ -556,7 +579,6 @@ export default function ProfileScreen() {
                                 </TouchableOpacity>
                             ))}
                         </View>
-
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
                                 style={[styles.button, styles.cancelButton]}
@@ -581,51 +603,56 @@ export default function ProfileScreen() {
             {/* Modal: Añadir Experiencia Laboral */}
             {showExperienceModal && (
                 <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
+                    <View
+                        style={{
+                            width: '90%',
+                            maxWidth: 400,
+                            maxHeight: '80%',
+                            minHeight: 200,
+                            backgroundColor: '#e8d7d7',
+                            borderRadius: 12,
+                            padding: 20,
+                            elevation: 5,
+                            overflow: 'hidden',
+                        }}
+                    >
                         <Text style={styles.modalTitle}>Añadir experiencia Laboral</Text>
-
                         <Text style={styles.label}>Puesto</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Ingrese el nombre del puesto"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Institución</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Ingrese el nombre de la Institución"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Área</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Ingrese su área"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>País</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Ingrese su país"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Fecha de inicio</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="dd/mm/yyyy"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Fecha de fin</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="dd/mm/yyyy"
                             placeholderTextColor="#999"
                         />
-
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
                                 style={[styles.button, styles.cancelButton]}
@@ -650,52 +677,66 @@ export default function ProfileScreen() {
             {/* Modal: Añadir Voluntariado */}
             {showVolunteerModal && (
                 <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Añadir publicación</Text>
-
-                        <Text style={styles.label}>Título</Text>
+                    <View
+                        style={{
+                            width: '90%',
+                            maxWidth: 400,
+                            maxHeight: '80%',
+                            minHeight: 200,
+                            backgroundColor: '#e8d7d7',
+                            borderRadius: 12,
+                            padding: 20,
+                            elevation: 5,
+                            overflow: 'hidden',
+                        }}
+                    >
+                        <Text style={styles.modalTitle}>Añadir voluntariado</Text>
+                        <Text style={styles.label}>Organización</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Nombre de publicación"
+                            placeholder="Nombre de la Organización"
                             placeholderTextColor="#999"
                         />
-
-                        <Text style={styles.label}>Publicación / Editorial</Text>
+                        <Text style={styles.label}>Cargo</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Ej: España editorial"
+                            placeholder="Nombre del cargo"
                             placeholderTextColor="#999"
                         />
-
-                        <Text style={styles.label}>Autor</Text>
+                        <Text style={styles.label}>Causa benéfica / Área</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Ingrese el nombre"
+                            placeholder="National University of the Peruvian Amazon"
                             placeholderTextColor="#999"
                         />
-
-                        <Text style={styles.label}>Fecha de Publicación</Text>
+                        <View style={styles.row}>
+                            <TouchableOpacity
+                                style={styles.checkboxContainer}
+                                onPress={() => setCurrentlyInRole(!currentlyInRole)}
+                            >
+                                <View style={[styles.checkbox, currentlyInRole && styles.checkboxChecked]} />
+                                <Text style={styles.checkboxLabel}>Actualmente estoy en este cargo</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <Text style={styles.label}>Fecha de inicio</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="dd/mm/yyyy"
                             placeholderTextColor="#999"
                         />
-
-                        <Text style={styles.label}>Url</Text>
+                        <Text style={styles.label}>Fecha de fin</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Ingrese un breve resumen"
+                            placeholder="dd/mm/yyyy"
                             placeholderTextColor="#999"
                         />
-
-                        <Text style={styles.label}>Resumen / Abstract</Text>
+                        <Text style={styles.label}>Descripción</Text>
                         <TextInput
                             style={[styles.input, { height: 80, textAlignVertical: 'top' }]}
-                            placeholder="Ingrese un breve resumen"
+                            placeholder="Escribe un resumen de tu experiencia en voluntariado"
                             multiline
                             placeholderTextColor="#999"
                         />
-
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
                                 style={[styles.button, styles.cancelButton]}
@@ -706,7 +747,7 @@ export default function ProfileScreen() {
                             <TouchableOpacity
                                 style={[styles.button, styles.addButton]}
                                 onPress={() => {
-                                    Alert.alert('Éxito', 'Publicación guardada correctamente');
+                                    Alert.alert('Éxito', 'Voluntariado guardado correctamente');
                                     setShowVolunteerModal(false);
                                 }}
                             >
@@ -720,62 +761,57 @@ export default function ProfileScreen() {
             {/* Modal: Añadir Publicación */}
             {showPublicationModal && (
                 <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Añadir voluntariado</Text>
-
-                        <Text style={styles.label}>Organización</Text>
+                    <View
+                        style={{
+                            width: '90%',
+                            maxWidth: 400,
+                            maxHeight: '80%',
+                            minHeight: 200,
+                            backgroundColor: '#e8d7d7',
+                            borderRadius: 12,
+                            padding: 20,
+                            elevation: 5,
+                            overflow: 'hidden',
+                        }}
+                    >
+                        <Text style={styles.modalTitle}>Añadir publicación</Text>
+                        <Text style={styles.label}>Título</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Nombre de la Organización"
+                            placeholder="Nombre de publicación"
                             placeholderTextColor="#999"
                         />
-
-                        <Text style={styles.label}>Cargo</Text>
+                        <Text style={styles.label}>Publicación / Editorial</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Nombre del cargo"
+                            placeholder="Ej: España editorial"
                             placeholderTextColor="#999"
                         />
-
-                        <Text style={styles.label}>Causa benéfica / Área</Text>
+                        <Text style={styles.label}>Autor</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="National University of the Peruvian Amazon"
+                            placeholder="Ingrese el nombre"
                             placeholderTextColor="#999"
                         />
-
-                        <View style={styles.row}>
-                            <TouchableOpacity
-                                style={styles.checkboxContainer}
-                                onPress={() => setCurrentlyInRole(!currentlyInRole)}
-                            >
-                                <View style={[styles.checkbox, currentlyInRole && styles.checkboxChecked]} />
-                                <Text style={styles.checkboxLabel}>Actualmente estoy en este cargo</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <Text style={styles.label}>Fecha de inicio</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="dd/mm/yyyy"
-                            placeholderTextColor="#999"
-                        />
-
-                        <Text style={styles.label}>Fecha de fin</Text>
+                        <Text style={styles.label}>Fecha de Publicación</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="dd/mm/yyyy"
                             placeholderTextColor="#999"
                         />
-
-                        <Text style={styles.label}>Descripción</Text>
+                        <Text style={styles.label}>Url</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Ingrese un breve resumen"
+                            placeholderTextColor="#999"
+                        />
+                        <Text style={styles.label}>Resumen / Abstract</Text>
                         <TextInput
                             style={[styles.input, { height: 80, textAlignVertical: 'top' }]}
-                            placeholder="Escribe un resumen de tu experiencia en voluntariado"
+                            placeholder="Ingrese un breve resumen"
                             multiline
                             placeholderTextColor="#999"
                         />
-
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
                                 style={[styles.button, styles.cancelButton]}
@@ -786,7 +822,7 @@ export default function ProfileScreen() {
                             <TouchableOpacity
                                 style={[styles.button, styles.addButton]}
                                 onPress={() => {
-                                    Alert.alert('Éxito', 'Voluntariado guardado correctamente');
+                                    Alert.alert('Éxito', 'Publicación guardada correctamente');
                                     setShowPublicationModal(false);
                                 }}
                             >
@@ -800,16 +836,26 @@ export default function ProfileScreen() {
             {/* Modal: Añadir Idioma */}
             {showLanguageModal && (
                 <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
+                    <View
+                        style={{
+                            width: '90%',
+                            maxWidth: 400,
+                            maxHeight: '80%',
+                            minHeight: 200,
+                            backgroundColor: '#e8d7d7',
+                            borderRadius: 12,
+                            padding: 20,
+                            elevation: 5,
+                            overflow: 'hidden',
+                        }}
+                    >
                         <Text style={styles.modalTitle}>Añadir idioma</Text>
-
                         <Text style={styles.label}>Idioma</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Idioma"
                             placeholderTextColor="#999"
                         />
-
                         <Text style={styles.label}>Competencia</Text>
                         <View style={styles.pickerWrapper}>
                             <Picker
@@ -824,7 +870,6 @@ export default function ProfileScreen() {
                                 <Picker.Item label="Native" value="native" />
                             </Picker>
                         </View>
-
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
                                 style={[styles.button, styles.cancelButton]}
@@ -989,8 +1034,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 20,
     },
-
-    // Modal styles
     modalOverlay: {
         position: 'absolute',
         top: 0,
@@ -1001,17 +1044,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 10,
-    },
-    modalContent: {
-        width: '90%',
-        maxWidth: 400, // ⬅️ Límite máximo de ancho
-        maxHeight: '80%',
-        minHeight: 200, // ⬅️ Límite mínimo de alto
-        backgroundColor: '#e8d7d7',
-        borderRadius: 12,
-        padding: 20,
-        elevation: 5,
-        overflow: 'hidden', // ⬅️ Evita que el contenido se salga
     },
     modalTitle: {
         fontSize: 20,
@@ -1033,8 +1065,8 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#f9f9f9',
         marginBottom: 10,
-        fontSize: 16, // ⬅️ Fija el tamaño de fuente
-        paddingHorizontal: 12, // ⬅️ Consistencia en padding
+        fontSize: 16,
+        paddingHorizontal: 12,
     },
     row: {
         flexDirection: 'row',
@@ -1087,7 +1119,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         borderRadius: 8,
         alignItems: 'center',
-        fontSize: 16, // ⬅️ Fija el tamaño de fuente
+        fontSize: 16,
     },
     cancelButton: {
         backgroundColor: '#aaa',
