@@ -779,7 +779,7 @@ export default function ProfileScreen() {
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
                                 style={[styles.button, styles.cancelButton]}
-                                onPress={() => setShowPublicationModal (false)}
+                                onPress={() => setShowPublicationModal(false)}
                             >
                                 <Text style={styles.buttonText}>Cancelar</Text>
                             </TouchableOpacity>
@@ -787,7 +787,7 @@ export default function ProfileScreen() {
                                 style={[styles.button, styles.addButton]}
                                 onPress={() => {
                                     Alert.alert('Éxito', 'Voluntariado guardado correctamente');
-                                    setShowPublicationModal (false);
+                                    setShowPublicationModal(false);
                                 }}
                             >
                                 <Text style={styles.buttonText}>Agregar</Text>
@@ -1004,11 +1004,14 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         width: '90%',
+        maxWidth: 400, // ⬅️ Límite máximo de ancho
         maxHeight: '80%',
+        minHeight: 200, // ⬅️ Límite mínimo de alto
         backgroundColor: '#e8d7d7',
         borderRadius: 12,
         padding: 20,
         elevation: 5,
+        overflow: 'hidden', // ⬅️ Evita que el contenido se salga
     },
     modalTitle: {
         fontSize: 20,
@@ -1030,6 +1033,8 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#f9f9f9',
         marginBottom: 10,
+        fontSize: 16, // ⬅️ Fija el tamaño de fuente
+        paddingHorizontal: 12, // ⬅️ Consistencia en padding
     },
     row: {
         flexDirection: 'row',
@@ -1082,6 +1087,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         borderRadius: 8,
         alignItems: 'center',
+        fontSize: 16, // ⬅️ Fija el tamaño de fuente
     },
     cancelButton: {
         backgroundColor: '#aaa',
