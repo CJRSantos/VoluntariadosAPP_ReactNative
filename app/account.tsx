@@ -1,14 +1,16 @@
 // app/account.tsx
 import { useAuth } from '@/hooks/useAuth';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native'; // 👈 NUEVO
 import { Redirect, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
 export default function AccountScreen() {
-    const { user, loading } = useAuth();
+    // 👇 Añade reloadUser
+    const { user, loading, reloadUser } = useAuth();
     const router = useRouter();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,6 +18,15 @@ export default function AccountScreen() {
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
+
+    // 👇 Recarga el usuario al volver a esta pantalla
+    useFocusEffect(
+        useCallback(() => {
+            if (reloadUser) {
+                reloadUser();
+            }
+        }, [reloadUser])
+    );
 
     const [news] = useState([
         {
@@ -451,7 +462,6 @@ const styles = StyleSheet.create({
         height: '100%',
         resizeMode: 'cover',
     },
-    // ✅ Estilos para "Enlaces rápidos" - SIN BONUS
     quickLinksContainer: {
         marginHorizontal: 16,
         marginTop: 16,

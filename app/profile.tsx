@@ -1,8 +1,10 @@
+// app/profile.tsx
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // 👈 Importa AsyncStorage
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Image,
@@ -31,6 +33,24 @@ export default function ProfileScreen() {
         setShowPersonalInfoForm(true);
     };
 
+    // 👇 Cargar fotos guardadas al iniciar
+    useEffect(() => {
+        const loadSavedData = async () => {
+            const savedBanner = await AsyncStorage.getItem('userBannerURL');
+            if (savedBanner) {
+                setBannerImage(savedBanner);
+            }
+
+            const savedPhoto = await AsyncStorage.getItem('userPhotoURL');
+            if (savedPhoto) {
+                setProfileImage(savedPhoto);
+            }
+        };
+
+        loadSavedData();
+    }, []);
+
+    // 👇 MODIFICADO: Guarda la portada en AsyncStorage
     const pickImage = async (type: 'banner' | 'profile') => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -40,14 +60,18 @@ export default function ProfileScreen() {
         });
 
         if (!result.canceled && result.assets && result.assets.length > 0) {
+            const uri = result.assets[0].uri;
             if (type === 'banner') {
-                setBannerImage(result.assets[0].uri);
+                setBannerImage(uri);
+                await AsyncStorage.setItem('userBannerURL', uri); // 👈 GUARDA LA PORTADA
             } else {
-                setProfileImage(result.assets[0].uri);
+                setProfileImage(uri);
+                await AsyncStorage.setItem('userPhotoURL', uri); // 👈 GUARDA LA FOTO DE PERFIL
             }
         }
     };
 
+    // 👇 MODIFICADO: Guarda la portada en AsyncStorage
     const takePhoto = async (type: 'banner' | 'profile') => {
         let result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -57,10 +81,13 @@ export default function ProfileScreen() {
         });
 
         if (!result.canceled && result.assets && result.assets.length > 0) {
+            const uri = result.assets[0].uri;
             if (type === 'banner') {
-                setBannerImage(result.assets[0].uri);
+                setBannerImage(uri);
+                await AsyncStorage.setItem('userBannerURL', uri); // 👈 GUARDA LA PORTADA
             } else {
-                setProfileImage(result.assets[0].uri);
+                setProfileImage(uri);
+                await AsyncStorage.setItem('userPhotoURL', uri); // 👈 GUARDA LA FOTO DE PERFIL
             }
         }
     };
