@@ -2,7 +2,7 @@
 import { useAuth } from '@/hooks/useAuth';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -16,6 +16,16 @@ export default function AreasScreen() {
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
+
+    // 👇 Ocultar la barra de navegación (el "areas" arriba)
+    useLayoutEffect(() => {
+        // Verifica que setOptions exista para evitar errores en el editor
+        if (router.setOptions) {
+            router.setOptions({
+                headerShown: false,
+            });
+        }
+    }, [router]);
 
     // Datos de áreas (simulados)
     const areas = [

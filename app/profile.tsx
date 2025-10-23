@@ -318,14 +318,14 @@ export default function ProfileScreen() {
                 <View style={styles.modalOverlay}>
                     <View
                         style={{
-                            width: '90%',
-                            maxWidth: 400,
-                            maxHeight: '80%',
-                            minHeight: 200,
+                            width: '100%',
+                            maxWidth: 300,
+                            maxHeight: '100%',
+                            minHeight: 300,
                             backgroundColor: '#e8d7d7',
-                            borderRadius: 12,
+                            borderRadius: 10,
                             padding: 20,
-                            elevation: 5,
+                            elevation: 10,
                             overflow: 'hidden',
                         }}
                     >
@@ -518,7 +518,7 @@ export default function ProfileScreen() {
                     <View
                         style={{
                             width: '90%',
-                            maxWidth: 400,
+                            maxWidth: 300,
                             maxHeight: '80%',
                             minHeight: 200,
                             backgroundColor: '#e8d7d7',
@@ -605,14 +605,14 @@ export default function ProfileScreen() {
                 <View style={styles.modalOverlay}>
                     <View
                         style={{
-                            width: '90%',
-                            maxWidth: 400,
-                            maxHeight: '80%',
+                            width: '100%',
+                            maxWidth: 300,
+                            maxHeight: '100%',
                             minHeight: 200,
                             backgroundColor: '#e8d7d7',
-                            borderRadius: 12,
+                            borderRadius: 10,
                             padding: 20,
-                            elevation: 5,
+                            elevation: 10,
                             overflow: 'hidden',
                         }}
                     >
@@ -679,14 +679,14 @@ export default function ProfileScreen() {
                 <View style={styles.modalOverlay}>
                     <View
                         style={{
-                            width: '90%',
-                            maxWidth: 400,
-                            maxHeight: '80%',
+                            width: '100%',
+                            maxWidth: 300,
+                            maxHeight: '100%',
                             minHeight: 200,
                             backgroundColor: '#e8d7d7',
-                            borderRadius: 12,
+                            borderRadius: 10,
                             padding: 20,
-                            elevation: 5,
+                            elevation: 10,
                             overflow: 'hidden',
                         }}
                     >
@@ -763,14 +763,14 @@ export default function ProfileScreen() {
                 <View style={styles.modalOverlay}>
                     <View
                         style={{
-                            width: '90%',
-                            maxWidth: 400,
-                            maxHeight: '80%',
+                            width: '100%',
+                            maxWidth: 300,
+                            maxHeight: '100%',
                             minHeight: 200,
                             backgroundColor: '#e8d7d7',
-                            borderRadius: 12,
+                            borderRadius: 10,
                             padding: 20,
-                            elevation: 5,
+                            elevation: 10,
                             overflow: 'hidden',
                         }}
                     >
