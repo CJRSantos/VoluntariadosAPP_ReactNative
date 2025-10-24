@@ -1,18 +1,29 @@
 // app/account.tsx
-import { useColorScheme } from '@/hooks/use-color-scheme'; // 👈 Importado
 import { useAuth } from '@/hooks/useAuth';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { Redirect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+    Alert,
+    Dimensions,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../app/providers/ThemeProvider';
 
 const { width } = Dimensions.get('window');
 
 export default function AccountScreen() {
     const { user, loading, reloadUser } = useAuth();
     const router = useRouter();
-    const { isDark } = useColorScheme(); // 👈 Usado
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -31,40 +42,44 @@ export default function AccountScreen() {
     const [news] = useState([
         {
             id: 1,
-            title: "Monitoreo de carbono en bosques amazónicos",
-            date: "12/10/2025, Hr: 00:00",
-            endDate: "12/11/2025, Hr: 11:59",
-            topics: ["Monitoreo de carbono", "Servicios ecosistémicos", "Cambio climático"],
-            status: "Abierto",
-            color: "#4CAF50",
+            title: 'Monitoreo de carbono en bosques amazónicos',
+            date: '12/10/2025, Hr: 00:00',
+            endDate: '12/11/2025, Hr: 11:59',
+            topics: ['Monitoreo de carbono', 'Servicios ecosistémicos', 'Cambio climático'],
+            status: 'Abierto',
+            color: '#4CAF50',
             image: require('../assets/images/news1.png'),
         },
         {
             id: 2,
-            title: "Monitoreo de carbono en bosques amazónicos",
-            date: "12/10/2025, Hr: 00:00",
-            endDate: "12/11/2025, Hr: 11:59",
-            topics: ["Monitoreo de carbono", "Servicios ecosistémicos", "Cambio climático"],
-            status: "Cerrado",
-            color: "#F44336",
+            title: 'Monitoreo de carbono en bosques amazónicos',
+            date: '12/10/2025, Hr: 00:00',
+            endDate: '12/11/2025, Hr: 11:59',
+            topics: ['Monitoreo de carbono', 'Servicios ecosistémicos', 'Cambio climático'],
+            status: 'Cerrado',
+            color: '#F44336',
             image: require('../assets/images/news2.jpeg'),
         },
         {
             id: 3,
-            title: "Monitoreo de carbono en bosques amazónicos",
-            date: "12/10/2025, Hr: 00:00   12/11/20, Hr: 11:59",
-            topics: ["Lineas temática: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático"],
-            status: "Abierto",
-            color: "#4CAF50",
+            title: 'Monitoreo de carbono en bosques amazónicos',
+            date: '12/10/2025, Hr: 00:00   12/11/20, Hr: 11:59',
+            topics: [
+                'Lineas temática: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático',
+            ],
+            status: 'Abierto',
+            color: '#4CAF50',
             image: require('../assets/images/news3.png'),
         },
         {
             id: 4,
-            title: "Monitoreo de carbono en bosques amazónicos",
-            date: "12/10/2025, Hr: 00:00     12/11/20, Hr: 11:59",
-            topics: ["Lineas temáticas: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático"],
-            status: "Cerrado",
-            color: "#F44336",
+            title: 'Monitoreo de carbono en bosques amazónicos',
+            date: '12/10/2025, Hr: 00:00     12/11/20, Hr: 11:59',
+            topics: [
+                'Lineas temáticas: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático',
+            ],
+            status: 'Cerrado',
+            color: '#F44336',
             image: require('../assets/images/news4.png'),
         },
     ]);
@@ -78,9 +93,9 @@ export default function AccountScreen() {
 
     if (loading) {
         return (
-            <View style={styles.loading}>
+            <SafeAreaView style={styles.loadingContainer}>
                 <Text style={{ color: isDark ? '#FFF' : '#333' }}>Cargando...</Text>
-            </View>
+            </SafeAreaView>
         );
     }
 
@@ -89,17 +104,21 @@ export default function AccountScreen() {
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+        <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 {/* Encabezado */}
-                <View style={[
-                    styles.header,
-                    {
-                        backgroundColor: isDark ? '#111' : '#E0E0E0',
-                        borderBottomColor: isDark ? '#333' : '#CCC',
-                    }
-                ]}>
-                    <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>volunteer account</Text>
+                <View
+                    style={[
+                        styles.header,
+                        {
+                            backgroundColor: isDark ? '#111' : '#E0E0E0',
+                            borderBottomColor: isDark ? '#333' : '#CCC',
+                        },
+                    ]}
+                >
+                    <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                        volunteer account
+                    </Text>
                     <View style={styles.headerRight}>
                         <Image
                             source={
@@ -117,13 +136,14 @@ export default function AccountScreen() {
 
                 {/* Banner */}
                 <View style={styles.banner}>
-                    <Image
-                        source={require('../assets/images/banner.png')}
-                        style={styles.bannerImage}
-                    />
+                    <Image source={require('../assets/images/banner.png')} style={styles.bannerImage} />
                     <View style={styles.bannerContent}>
-                        <Text style={[styles.bannerTitle, { color: '#FFF' }]}>Aquí comienza tu espacio exclusivo de usuario</Text>
-                        <Text style={[styles.bannerSubtitle, { color: '#FFF' }]}>Bienvenido/a usuario/a parte de este nuevo...</Text>
+                        <Text style={[styles.bannerTitle, { color: '#FFF' }]}>
+                            Aquí comienza tu espacio exclusivo de usuario
+                        </Text>
+                        <Text style={[styles.bannerSubtitle, { color: '#FFF' }]}>
+                            Bienvenido/a usuario/a parte de este nuevo...
+                        </Text>
                         <TouchableOpacity style={styles.bannerButton}>
                             <Text style={styles.bannerButtonText}>Conocer más</Text>
                         </TouchableOpacity>
@@ -131,7 +151,9 @@ export default function AccountScreen() {
                 </View>
 
                 {/* Últimas noticias - HORIZONTAL */}
-                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Últimas noticias</Text>
+                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                    Últimas noticias
+                </Text>
                 <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
@@ -148,15 +170,20 @@ export default function AccountScreen() {
                                 },
                             ]}
                         >
-                            <Image
-                                source={item.image}
-                                style={styles.newsImage}
-                            />
+                            <Image source={item.image} style={styles.newsImage} />
                             <View style={styles.newsText}>
-                                <Text style={[styles.newsDate, { color: isDark ? '#AAA' : '#666' }]}>{item.date}</Text>
-                                <Text style={[styles.newsEndDate, { color: isDark ? '#AAA' : '#666' }]}>{item.endDate}</Text>
-                                <Text style={[styles.newsTitle, { color: isDark ? '#FFF' : '#333' }]}>{item.title}</Text>
-                                <Text style={[styles.newsTopics, { color: isDark ? '#AAA' : '#666' }]}>{item.topics.join(', ')}</Text>
+                                <Text style={[styles.newsDate, { color: isDark ? '#AAA' : '#666' }]}>
+                                    {item.date}
+                                </Text>
+                                <Text style={[styles.newsEndDate, { color: isDark ? '#AAA' : '#666' }]}>
+                                    {item.endDate}
+                                </Text>
+                                <Text style={[styles.newsTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                    {item.title}
+                                </Text>
+                                <Text style={[styles.newsTopics, { color: isDark ? '#AAA' : '#666' }]}>
+                                    {item.topics.join(', ')}
+                                </Text>
                                 <View style={styles.newsStatusContainer}>
                                     {item.status === 'Abierto' ? (
                                         <>
@@ -195,7 +222,9 @@ export default function AccountScreen() {
                                             },
                                         ]}
                                     >
-                                        <Text style={[styles.detailsText, { color: isDark ? '#AAA' : '#666' }]}>Detalles</Text>
+                                        <Text style={[styles.detailsText, { color: isDark ? '#AAA' : '#666' }]}>
+                                            Detalles
+                                        </Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -204,7 +233,9 @@ export default function AccountScreen() {
                 </ScrollView>
 
                 {/* Guías y Tutoriales */}
-                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Guías y Tutoriales</Text>
+                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                    Guías y Tutoriales
+                </Text>
                 <View style={styles.guidesContainer}>
                     {guides.map((guide) => (
                         <TouchableOpacity key={guide.id} style={styles.guideCard}>
@@ -214,7 +245,9 @@ export default function AccountScreen() {
                 </View>
 
                 {/* Enlaces rápidos */}
-                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Enlaces rápidos</Text>
+                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                    Enlaces rápidos
+                </Text>
                 <View style={styles.quickLinksContainer}>
                     <Image
                         source={require('../assets/images/logo-IIAP_enlaces.png')}
@@ -241,11 +274,17 @@ export default function AccountScreen() {
                         <Text style={[styles.navLabel, { color: isDark ? '#AAA' : '#666' }]}>Áreas</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.navItem} onPress={() => router.push('/convocatoria')}>
-                        <Image source={require('../assets/images/convocatory-icon.png')} style={styles.navIcon} />
+                        <Image
+                            source={require('../assets/images/convocatory-icon.png')}
+                            style={styles.navIcon}
+                        />
                         <Text style={[styles.navLabel, { color: isDark ? '#AAA' : '#666' }]}>Convocatory</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.navItem} onPress={() => router.push('/nosotros')}>
-                        <Image source={require('../assets/images/nosotros-icon.png')} style={styles.navIcon} />
+                        <Image
+                            source={require('../assets/images/nosotros-icon.png')}
+                            style={styles.navIcon}
+                        />
                         <Text style={[styles.navLabel, { color: isDark ? '#AAA' : '#666' }]}>Nosotros</Text>
                     </TouchableOpacity>
                 </View>
@@ -259,10 +298,20 @@ export default function AccountScreen() {
                         activeOpacity={1}
                         onPress={() => setIsMenuOpen(false)}
                     />
-                    <View style={styles.menuOverlay}>
-                        <View style={styles.menuContainer}>
+                    <View
+                        style={[
+                            styles.menuOverlay,
+                            { backgroundColor: isDark ? '#111' : '#FFF' }, // 👈 Fondo oscuro o claro
+                        ]}
+                    >
+                        <View
+                            style={[
+                                styles.menuContainer,
+                                { backgroundColor: isDark ? '#222' : '#FFF' }, // 👈 Interior del menú
+                            ]}
+                        >
                             <TouchableOpacity
-                                style={styles.menuItem}
+                                style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                                 onPress={() => {
                                     router.push('/profile');
                                     setIsMenuOpen(false);
@@ -273,7 +322,7 @@ export default function AccountScreen() {
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={styles.menuItem}
+                                style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                                 onPress={() => {
                                     router.push('/settings');
                                     setIsMenuOpen(false);
@@ -284,7 +333,7 @@ export default function AccountScreen() {
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={styles.menuItem}
+                                style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                                 onPress={() => {
                                     Alert.alert('Próximamente', 'Ayuda estará disponible pronto');
                                     setIsMenuOpen(false);
@@ -295,7 +344,7 @@ export default function AccountScreen() {
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={styles.menuItem}
+                                style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                                 onPress={() => {
                                     router.push('/login');
                                     setIsMenuOpen(false);
@@ -308,7 +357,7 @@ export default function AccountScreen() {
                     </View>
                 </>
             )}
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -316,13 +365,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    scrollContent: {
-        paddingBottom: 70,
-    },
-    loading: {
+    loadingContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    scrollContent: {
+        paddingBottom: 70,
     },
     header: {
         flexDirection: 'row',
@@ -362,7 +412,6 @@ const styles = StyleSheet.create({
         top: 60,
         right: 16,
         zIndex: 1000,
-        backgroundColor: 'white',
         borderRadius: 8,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
