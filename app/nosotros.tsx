@@ -1,7 +1,7 @@
 // app/nosotros.tsx
 import { useAuth } from '@/hooks/useAuth';
 import { Ionicons } from '@expo/vector-icons';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, usePathname, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
     Alert,
@@ -14,7 +14,7 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../app/providers/ThemeProvider'; // 👈 Para modo oscuro
+import { useTheme } from '../app/providers/ThemeProvider';
 
 const { width } = Dimensions.get('window');
 
@@ -25,6 +25,7 @@ export const options = {
 export default function NosotrosScreen() {
     const { user, loading } = useAuth();
     const router = useRouter();
+    const pathname = usePathname(); // 👈 Detecta la ruta actual
     const { theme } = useTheme();
     const isDark = theme === 'dark';
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -241,7 +242,7 @@ export default function NosotrosScreen() {
                     </View>
                 </ScrollView>
 
-                {/* Barra inferior */}
+                {/* Barra inferior con resaltado verde */}
                 <View
                     style={[
                         styles.bottomNav,
@@ -251,30 +252,68 @@ export default function NosotrosScreen() {
                         },
                     ]}
                 >
-                    <TouchableOpacity style={styles.navItem} onPress={() => router.push('/account')}>
-                        <Image source={require('../assets/images/home-icon.png')} style={styles.navIcon} />
-                        <Text style={[styles.navLabel, { color: isDark ? '#AAA' : '#666' }]}>Inicio</Text>
+                    {/* Inicio */}
+                    <TouchableOpacity
+                        style={[styles.navItem, pathname === '/inicio' && styles.navItemActive]}
+                        onPress={() => router.push('/account')}
+                    >
+                        <Image
+                            source={require('../assets/images/home-icon.png')}
+                            style={[styles.navIcon, pathname === '/inicio' && styles.navIconActive]}
+                        />
+                        <Text
+                            style={[styles.navLabel, pathname === '/inicio' && styles.navLabelActive]}
+                        >
+                            Inicio
+                        </Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.navItem} onPress={() => router.push('/areas')}>
-                        <Image source={require('../assets/images/areas-icon.png')} style={styles.navIcon} />
-                        <Text style={[styles.navLabel, { color: isDark ? '#AAA' : '#666' }]}>Áreas</Text>
+                    {/* Áreas */}
+                    <TouchableOpacity
+                        style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
+                        onPress={() => router.push('/areas')}
+                    >
+                        <Image
+                            source={require('../assets/images/areas-icon.png')}
+                            style={[styles.navIcon, pathname === '/areas' && styles.navIconActive]}
+                        />
+                        <Text
+                            style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive]}
+                        >
+                            Áreas
+                        </Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.navItem} onPress={() => router.push('/convocatoria')}>
+                    {/* Convocatoria */}
+                    <TouchableOpacity
+                        style={[styles.navItem, pathname === '/convocatoria' && styles.navItemActive]}
+                        onPress={() => router.push('/convocatoria')}
+                    >
                         <Image
                             source={require('../assets/images/convocatory-icon.png')}
-                            style={styles.navIcon}
+                            style={[styles.navIcon, pathname === '/convocatoria' && styles.navIconActive]}
                         />
-                        <Text style={[styles.navLabel, { color: isDark ? '#AAA' : '#666' }]}>Convocatory</Text>
+                        <Text
+                            style={[styles.navLabel, pathname === '/convocatoria' && styles.navLabelActive]}
+                        >
+                            Convocatory
+                        </Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.navItem} onPress={() => router.push('/nosotros')}>
+                    {/* Nosotros */}
+                    <TouchableOpacity
+                        style={[styles.navItem, pathname === '/nosotros' && styles.navItemActive]}
+                        onPress={() => router.push('/nosotros')}
+                    >
                         <Image
                             source={require('../assets/images/nosotros-icon.png')}
-                            style={styles.navIcon}
+                            style={[styles.navIcon, pathname === '/nosotros' && styles.navIconActive]}
                         />
-                        <Text style={[styles.navLabel, { color: isDark ? '#AAA' : '#666' }]}>Nosotros</Text>
+                        <Text
+                            style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive]}
+                        >
+                            Nosotros
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -365,4 +404,9 @@ const styles = StyleSheet.create({
     navItem: { alignItems: 'center', paddingVertical: 8 },
     navIcon: { width: 24, height: 24, marginBottom: 4, resizeMode: 'contain' },
     navLabel: { fontSize: 10, marginTop: 4, textAlign: 'center' },
+
+    // 🔹 Estilos para el resaltado verde
+    navItemActive: { borderTopWidth: 2, borderTopColor: '#00C853' },
+    navIconActive: { tintColor: '#00C853' },
+    navLabelActive: { color: '#00C853', fontWeight: 'bold' },
 });
