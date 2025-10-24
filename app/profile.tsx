@@ -1,3 +1,4 @@
+// app/profile.tsx
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
@@ -14,9 +15,14 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../app/providers/ThemeProvider'; // 👈 Importado
 
 export default function ProfileScreen() {
     const router = useRouter();
+    const { theme } = useTheme(); // 👈 Usado
+    const isDark = theme === 'dark';
+
     const [bannerImage, setBannerImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [showPersonalInfoForm, setShowPersonalInfoForm] = useState(false);
@@ -24,26 +30,18 @@ export default function ProfileScreen() {
     const [gender, setGender] = useState('');
     const [languageProficiency, setLanguageProficiency] = useState('');
     const [currentlyInRole, setCurrentlyInRole] = useState(false);
-
-    // Estados para las pestañas
     const [activeTab, setActiveTab] = useState<'info' | 'formacion' | 'experiencia' | 'adicional'>('info');
-
-    // Estados para los modales de formación
     const [showAcademicModal, setShowAcademicModal] = useState(false);
     const [showTechnicalModal, setShowTechnicalModal] = useState(false);
     const [showComplementaryModal, setShowComplementaryModal] = useState(false);
     const [showExperienceModal, setShowExperienceModal] = useState(false);
-
-    // Estados para modales de "Adicional"
     const [showVolunteerModal, setShowVolunteerModal] = useState(false);
     const [showPublicationModal, setShowPublicationModal] = useState(false);
     const [showLanguageModal, setShowLanguageModal] = useState(false);
-
-    // Estado para el radio button de estado académico
     const [academicStatus, setAcademicStatus] = useState<string>('Actualmente');
 
     const handleSettings = () => {
-        Alert.alert('Configuración', 'Funcionalidad no implementada aún');
+        router.push('/settings');
     };
 
     const handleAddInfo = () => {
@@ -106,15 +104,20 @@ export default function ProfileScreen() {
     };
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
             {/* Header */}
-            <View style={styles.header}>
+            <View
+                style={[
+                    styles.header,
+                    { backgroundColor: isDark ? '#111' : '#fff', borderBottomColor: isDark ? '#333' : '#ddd' },
+                ]}
+            >
                 <TouchableOpacity onPress={() => router.back()}>
-                    <Ionicons name="arrow-back" size={24} color="#333" />
+                    <Ionicons name="arrow-back" size={24} color={isDark ? '#FFF' : '#333'} />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Profile</Text>
+                <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>Profile</Text>
                 <TouchableOpacity onPress={handleSettings}>
-                    <Ionicons name="settings" size={24} color="#333" />
+                    <Ionicons name="settings" size={24} color={isDark ? '#FFF' : '#333'} />
                 </TouchableOpacity>
             </View>
 
@@ -129,7 +132,7 @@ export default function ProfileScreen() {
                         />
                     ) : (
                         <View style={[styles.bannerImage, styles.bannerPlaceholder]}>
-                            <Text style={styles.placeholderText}>📷 Portada</Text>
+                            <Text style={[styles.placeholderText, { color: isDark ? '#AAA' : '#666' }]}>📷 Portada</Text>
                         </View>
                     )}
                 </TouchableOpacity>
@@ -143,7 +146,7 @@ export default function ProfileScreen() {
                             />
                         ) : (
                             <View style={[styles.profilePhoto, styles.profilePlaceholder]}>
-                                <Text style={styles.placeholderText}>👤</Text>
+                                <Text style={[styles.placeholderText, { color: isDark ? '#AAA' : '#666' }]}>👤</Text>
                             </View>
                         )}
                     </TouchableOpacity>
@@ -155,8 +158,8 @@ export default function ProfileScreen() {
 
             {/* Información del usuario */}
             <View style={styles.userInfo}>
-                <Text style={styles.userName}>Ethan Carter Murayari</Text>
-                <Text style={styles.userEmail}>etcar@gmail.com</Text>
+                <Text style={[styles.userName, { color: isDark ? '#FFF' : '#333' }]}>Ethan Carter Murayari</Text>
+                <Text style={[styles.userEmail, { color: isDark ? '#AAA' : '#666' }]}>etcar@gmail.com</Text>
             </View>
 
             {/* Pestañas */}
@@ -192,12 +195,16 @@ export default function ProfileScreen() {
                 {activeTab === 'info' && (
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
-                            <Text style={styles.sectionTitle}>Información Personal</Text>
+                            <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                Información Personal
+                            </Text>
                             <TouchableOpacity style={styles.addIconContainer} onPress={handleAddInfo}>
                                 <Ionicons name="add" size={24} color="#10b981" />
                             </TouchableOpacity>
                         </View>
-                        <Text style={styles.noDataText}>No se visualiza ninguna información</Text>
+                        <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                            No se visualiza ninguna información
+                        </Text>
                     </View>
                 )}
 
@@ -206,7 +213,9 @@ export default function ProfileScreen() {
                         {/* Información Académica */}
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={styles.sectionTitle}>Información académica</Text>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                    Información académica
+                                </Text>
                                 <TouchableOpacity
                                     style={styles.addIconContainer}
                                     onPress={() => setShowAcademicModal(true)}
@@ -214,13 +223,16 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={styles.noDataText}>No se visualiza ninguna información</Text>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                                No se visualiza ninguna información
+                            </Text>
                         </View>
-
                         {/* Formación Técnica / Especializada */}
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={styles.sectionTitle}>Formación técnica / especializada</Text>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                    Formación técnica / especializada
+                                </Text>
                                 <TouchableOpacity
                                     style={styles.addIconContainer}
                                     onPress={() => setShowTechnicalModal(true)}
@@ -228,13 +240,16 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={styles.noDataText}>No se visualiza ninguna información</Text>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                                No se visualiza ninguna información
+                            </Text>
                         </View>
-
                         {/* Formación Complementaria */}
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={styles.sectionTitle}>Formación Complementaria</Text>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                    Formación Complementaria
+                                </Text>
                                 <TouchableOpacity
                                     style={styles.addIconContainer}
                                     onPress={() => setShowComplementaryModal(true)}
@@ -242,7 +257,9 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={styles.noDataText}>No se visualiza ninguna información</Text>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                                No se visualiza ninguna información
+                            </Text>
                         </View>
                     </>
                 )}
@@ -252,7 +269,9 @@ export default function ProfileScreen() {
                         {/* Experiencia Académica */}
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={styles.sectionTitle}>Experiencia Laboral</Text>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                    Experiencia Laboral
+                                </Text>
                                 <TouchableOpacity
                                     style={styles.addIconContainer}
                                     onPress={() => setShowExperienceModal(true)}
@@ -260,7 +279,9 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={styles.noDataText}>No se visualiza ninguna información</Text>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                                No se visualiza ninguna información
+                            </Text>
                         </View>
                     </>
                 )}
@@ -270,7 +291,9 @@ export default function ProfileScreen() {
                         {/* Voluntariados */}
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={styles.sectionTitle}>Voluntariados</Text>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                    Voluntariados
+                                </Text>
                                 <TouchableOpacity
                                     style={styles.addIconContainer}
                                     onPress={() => setShowVolunteerModal(true)}
@@ -278,13 +301,16 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={styles.noDataText}>No se visualiza ninguna información</Text>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                                No se visualiza ninguna información
+                            </Text>
                         </View>
-
                         {/* Publicaciones */}
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={styles.sectionTitle}>Publicaciones</Text>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                    Publicaciones
+                                </Text>
                                 <TouchableOpacity
                                     style={styles.addIconContainer}
                                     onPress={() => setShowPublicationModal(true)}
@@ -292,13 +318,16 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={styles.noDataText}>No se visualiza ninguna información</Text>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                                No se visualiza ninguna información
+                            </Text>
                         </View>
-
                         {/* Idiomas */}
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={styles.sectionTitle}>Idiomas</Text>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                    Idiomas
+                                </Text>
                                 <TouchableOpacity
                                     style={styles.addIconContainer}
                                     onPress={() => setShowLanguageModal(true)}
@@ -306,7 +335,9 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={styles.noDataText}>No se visualiza ninguna información</Text>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                                No se visualiza ninguna información
+                            </Text>
                         </View>
                     </>
                 )}
@@ -316,50 +347,60 @@ export default function ProfileScreen() {
             {showAcademicModal && (
                 <View style={styles.modalOverlay}>
                     <View
-                        style={{
-                            width: '100%',
-                            maxWidth: 300,
-                            maxHeight: '100%',
-                            minHeight: 300,
-                            backgroundColor: '#e8d7d7',
-                            borderRadius: 10,
-                            padding: 20,
-                            elevation: 10,
-                            overflow: 'hidden',
-                        }}
+                        style={[
+                            styles.modalContent,
+                            { backgroundColor: isDark ? '#222' : '#e8d7d7' },
+                        ]}
                     >
-                        <Text style={styles.modalTitle}>Añadir formación Académica</Text>
-                        <Text style={styles.label}>Grado</Text>
+                        <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                            Añadir formación Académica
+                        </Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Grado</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ingrese el nombre de su grado"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Institución</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Institución</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ingrese el nombre de su carrera"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>País</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>País</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ingrese su país"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Año de inicio</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="YYYY"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Año de fin</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="YYYY"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Estado</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Estado</Text>
                         <View style={styles.radioGroup}>
                             {['Actualmente', 'Graduado', 'Titulado'].map((option) => (
                                 <TouchableOpacity
@@ -367,8 +408,15 @@ export default function ProfileScreen() {
                                     style={styles.radioOption}
                                     onPress={() => setAcademicStatus(option)}
                                 >
-                                    <View style={[styles.radioButton, academicStatus === option && styles.radioButtonSelected]} />
-                                    <Text style={styles.radioLabel}>{option}</Text>
+                                    <View
+                                        style={[
+                                            styles.radioButton,
+                                            academicStatus === option && styles.radioButtonSelected,
+                                        ]}
+                                    />
+                                    <Text style={[styles.radioLabel, { color: isDark ? '#FFF' : '#333' }]}>
+                                        {option}
+                                    </Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
@@ -397,42 +445,55 @@ export default function ProfileScreen() {
             {showTechnicalModal && (
                 <View style={styles.modalOverlay}>
                     <View
-                        style={{
-                            width: '90%',
-                            maxWidth: 400,
-                            maxHeight: '80%',
-                            minHeight: 200,
-                            backgroundColor: '#e8d7d7',
-                            borderRadius: 12,
-                            padding: 20,
-                            elevation: 5,
-                            overflow: 'hidden',
-                        }}
+                        style={[
+                            styles.modalContent,
+                            { backgroundColor: isDark ? '#222' : '#e8d7d7' },
+                        ]}
                     >
-                        <Text style={styles.modalTitle}>Añadir Formación Técnica / Especializada</Text>
-                        <Text style={styles.label}>Nombre del curso o certificación</Text>
+                        <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                            Añadir Formación Técnica / Especializada
+                        </Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Nombre del curso o certificación
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ej: Curso de React Native"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Institución o plataforma</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Institución o plataforma
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ej: Udemy, Coursera"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Duración (meses)</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Duración (meses)</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ej: 6"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Año de finalización</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Año de finalización
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="YYYY"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
@@ -459,36 +520,46 @@ export default function ProfileScreen() {
             {showComplementaryModal && (
                 <View style={styles.modalOverlay}>
                     <View
-                        style={{
-                            width: '90%',
-                            maxWidth: 400,
-                            maxHeight: '80%',
-                            minHeight: 200,
-                            backgroundColor: '#e8d7d7',
-                            borderRadius: 12,
-                            padding: 20,
-                            elevation: 5,
-                            overflow: 'hidden',
-                        }}
+                        style={[
+                            styles.modalContent,
+                            { backgroundColor: isDark ? '#222' : '#e8d7d7' },
+                        ]}
                     >
-                        <Text style={styles.modalTitle}>Añadir Formación Complementaria</Text>
-                        <Text style={styles.label}>Nombre de la actividad</Text>
+                        <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                            Añadir Formación Complementaria
+                        </Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Nombre de la actividad
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ej: Voluntariado, idiomas, talleres"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Descripción breve</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Descripción breve
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Describe brevemente tu experiencia"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Fecha de realización</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Fecha de realización
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="MM/YYYY"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
@@ -515,44 +586,54 @@ export default function ProfileScreen() {
             {showPersonalInfoForm && (
                 <View style={styles.modalOverlay}>
                     <View
-                        style={{
-                            width: '90%',
-                            maxWidth: 300,
-                            maxHeight: '80%',
-                            minHeight: 200,
-                            backgroundColor: '#e8d7d7',
-                            borderRadius: 12,
-                            padding: 20,
-                            elevation: 5,
-                            overflow: 'hidden',
-                        }}
+                        style={[
+                            styles.modalContent,
+                            { backgroundColor: isDark ? '#222' : '#e8d7d7' },
+                        ]}
                     >
-                        <Text style={styles.modalTitle}>Información Personal</Text>
-                        <Text style={styles.label}>Nombre y Apellido</Text>
+                        <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                            Información Personal
+                        </Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Nombre y Apellido
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Introduzca su nombre completo"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Fecha de Nacimiento</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Fecha de Nacimiento
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="dd/mm/yyyy"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Celular N°</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Celular N°</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Introducir número de celular"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Seleccione su tipo de documento:</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Seleccione su tipo de documento:
+                        </Text>
                         <View style={styles.row}>
-                            <View style={styles.pickerWrapper}>
+                            <View style={[styles.pickerWrapper, { backgroundColor: isDark ? '#333' : '#f9f9f9' }]}>
                                 <Picker
                                     selectedValue={documentType}
                                     onValueChange={(itemValue) => setDocumentType(itemValue)}
-                                    style={styles.picker}
+                                    style={[styles.picker, { color: isDark ? '#FFF' : '#333' }]}
                                 >
                                     <Picker.Item label="Seleccionar" value="" />
                                     <Picker.Item label="DNI" value="dni" />
@@ -560,12 +641,15 @@ export default function ProfileScreen() {
                                 </Picker>
                             </View>
                             <TextInput
-                                style={[styles.input, { flex: 1, marginLeft: 10 }]}
+                                style={[
+                                    styles.input,
+                                    { flex: 1, marginLeft: 10, backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                                ]}
                                 placeholder="N° de Documento"
-                                placeholderTextColor="#999"
+                                placeholderTextColor={isDark ? '#AAA' : '#999'}
                             />
                         </View>
-                        <Text style={styles.label}>Género</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Género</Text>
                         <View style={styles.radioGroup}>
                             {['Masculino', 'Femenino', 'Otros'].map((option) => (
                                 <TouchableOpacity
@@ -573,8 +657,15 @@ export default function ProfileScreen() {
                                     style={styles.radioOption}
                                     onPress={() => setGender(option)}
                                 >
-                                    <View style={[styles.radioButton, gender === option && styles.radioButtonSelected]} />
-                                    <Text style={styles.radioLabel}>{option}</Text>
+                                    <View
+                                        style={[
+                                            styles.radioButton,
+                                            gender === option && styles.radioButtonSelected,
+                                        ]}
+                                    />
+                                    <Text style={[styles.radioLabel, { color: isDark ? '#FFF' : '#333' }]}>
+                                        {option}
+                                    </Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
@@ -603,54 +694,71 @@ export default function ProfileScreen() {
             {showExperienceModal && (
                 <View style={styles.modalOverlay}>
                     <View
-                        style={{
-                            width: '100%',
-                            maxWidth: 300,
-                            maxHeight: '100%',
-                            minHeight: 200,
-                            backgroundColor: '#e8d7d7',
-                            borderRadius: 10,
-                            padding: 20,
-                            elevation: 10,
-                            overflow: 'hidden',
-                        }}
+                        style={[
+                            styles.modalContent,
+                            { backgroundColor: isDark ? '#222' : '#e8d7d7' },
+                        ]}
                     >
-                        <Text style={styles.modalTitle}>Añadir experiencia Laboral</Text>
-                        <Text style={styles.label}>Puesto</Text>
+                        <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                            Añadir experiencia Laboral
+                        </Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Puesto</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ingrese el nombre del puesto"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Institución</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Institución</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ingrese el nombre de la Institución"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Área</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Área</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ingrese su área"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>País</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>País</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ingrese su país"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Fecha de inicio</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Fecha de inicio
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="dd/mm/yyyy"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Fecha de fin</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Fecha de fin
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="dd/mm/yyyy"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
@@ -677,64 +785,94 @@ export default function ProfileScreen() {
             {showVolunteerModal && (
                 <View style={styles.modalOverlay}>
                     <View
-                        style={{
-                            width: '100%',
-                            maxWidth: 300,
-                            maxHeight: '100%',
-                            minHeight: 200,
-                            backgroundColor: '#e8d7d7',
-                            borderRadius: 10,
-                            padding: 20,
-                            elevation: 10,
-                            overflow: 'hidden',
-                        }}
+                        style={[
+                            styles.modalContent,
+                            { backgroundColor: isDark ? '#222' : '#e8d7d7' },
+                        ]}
                     >
-                        <Text style={styles.modalTitle}>Añadir voluntariado</Text>
-                        <Text style={styles.label}>Organización</Text>
+                        <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                            Añadir voluntariado
+                        </Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Organización
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Nombre de la Organización"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Cargo</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Cargo</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Nombre del cargo"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Causa benéfica / Área</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Causa benéfica / Área
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="National University of the Peruvian Amazon"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
                         <View style={styles.row}>
                             <TouchableOpacity
                                 style={styles.checkboxContainer}
                                 onPress={() => setCurrentlyInRole(!currentlyInRole)}
                             >
-                                <View style={[styles.checkbox, currentlyInRole && styles.checkboxChecked]} />
-                                <Text style={styles.checkboxLabel}>Actualmente estoy en este cargo</Text>
+                                <View
+                                    style={[
+                                        styles.checkbox,
+                                        currentlyInRole && styles.checkboxChecked,
+                                    ]}
+                                />
+                                <Text style={[styles.checkboxLabel, { color: isDark ? '#FFF' : '#333' }]}>
+                                    Actualmente estoy en este cargo
+                                </Text>
                             </TouchableOpacity>
                         </View>
-                        <Text style={styles.label}>Fecha de inicio</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Fecha de inicio
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="dd/mm/yyyy"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Fecha de fin</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Fecha de fin
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="dd/mm/yyyy"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Descripción</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Descripción
+                        </Text>
                         <TextInput
-                            style={[styles.input, { height: 80, textAlignVertical: 'top' }]}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Escribe un resumen de tu experiencia en voluntariado"
                             multiline
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
@@ -761,55 +899,74 @@ export default function ProfileScreen() {
             {showPublicationModal && (
                 <View style={styles.modalOverlay}>
                     <View
-                        style={{
-                            width: '100%',
-                            maxWidth: 300,
-                            maxHeight: '100%',
-                            minHeight: 200,
-                            backgroundColor: '#e8d7d7',
-                            borderRadius: 10,
-                            padding: 20,
-                            elevation: 10,
-                            overflow: 'hidden',
-                        }}
+                        style={[
+                            styles.modalContent,
+                            { backgroundColor: isDark ? '#222' : '#e8d7d7' },
+                        ]}
                     >
-                        <Text style={styles.modalTitle}>Añadir publicación</Text>
-                        <Text style={styles.label}>Título</Text>
+                        <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                            Añadir publicación
+                        </Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Título</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Nombre de publicación"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Publicación / Editorial</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Publicación / Editorial
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ej: España editorial"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Autor</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Autor</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ingrese el nombre"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Fecha de Publicación</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Fecha de Publicación
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="dd/mm/yyyy"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Url</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Url</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ingrese un breve resumen"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Resumen / Abstract</Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Resumen / Abstract
+                        </Text>
                         <TextInput
-                            style={[styles.input, { height: 80, textAlignVertical: 'top' }]}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Ingrese un breve resumen"
                             multiline
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity
@@ -836,31 +993,36 @@ export default function ProfileScreen() {
             {showLanguageModal && (
                 <View style={styles.modalOverlay}>
                     <View
-                        style={{
-                            width: '90%',
-                            maxWidth: 400,
-                            maxHeight: '80%',
-                            minHeight: 200,
-                            backgroundColor: '#e8d7d7',
-                            borderRadius: 12,
-                            padding: 20,
-                            elevation: 5,
-                            overflow: 'hidden',
-                        }}
+                        style={[
+                            styles.modalContent,
+                            { backgroundColor: isDark ? '#222' : '#e8d7d7' },
+                        ]}
                     >
-                        <Text style={styles.modalTitle}>Añadir idioma</Text>
-                        <Text style={styles.label}>Idioma</Text>
+                        <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                            Añadir idioma
+                        </Text>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Idioma</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                            ]}
                             placeholder="Idioma"
-                            placeholderTextColor="#999"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
                         />
-                        <Text style={styles.label}>Competencia</Text>
-                        <View style={styles.pickerWrapper}>
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>
+                            Competencia
+                        </Text>
+                        <View
+                            style={[
+                                styles.pickerWrapper,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9' },
+                            ]}
+                        >
                             <Picker
                                 selectedValue={languageProficiency}
                                 onValueChange={(itemValue) => setLanguageProficiency(itemValue)}
-                                style={styles.picker}
+                                style={[styles.picker, { color: isDark ? '#FFF' : '#333' }]}
                             >
                                 <Picker.Item label="Seleccionar" value="" />
                                 <Picker.Item label="Basic" value="basic" />
@@ -889,49 +1051,25 @@ export default function ProfileScreen() {
                     </View>
                 </View>
             )}
-        </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
+    container: { flex: 1 },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#fff',
         paddingHorizontal: 16,
         paddingVertical: 12,
         borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
     },
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    bannerContainer: {
-        height: 200,
-        position: 'relative',
-        backgroundColor: '#d4f5e0',
-    },
-    bannerImage: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'cover',
-    },
-    bannerPlaceholder: {
-        backgroundColor: '#c8e6c9',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    placeholderText: {
-        fontSize: 16,
-        color: '#666',
-    },
+    headerTitle: { fontSize: 18, fontWeight: 'bold' },
+    bannerContainer: { height: 200, position: 'relative' },
+    bannerImage: { width: '100%', height: '100%', resizeMode: 'cover' },
+    bannerPlaceholder: { backgroundColor: '#c8e6c9', justifyContent: 'center', alignItems: 'center' },
+    placeholderText: { fontSize: 16, color: '#666' },
     profilePhotoContainer: {
         position: 'absolute',
         top: 120,
@@ -939,18 +1077,8 @@ const styles = StyleSheet.create({
         transform: [{ translateX: -50 }],
         alignItems: 'center',
     },
-    profilePhoto: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        borderWidth: 3,
-        borderColor: '#fff',
-    },
-    profilePlaceholder: {
-        backgroundColor: '#e8f5e8',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
+    profilePhoto: { width: 100, height: 100, borderRadius: 50, borderWidth: 3, borderColor: '#fff' },
+    profilePlaceholder: { backgroundColor: '#e8f5e8', justifyContent: 'center', alignItems: 'center' },
     cameraIcon: {
         position: 'absolute',
         bottom: 0,
@@ -962,20 +1090,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    userInfo: {
-        alignItems: 'center',
-        marginTop: 20,
-        marginBottom: 20,
-    },
-    userName: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    userEmail: {
-        fontSize: 14,
-        color: '#666',
-    },
+    userInfo: { alignItems: 'center', marginTop: 20, marginBottom: 20 },
+    userName: { fontSize: 18, fontWeight: 'bold', color: '#333' },
+    userEmail: { fontSize: 14, color: '#666' },
     tabs: {
         flexDirection: 'row',
         justifyContent: 'space-around',
@@ -984,41 +1101,19 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#ddd',
     },
-    tab: {
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-    },
-    activeTab: {
-        borderBottomWidth: 2,
-        borderBottomColor: '#10b981',
-    },
-    tabText: {
-        fontSize: 14,
-        color: '#666',
-    },
-    activeTabText: {
-        color: '#10b981',
-        fontWeight: '600',
-    },
-    content: {
-        flex: 1,
-        paddingHorizontal: 16,
-        paddingTop: 20,
-    },
-    section: {
-        marginBottom: 20,
-    },
+    tab: { paddingHorizontal: 12, paddingVertical: 8 },
+    activeTab: { borderBottomWidth: 2, borderBottomColor: '#10b981' },
+    tabText: { fontSize: 14, color: '#666' },
+    activeTabText: { color: '#10b981', fontWeight: '600' },
+    content: { flex: 1, paddingHorizontal: 16, paddingTop: 20 },
+    section: { marginBottom: 20 },
     sectionHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 12,
     },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-    },
+    sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#333' },
     addIconContainer: {
         backgroundColor: '#d4f5e0',
         width: 40,
@@ -1027,12 +1122,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    noDataText: {
-        fontSize: 16,
-        color: '#666',
-        textAlign: 'center',
-        marginTop: 20,
-    },
+    noDataText: { fontSize: 16, color: '#666', textAlign: 'center', marginTop: 20 },
     modalOverlay: {
         position: 'absolute',
         top: 0,
@@ -1044,19 +1134,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         zIndex: 10,
     },
-    modalTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 20,
-        textAlign: 'center',
+    modalContent: {
+        width: '90%',
+        maxWidth: 400,
+        maxHeight: '80%',
+        minHeight: 200,
+        backgroundColor: '#e8d7d7',
+        borderRadius: 12,
+        padding: 20,
+        elevation: 5,
+        overflow: 'hidden',
     },
-    label: {
-        fontSize: 14,
-        color: '#333',
-        marginBottom: 5,
-        marginTop: 10,
-    },
+    modalTitle: { fontSize: 20, fontWeight: 'bold', color: '#333', marginBottom: 20, textAlign: 'center' },
+    label: { fontSize: 14, color: '#333', marginBottom: 5, marginTop: 10 },
     input: {
         borderWidth: 1,
         borderColor: '#ccc',
