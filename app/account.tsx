@@ -1,7 +1,8 @@
 // app/account.tsx
+import { useColorScheme } from '@/hooks/use-color-scheme'; // 👈 Importado
 import { useAuth } from '@/hooks/useAuth';
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native'; // 👈 NUEVO
+import { useFocusEffect } from '@react-navigation/native';
 import { Redirect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -9,9 +10,9 @@ import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacit
 const { width } = Dimensions.get('window');
 
 export default function AccountScreen() {
-    // 👇 Añade reloadUser
     const { user, loading, reloadUser } = useAuth();
     const router = useRouter();
+    const { isDark } = useColorScheme(); // 👈 Usado
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -19,7 +20,6 @@ export default function AccountScreen() {
         setIsMenuOpen(!isMenuOpen);
     };
 
-    // 👇 Recarga el usuario al volver a esta pantalla
     useFocusEffect(
         useCallback(() => {
             if (reloadUser) {
@@ -79,7 +79,7 @@ export default function AccountScreen() {
     if (loading) {
         return (
             <View style={styles.loading}>
-                <Text>Cargando...</Text>
+                <Text style={{ color: isDark ? '#FFF' : '#333' }}>Cargando...</Text>
             </View>
         );
     }
@@ -89,181 +89,235 @@ export default function AccountScreen() {
     }
 
     return (
-        <ScrollView style={styles.container}>
-            {/* Encabezado */}
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>volunteer account</Text>
-                <View style={styles.headerRight}>
-                    <Image
-                        source={
-                            user.photoURL
-                                ? { uri: user.photoURL }
-                                : require('../assets/images/avatar-default.png')
-                        }
-                        style={styles.avatar}
-                    />
-                    <TouchableOpacity onPress={toggleMenu}>
-                        <Ionicons name="menu" size={24} color="#333" />
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-            {/* Menú desplegable */}
-            {isMenuOpen && (
-                <View style={styles.menuOverlay}>
-                    <View style={styles.menuContainer}>
-                        <TouchableOpacity
-                            style={styles.menuItem}
-                            onPress={() => {
-                                router.push('/profile');
-                                setIsMenuOpen(false);
-                            }}
-                        >
-                            <Ionicons name="person" size={20} color="#333" />
-                            <Text style={styles.menuText}>Profile</Text>
-                        </TouchableOpacity>
-
-                        {/* Settings - sin error */}
-                        <TouchableOpacity
-                            style={styles.menuItem}
-                            onPress={() => {
-                                Alert.alert('Próximamente', 'Configuración estará disponible pronto');
-                                setIsMenuOpen(false);
-                            }}
-                        >
-                            <Ionicons name="settings" size={20} color="#333" />
-                            <Text style={styles.menuText}>Settings</Text>
-                        </TouchableOpacity>
-
-                        {/* Help - sin error */}
-                        <TouchableOpacity
-                            style={styles.menuItem}
-                            onPress={() => {
-                                Alert.alert('Próximamente', 'Ayuda estará disponible pronto');
-                                setIsMenuOpen(false);
-                            }}
-                        >
-                            <Ionicons name="help-circle" size={20} color="#333" />
-                            <Text style={styles.menuText}>Help</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={styles.menuItem}
-                            onPress={() => {
-                                router.push('/login');
-                                setIsMenuOpen(false);
-                            }}
-                        >
-                            <Ionicons name="log-out" size={20} color="#333" />
-                            <Text style={styles.menuText}>Log-out</Text>
+        <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+            <ScrollView contentContainerStyle={styles.scrollContent}>
+                {/* Encabezado */}
+                <View style={[
+                    styles.header,
+                    {
+                        backgroundColor: isDark ? '#111' : '#E0E0E0',
+                        borderBottomColor: isDark ? '#333' : '#CCC',
+                    }
+                ]}>
+                    <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>volunteer account</Text>
+                    <View style={styles.headerRight}>
+                        <Image
+                            source={
+                                user.photoURL
+                                    ? { uri: user.photoURL }
+                                    : require('../assets/images/avatar-default.png')
+                            }
+                            style={styles.avatar}
+                        />
+                        <TouchableOpacity onPress={toggleMenu}>
+                            <Ionicons name="menu" size={24} color={isDark ? '#FFF' : '#333'} />
                         </TouchableOpacity>
                     </View>
                 </View>
-            )}
 
-            {/* Banner */}
-            <View style={styles.banner}>
-                <Image
-                    source={require('../assets/images/banner.png')}
-                    style={styles.bannerImage}
-                />
-                <View style={styles.bannerContent}>
-                    <Text style={styles.bannerTitle}>Aquí comienza tu espacio exclusivo de usuario</Text>
-                    <Text style={styles.bannerSubtitle}>Bienvenido/a usuario/a parte de este nuevo...</Text>
-                    <TouchableOpacity style={styles.bannerButton}>
-                        <Text style={styles.bannerButtonText}>Conocer más</Text>
-                    </TouchableOpacity>
+                {/* Banner */}
+                <View style={styles.banner}>
+                    <Image
+                        source={require('../assets/images/banner.png')}
+                        style={styles.bannerImage}
+                    />
+                    <View style={styles.bannerContent}>
+                        <Text style={[styles.bannerTitle, { color: '#FFF' }]}>Aquí comienza tu espacio exclusivo de usuario</Text>
+                        <Text style={[styles.bannerSubtitle, { color: '#FFF' }]}>Bienvenido/a usuario/a parte de este nuevo...</Text>
+                        <TouchableOpacity style={styles.bannerButton}>
+                            <Text style={styles.bannerButtonText}>Conocer más</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
 
-            {/* Últimas noticias - HORIZONTAL */}
-            <Text style={styles.sectionTitle}>Últimas noticias</Text>
-            <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.newsContainerHorizontal}
-            >
-                {news.map((item) => (
-                    <View key={item.id} style={styles.newsCardHorizontal}>
-                        <Image
-                            source={item.image}
-                            style={styles.newsImage}
-                        />
-                        <View style={styles.newsText}>
-                            <Text style={styles.newsDate}>{item.date}</Text>
-                            <Text style={styles.newsEndDate}>{item.endDate}</Text>
-                            <Text style={styles.newsTitle}>{item.title}</Text>
-                            <Text style={styles.newsTopics}>{item.topics.join(', ')}</Text>
-                            <View style={styles.newsStatusContainer}>
-                                {item.status === 'Abierto' ? (
-                                    <>
-                                        <TouchableOpacity style={[styles.statusButton, { backgroundColor: item.color }]}>
-                                            <Text style={styles.statusText}>Abierto</Text>
+                {/* Últimas noticias - HORIZONTAL */}
+                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Últimas noticias</Text>
+                <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.newsContainerHorizontal}
+                >
+                    {news.map((item) => (
+                        <View
+                            key={item.id}
+                            style={[
+                                styles.newsCardHorizontal,
+                                {
+                                    backgroundColor: isDark ? '#111' : '#FFF',
+                                    borderColor: isDark ? '#333' : '#DDD',
+                                },
+                            ]}
+                        >
+                            <Image
+                                source={item.image}
+                                style={styles.newsImage}
+                            />
+                            <View style={styles.newsText}>
+                                <Text style={[styles.newsDate, { color: isDark ? '#AAA' : '#666' }]}>{item.date}</Text>
+                                <Text style={[styles.newsEndDate, { color: isDark ? '#AAA' : '#666' }]}>{item.endDate}</Text>
+                                <Text style={[styles.newsTitle, { color: isDark ? '#FFF' : '#333' }]}>{item.title}</Text>
+                                <Text style={[styles.newsTopics, { color: isDark ? '#AAA' : '#666' }]}>{item.topics.join(', ')}</Text>
+                                <View style={styles.newsStatusContainer}>
+                                    {item.status === 'Abierto' ? (
+                                        <>
+                                            <TouchableOpacity
+                                                style={[
+                                                    styles.statusButton,
+                                                    { backgroundColor: item.color, opacity: isDark ? 0.8 : 1 },
+                                                ]}
+                                            >
+                                                <Text style={styles.statusText}>Abierto</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                style={[
+                                                    styles.statusButton,
+                                                    { backgroundColor: '#4CAF50', opacity: isDark ? 0.8 : 1 },
+                                                ]}
+                                            >
+                                                <Text style={styles.statusText}>Postular</Text>
+                                            </TouchableOpacity>
+                                        </>
+                                    ) : (
+                                        <TouchableOpacity
+                                            style={[
+                                                styles.statusButton,
+                                                { backgroundColor: item.color, opacity: isDark ? 0.8 : 1 },
+                                            ]}
+                                        >
+                                            <Text style={styles.statusText}>Cerrado</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={[styles.statusButton, { backgroundColor: '#4CAF50' }]}>
-                                            <Text style={styles.statusText}>Postular</Text>
-                                        </TouchableOpacity>
-                                    </>
-                                ) : (
-                                    <TouchableOpacity style={[styles.statusButton, { backgroundColor: item.color }]}>
-                                        <Text style={styles.statusText}>Cerrado</Text>
+                                    )}
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.detailsButton,
+                                            {
+                                                borderColor: isDark ? '#AAA' : '#666',
+                                            },
+                                        ]}
+                                    >
+                                        <Text style={[styles.detailsText, { color: isDark ? '#AAA' : '#666' }]}>Detalles</Text>
                                     </TouchableOpacity>
-                                )}
-                                <TouchableOpacity style={styles.detailsButton}>
-                                    <Text style={styles.detailsText}>Detalles</Text>
-                                </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                ))}
+                    ))}
+                </ScrollView>
+
+                {/* Guías y Tutoriales */}
+                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Guías y Tutoriales</Text>
+                <View style={styles.guidesContainer}>
+                    {guides.map((guide) => (
+                        <TouchableOpacity key={guide.id} style={styles.guideCard}>
+                            <Image source={guide.image} style={styles.guideImage} />
+                        </TouchableOpacity>
+                    ))}
+                </View>
+
+                {/* Enlaces rápidos */}
+                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Enlaces rápidos</Text>
+                <View style={styles.quickLinksContainer}>
+                    <Image
+                        source={require('../assets/images/logo-IIAP_enlaces.png')}
+                        style={styles.quickLinksImage}
+                    />
+                </View>
+
+                {/* Barra de navegación inferior */}
+                <View
+                    style={[
+                        styles.bottomNav,
+                        {
+                            borderTopColor: isDark ? '#333' : '#EEE',
+                            backgroundColor: isDark ? '#111' : '#FFF',
+                        },
+                    ]}
+                >
+                    <TouchableOpacity style={styles.navItem} onPress={() => router.push('/')}>
+                        <Image source={require('../assets/images/home-icon.png')} style={styles.navIcon} />
+                        <Text style={[styles.navLabel, { color: isDark ? '#AAA' : '#666' }]}>Inicio</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.navItem} onPress={() => router.push('/areas')}>
+                        <Image source={require('../assets/images/areas-icon.png')} style={styles.navIcon} />
+                        <Text style={[styles.navLabel, { color: isDark ? '#AAA' : '#666' }]}>Áreas</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.navItem} onPress={() => router.push('/convocatoria')}>
+                        <Image source={require('../assets/images/convocatory-icon.png')} style={styles.navIcon} />
+                        <Text style={[styles.navLabel, { color: isDark ? '#AAA' : '#666' }]}>Convocatory</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.navItem} onPress={() => router.push('/nosotros')}>
+                        <Image source={require('../assets/images/nosotros-icon.png')} style={styles.navIcon} />
+                        <Text style={[styles.navLabel, { color: isDark ? '#AAA' : '#666' }]}>Nosotros</Text>
+                    </TouchableOpacity>
+                </View>
             </ScrollView>
 
-            {/* Guías y Tutoriales */}
-            <Text style={styles.sectionTitle}>Guías y Tutoriales</Text>
-            <View style={styles.guidesContainer}>
-                {guides.map((guide) => (
-                    <TouchableOpacity key={guide.id} style={styles.guideCard}>
-                        <Image source={guide.image} style={styles.guideImage} />
-                    </TouchableOpacity>
-                ))}
-            </View>
+            {/* Menú desplegable + overlay */}
+            {isMenuOpen && (
+                <>
+                    <TouchableOpacity
+                        style={styles.overlay}
+                        activeOpacity={1}
+                        onPress={() => setIsMenuOpen(false)}
+                    />
+                    <View style={styles.menuOverlay}>
+                        <View style={styles.menuContainer}>
+                            <TouchableOpacity
+                                style={styles.menuItem}
+                                onPress={() => {
+                                    router.push('/profile');
+                                    setIsMenuOpen(false);
+                                }}
+                            >
+                                <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
+                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>Profile</Text>
+                            </TouchableOpacity>
 
-            {/* Enlaces rápidos */}
-            <Text style={styles.sectionTitle}>Enlaces rápidos</Text>
-            <View style={styles.quickLinksContainer}>
-                <Image
-                    source={require('../assets/images/logo-IIAP_enlaces.png')}
-                    style={styles.quickLinksImage}
-                />
-            </View>
+                            <TouchableOpacity
+                                style={styles.menuItem}
+                                onPress={() => {
+                                    router.push('/settings');
+                                    setIsMenuOpen(false);
+                                }}
+                            >
+                                <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
+                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>Settings</Text>
+                            </TouchableOpacity>
 
-            {/* Barra de navegación inferior */}
-            <View style={styles.bottomNav}>
-                <TouchableOpacity style={styles.navItem} onPress={() => router.push('/')}>
-                    <Image source={require('../assets/images/home-icon.png')} style={styles.navIcon} />
-                    <Text style={styles.navLabel}>Inicio</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.navItem} onPress={() => router.push('/areas')}>
-                    <Image source={require('../assets/images/areas-icon.png')} style={styles.navIcon} />
-                    <Text style={styles.navLabel}>Áreas</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.navItem} onPress={() => router.push('/convocatoria')}>
-                    <Image source={require('../assets/images/convocatory-icon.png')} style={styles.navIcon} />
-                    <Text style={styles.navLabel}>Convocatory</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.navItem} onPress={() => router.push('/nosotros')}>
-                    <Image source={require('../assets/images/nosotros-icon.png')} style={styles.navIcon} />
-                    <Text style={styles.navLabel}>Nosotros</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+                            <TouchableOpacity
+                                style={styles.menuItem}
+                                onPress={() => {
+                                    Alert.alert('Próximamente', 'Ayuda estará disponible pronto');
+                                    setIsMenuOpen(false);
+                                }}
+                            >
+                                <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
+                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>Help</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={styles.menuItem}
+                                onPress={() => {
+                                    router.push('/login');
+                                    setIsMenuOpen(false);
+                                }}
+                            >
+                                <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
+                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>Log-out</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </>
+            )}
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+    },
+    scrollContent: {
+        paddingBottom: 70,
     },
     loading: {
         flex: 1,
@@ -276,14 +330,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: 12,
         paddingHorizontal: 16,
-        backgroundColor: '#E0E0E0',
         borderBottomWidth: 1,
-        borderBottomColor: '#CCC',
     },
     headerTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#333',
     },
     headerRight: {
         flexDirection: 'row',
@@ -296,7 +347,15 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         borderWidth: 1,
         borderColor: '#ddd',
-        backgroundColor: '#f0f0f0',
+    },
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'transparent',
+        zIndex: 999,
     },
     menuOverlay: {
         position: 'absolute',
@@ -325,7 +384,6 @@ const styles = StyleSheet.create({
     menuText: {
         marginLeft: 8,
         fontSize: 14,
-        color: '#333',
     },
     banner: {
         position: 'relative',
@@ -349,12 +407,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)',
     },
     bannerTitle: {
-        color: '#FFF',
         fontSize: 16,
         fontWeight: 'bold',
     },
     bannerSubtitle: {
-        color: '#FFF',
         fontSize: 12,
         marginBottom: 8,
     },
@@ -383,10 +439,8 @@ const styles = StyleSheet.create({
     },
     newsCardHorizontal: {
         flexDirection: 'row',
-        backgroundColor: '#FFF',
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: '#DDD',
         overflow: 'hidden',
         width: 320,
         marginRight: 16,
@@ -405,11 +459,9 @@ const styles = StyleSheet.create({
     },
     newsDate: {
         fontSize: 10,
-        color: '#666',
     },
     newsEndDate: {
         fontSize: 10,
-        color: '#666',
         marginBottom: 4,
     },
     newsTitle: {
@@ -419,7 +471,6 @@ const styles = StyleSheet.create({
     },
     newsTopics: {
         fontSize: 12,
-        color: '#666',
         marginBottom: 8,
     },
     newsStatusContainer: {
@@ -437,13 +488,11 @@ const styles = StyleSheet.create({
     },
     detailsButton: {
         borderWidth: 1,
-        borderColor: '#666',
         paddingHorizontal: 8,
         paddingVertical: 4,
         borderRadius: 4,
     },
     detailsText: {
-        color: '#666',
         fontSize: 12,
     },
     guidesContainer: {
@@ -476,11 +525,13 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
     },
     bottomNav: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
         flexDirection: 'row',
         justifyContent: 'space-around',
         borderTopWidth: 1,
-        borderTopColor: '#EEE',
-        backgroundColor: '#FFF',
         paddingVertical: 8,
     },
     navItem: {
