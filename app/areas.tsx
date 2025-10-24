@@ -1,8 +1,8 @@
 // app/areas.tsx
 import { useAuth } from '@/hooks/useAuth';
 import { Ionicons } from '@expo/vector-icons';
-import * as Location from 'expo-location'; // ✅ NUEVO: para ubicación
-import { useRouter } from 'expo-router';
+import * as Location from 'expo-location';
+import { usePathname, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
     Alert,
@@ -21,18 +21,12 @@ const { width } = Dimensions.get('window');
 export default function AreasScreen() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname(); // ✅ Ruta actual
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [address, setAddress] = useState<string | null>(null); // ✅ NUEVO
-  const [errorMsg, setErrorMsg] = useState<string | null>(null); // ✅ NUEVO
+  const [address, setAddress] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
-  // 🔹 Ocultar encabezado
-  useEffect(() => {
-    if (router.setOptions) {
-      router.setOptions({ headerShown: false });
-    }
-  }, [router]);
 
   // 🔹 Si no hay usuario, redirige al login
   useEffect(() => {
@@ -173,9 +167,7 @@ export default function AreasScreen() {
                 <View style={styles.locationBadge}>
                   <Ionicons name="location" size={16} color="#fff" />
                   <Text style={styles.locationText}>
-                    {errorMsg
-                      ? 'Sin ubicación'
-                      : address || 'Obteniendo ubicación...'}
+                    {errorMsg ? 'Sin ubicación' : address || 'Obteniendo ubicación...'}
                   </Text>
                 </View>
               </View>
@@ -186,31 +178,65 @@ export default function AreasScreen() {
           ))}
         </ScrollView>
 
-        {/* 🔹 Barra inferior */}
+        {/* 🔹 Barra inferior con resaltado */}
         <View style={styles.bottomNav}>
-          <TouchableOpacity style={styles.navItem} onPress={() => router.push('/account')}>
-            <Image source={require('../assets/images/home-icon.png')} style={styles.navIcon} />
-            <Text style={styles.navLabel}>Inicio</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.navItem} onPress={() => router.push('/areas')}>
-            <Image source={require('../assets/images/areas-icon.png')} style={styles.navIcon} />
-            <Text style={styles.navLabel}>Áreas</Text>
-          </TouchableOpacity>
-
+          {/* Inicio */}
           <TouchableOpacity
-            style={styles.navItem}
+            style={[styles.navItem, pathname === '/inicio' && styles.navItemActive]}
+            onPress={() => router.push('/account')}>
+            <Image
+              source={require('../assets/images/home-icon.png')}
+              style={[styles.navIcon, pathname === '/inicio' && styles.navIconActive]}
+            />
+            <Text
+              style={[styles.navLabel, pathname === '/inicio' && styles.navLabelActive]}>
+              Inicio
+            </Text>
+          </TouchableOpacity>
+
+          {/* Áreas */}
+          <TouchableOpacity
+            style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
+            onPress={() => router.push('/areas')}>
+            <Image
+              source={require('../assets/images/areas-icon.png')}
+              style={[styles.navIcon, pathname === '/areas' && styles.navIconActive]}
+            />
+            <Text
+              style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive]}>
+              Áreas
+            </Text>
+          </TouchableOpacity>
+
+          {/* Convocatory */}
+          <TouchableOpacity
+            style={[styles.navItem, pathname === '/convocatoria' && styles.navItemActive]}
             onPress={() => router.push('/convocatoria')}>
             <Image
               source={require('../assets/images/convocatory-icon.png')}
-              style={styles.navIcon}
+              style={[styles.navIcon, pathname === '/convocatoria' && styles.navIconActive]}
             />
-            <Text style={styles.navLabel}>Convocatory</Text>
+            <Text
+              style={[
+                styles.navLabel,
+                pathname === '/convocatoria' && styles.navLabelActive,
+              ]}>
+              Convocatory
+            </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.navItem} onPress={() => router.push('/nosotros')}>
-            <Image source={require('../assets/images/nosotros-icon.png')} style={styles.navIcon} />
-            <Text style={styles.navLabel}>Nosotros</Text>
+          {/* Nosotros */}
+          <TouchableOpacity
+            style={[styles.navItem, pathname === '/nosotros' && styles.navItemActive]}
+            onPress={() => router.push('/nosotros')}>
+            <Image
+              source={require('../assets/images/nosotros-icon.png')}
+              style={[styles.navIcon, pathname === '/nosotros' && styles.navIconActive]}
+            />
+            <Text
+              style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive]}>
+              Nosotros
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -218,6 +244,7 @@ export default function AreasScreen() {
   );
 }
 
+// 🎨 Estilos
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -277,6 +304,8 @@ const styles = StyleSheet.create({
   areaDirection: { fontSize: 12, color: '#666', marginBottom: 4 },
   areaTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 4, color: '#333' },
   areaDescription: { fontSize: 14, color: '#666' },
+
+  // 🔹 Barra inferior
   bottomNav: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -292,7 +321,13 @@ const styles = StyleSheet.create({
   },
   navItem: { alignItems: 'center', paddingVertical: 8 },
   navIcon: { width: 24, height: 24, marginBottom: 4, resizeMode: 'contain' },
-  navLabel: { fontSize: 10, textAlign: 'center' },
+  navLabel: { fontSize: 10, textAlign: 'center', color: '#333' },
+
+  // ✅ Activos (resaltados)
+  navItemActive: { borderTopWidth: 2, borderTopColor: '#4CAF50' },
+  navIconActive: { tintColor: '#4CAF50' },
+  navLabelActive: { color: '#4CAF50', fontWeight: 'bold' },
+
   menuOverlay: {
     position: 'absolute',
     top: 60,
