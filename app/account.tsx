@@ -1,7 +1,7 @@
 // app/account.tsx
 import { useAuth } from '@/hooks/useAuth';
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native'; // 👈 NUEVO
+import { useFocusEffect } from '@react-navigation/native';
 import { Redirect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -9,22 +9,15 @@ import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacit
 const { width } = Dimensions.get('window');
 
 export default function AccountScreen() {
-    // 👇 Añade reloadUser
     const { user, loading, reloadUser } = useAuth();
     const router = useRouter();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
-
-    // 👇 Recarga el usuario al volver a esta pantalla
     useFocusEffect(
         useCallback(() => {
-            if (reloadUser) {
-                reloadUser();
-            }
+            if (reloadUser) reloadUser();
         }, [reloadUser])
     );
 
@@ -70,7 +63,7 @@ export default function AccountScreen() {
     ]);
 
     const [guides] = useState([
-        { id: 1, image: require('../assets/images/guia1.png') },
+        { id: 1, image: require('../assets/images/tutorial1.jpg') },
         { id: 2, image: require('../assets/images/guia2.png') },
         { id: 3, image: require('../assets/images/guia3.png') },
         { id: 4, image: require('../assets/images/guia4.jpg') },
@@ -123,7 +116,6 @@ export default function AccountScreen() {
                             <Text style={styles.menuText}>Profile</Text>
                         </TouchableOpacity>
 
-                        {/* Settings - sin error */}
                         <TouchableOpacity
                             style={styles.menuItem}
                             onPress={() => {
@@ -135,7 +127,6 @@ export default function AccountScreen() {
                             <Text style={styles.menuText}>Settings</Text>
                         </TouchableOpacity>
 
-                        {/* Help - sin error */}
                         <TouchableOpacity
                             style={styles.menuItem}
                             onPress={() => {
@@ -176,19 +167,16 @@ export default function AccountScreen() {
                 </View>
             </View>
 
-            {/* Últimas noticias - HORIZONTAL */}
+            {/* Últimas noticias */}
             <Text style={styles.sectionTitle}>Últimas noticias</Text>
             <ScrollView
-                horizontal={true}
+                horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.newsContainerHorizontal}
             >
                 {news.map((item) => (
                     <View key={item.id} style={styles.newsCardHorizontal}>
-                        <Image
-                            source={item.image}
-                            style={styles.newsImage}
-                        />
+                        <Image source={item.image} style={styles.newsImage} />
                         <View style={styles.newsText}>
                             <Text style={styles.newsDate}>{item.date}</Text>
                             <Text style={styles.newsEndDate}>{item.endDate}</Text>
@@ -218,7 +206,7 @@ export default function AccountScreen() {
                 ))}
             </ScrollView>
 
-            {/* Guías y Tutoriales */}
+            {/* Guías */}
             <Text style={styles.sectionTitle}>Guías y Tutoriales</Text>
             <View style={styles.guidesContainer}>
                 {guides.map((guide) => (
@@ -239,7 +227,8 @@ export default function AccountScreen() {
 
             {/* Barra de navegación inferior */}
             <View style={styles.bottomNav}>
-                <TouchableOpacity style={styles.navItem} onPress={() => router.push('/')}>
+                {/* 🔹 Cambio: ahora te lleva a /account */}
+                <TouchableOpacity style={styles.navItem} onPress={() => router.push('/account')}>
                     <Image source={require('../assets/images/home-icon.png')} style={styles.navIcon} />
                     <Text style={styles.navLabel}>Inicio</Text>
                 </TouchableOpacity>
@@ -260,16 +249,10 @@ export default function AccountScreen() {
     );
 }
 
+// 🎨 Estilos (sin cambios)
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-    loading: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
+    container: { flex: 1, backgroundColor: '#fff' },
+    loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -280,16 +263,8 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#CCC',
     },
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    headerRight: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-    },
+    headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#333' },
+    headerRight: { flexDirection: 'row', alignItems: 'center', gap: 12 },
     avatar: {
         width: 32,
         height: 32,
@@ -311,10 +286,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
-    menuContainer: {
-        padding: 8,
-        minWidth: 160,
-    },
+    menuContainer: { padding: 8, minWidth: 160 },
     menuItem: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -322,11 +294,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         borderRadius: 4,
     },
-    menuText: {
-        marginLeft: 8,
-        fontSize: 14,
-        color: '#333',
-    },
+    menuText: { marginLeft: 8, fontSize: 14, color: '#333' },
     banner: {
         position: 'relative',
         marginHorizontal: 16,
@@ -335,11 +303,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         height: 150,
     },
-    bannerImage: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'cover',
-    },
+    bannerImage: { width: '100%', height: '100%', resizeMode: 'cover' },
     bannerContent: {
         position: 'absolute',
         bottom: 0,
@@ -348,16 +312,8 @@ const styles = StyleSheet.create({
         padding: 12,
         backgroundColor: 'rgba(0,0,0,0.5)',
     },
-    bannerTitle: {
-        color: '#FFF',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    bannerSubtitle: {
-        color: '#FFF',
-        fontSize: 12,
-        marginBottom: 8,
-    },
+    bannerTitle: { color: '#FFF', fontSize: 16, fontWeight: 'bold' },
+    bannerSubtitle: { color: '#FFF', fontSize: 12, marginBottom: 8 },
     bannerButton: {
         backgroundColor: '#4CAF50',
         paddingHorizontal: 12,
@@ -365,10 +321,7 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         alignSelf: 'flex-start',
     },
-    bannerButtonText: {
-        color: '#FFF',
-        fontSize: 12,
-    },
+    bannerButtonText: { color: '#FFF', fontSize: 12 },
     sectionTitle: {
         fontSize: 18,
         fontWeight: 'bold',
@@ -377,10 +330,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         paddingHorizontal: 16,
     },
-    newsContainerHorizontal: {
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-    },
+    newsContainerHorizontal: { paddingHorizontal: 16, paddingVertical: 8 },
     newsCardHorizontal: {
         flexDirection: 'row',
         backgroundColor: '#FFF',
@@ -392,49 +342,15 @@ const styles = StyleSheet.create({
         marginRight: 16,
         flexShrink: 0,
     },
-    newsImage: {
-        width: 100,
-        height: 100,
-        resizeMode: 'cover',
-        borderTopLeftRadius: 8,
-        borderBottomLeftRadius: 8,
-    },
-    newsText: {
-        flex: 1,
-        padding: 12,
-    },
-    newsDate: {
-        fontSize: 10,
-        color: '#666',
-    },
-    newsEndDate: {
-        fontSize: 10,
-        color: '#666',
-        marginBottom: 4,
-    },
-    newsTitle: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginBottom: 4,
-    },
-    newsTopics: {
-        fontSize: 12,
-        color: '#666',
-        marginBottom: 8,
-    },
-    newsStatusContainer: {
-        flexDirection: 'row',
-        gap: 8,
-    },
-    statusButton: {
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 4,
-    },
-    statusText: {
-        color: '#FFF',
-        fontSize: 12,
-    },
+    newsImage: { width: 100, height: 100, resizeMode: 'cover', borderTopLeftRadius: 8, borderBottomLeftRadius: 8 },
+    newsText: { flex: 1, padding: 12 },
+    newsDate: { fontSize: 10, color: '#666' },
+    newsEndDate: { fontSize: 10, color: '#666', marginBottom: 4 },
+    newsTitle: { fontSize: 14, fontWeight: 'bold', marginBottom: 4 },
+    newsTopics: { fontSize: 12, color: '#666', marginBottom: 8 },
+    newsStatusContainer: { flexDirection: 'row', gap: 8 },
+    statusButton: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 },
+    statusText: { color: '#FFF', fontSize: 12 },
     detailsButton: {
         borderWidth: 1,
         borderColor: '#666',
@@ -442,39 +358,12 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         borderRadius: 4,
     },
-    detailsText: {
-        color: '#666',
-        fontSize: 12,
-    },
-    guidesContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        paddingHorizontal: 16,
-        gap: 12,
-        marginBottom: 16,
-    },
-    guideCard: {
-        width: (width - 48) / 2,
-        height: 120,
-        borderRadius: 8,
-        overflow: 'hidden',
-    },
-    guideImage: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'cover',
-    },
-    quickLinksContainer: {
-        marginHorizontal: 16,
-        marginTop: 16,
-        borderRadius: 12,
-        overflow: 'hidden',
-    },
-    quickLinksImage: {
-        width: '100%',
-        height: 200,
-        resizeMode: 'cover',
-    },
+    detailsText: { color: '#666', fontSize: 12 },
+    guidesContainer: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 16, gap: 12, marginBottom: 16 },
+    guideCard: { width: (width - 48) / 2, height: 120, borderRadius: 8, overflow: 'hidden' },
+    guideImage: { width: '100%', height: '100%', resizeMode: 'cover' },
+    quickLinksContainer: { marginHorizontal: 16, marginTop: 16, borderRadius: 12, overflow: 'hidden' },
+    quickLinksImage: { width: '100%', height: 200, resizeMode: 'cover' },
     bottomNav: {
         flexDirection: 'row',
         justifyContent: 'space-around',
@@ -483,19 +372,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         paddingVertical: 8,
     },
-    navItem: {
-        alignItems: 'center',
-        paddingVertical: 8,
-    },
-    navIcon: {
-        width: 24,
-        height: 24,
-        marginBottom: 4,
-        resizeMode: 'contain',
-    },
-    navLabel: {
-        fontSize: 10,
-        marginTop: 4,
-        textAlign: 'center',
-    },
+    navItem: { alignItems: 'center', paddingVertical: 8 },
+    navIcon: { width: 24, height: 24, marginBottom: 4, resizeMode: 'contain' },
+    navLabel: { fontSize: 10, marginTop: 4, textAlign: 'center' },
 });
