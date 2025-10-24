@@ -26,16 +26,11 @@ export default function AccountScreen() {
     const isDark = theme === 'dark';
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     useFocusEffect(
         useCallback(() => {
-            if (reloadUser) {
-                reloadUser();
-            }
+            if (reloadUser) reloadUser();
         }, [reloadUser])
     );
 
@@ -85,7 +80,7 @@ export default function AccountScreen() {
     ]);
 
     const [guides] = useState([
-        { id: 1, image: require('../assets/images/guia1.png') },
+        { id: 1, image: require('../assets/images/tutorial1.jpg') },
         { id: 2, image: require('../assets/images/guia2.png') },
         { id: 3, image: require('../assets/images/guia3.png') },
         { id: 4, image: require('../assets/images/guia4.jpg') },
@@ -361,6 +356,7 @@ export default function AccountScreen() {
     );
 }
 
+// 🎨 Estilos (sin cambios)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -419,10 +415,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
-    menuContainer: {
-        padding: 8,
-        minWidth: 160,
-    },
+    menuContainer: { padding: 8, minWidth: 160 },
     menuItem: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -442,11 +435,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         height: 150,
     },
-    bannerImage: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'cover',
-    },
+    bannerImage: { width: '100%', height: '100%', resizeMode: 'cover' },
     bannerContent: {
         position: 'absolute',
         bottom: 0,
@@ -470,10 +459,7 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         alignSelf: 'flex-start',
     },
-    bannerButtonText: {
-        color: '#FFF',
-        fontSize: 12,
-    },
+    bannerButtonText: { color: '#FFF', fontSize: 12 },
     sectionTitle: {
         fontSize: 18,
         fontWeight: 'bold',
@@ -482,10 +468,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         paddingHorizontal: 16,
     },
-    newsContainerHorizontal: {
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-    },
+    newsContainerHorizontal: { paddingHorizontal: 16, paddingVertical: 8 },
     newsCardHorizontal: {
         flexDirection: 'row',
         borderRadius: 12,
@@ -583,19 +566,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         paddingVertical: 8,
     },
-    navItem: {
-        alignItems: 'center',
-        paddingVertical: 8,
-    },
-    navIcon: {
-        width: 24,
-        height: 24,
-        marginBottom: 4,
-        resizeMode: 'contain',
-    },
-    navLabel: {
-        fontSize: 10,
-        marginTop: 4,
-        textAlign: 'center',
-    },
+    navItem: { alignItems: 'center', paddingVertical: 8 },
+    navIcon: { width: 24, height: 24, marginBottom: 4, resizeMode: 'contain' },
+    navLabel: { fontSize: 10, marginTop: 4, textAlign: 'center' },
 });
