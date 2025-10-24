@@ -22,18 +22,21 @@ const { width } = Dimensions.get('window');
 export default function AreasScreen() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const pathname = usePathname(); // ✅ Ruta actual
+  const pathname = usePathname();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark'; // ✅ Corregido
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  // 🔹 Si no hay usuario, redirige al login
+  // 🔹 Redirigir si no hay usuario
   useEffect(() => {
     if (!loading && !user) router.replace('/login');
   }, [user, loading]);
 
+  // 🔹 Ubicación
   useEffect(() => {
     (async () => {
       try {
@@ -130,18 +133,8 @@ export default function AreasScreen() {
               activeOpacity={1}
               onPress={() => setIsMenuOpen(false)}
             />
-            <View
-              style={[
-                styles.menuOverlay,
-                { backgroundColor: isDark ? '#111' : '#FFF' },
-              ]}
-            >
-              <View
-                style={[
-                  styles.menuContainer,
-                  { backgroundColor: isDark ? '#222' : '#FFF' },
-                ]}
-              >
+            <View style={[styles.menuOverlay, { backgroundColor: isDark ? '#111' : '#FFF' }]}>
+              <View style={[styles.menuContainer, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
                 <TouchableOpacity
                   style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                   onPress={() => {
@@ -234,65 +227,38 @@ export default function AreasScreen() {
           ))}
         </ScrollView>
 
-        {/* 🔹 Barra inferior con resaltado */}
-        <View style={styles.bottomNav}>
-          {/* Inicio */}
+        {/* Barra inferior */}
+        <View style={[styles.bottomNav, { borderTopColor: isDark ? '#333' : '#EEE', backgroundColor: isDark ? '#111' : '#FFF' }]}>
           <TouchableOpacity
-            style={[styles.navItem, pathname === '/inicio' && styles.navItemActive]}
-            onPress={() => router.push('/account')}>
-            <Image
-              source={require('../assets/images/home-icon.png')}
-              style={[styles.navIcon, pathname === '/inicio' && styles.navIconActive]}
-            />
-            <Text
-              style={[styles.navLabel, pathname === '/inicio' && styles.navLabelActive]}>
-              Inicio
-            </Text>
+            style={[styles.navItem, pathname === '/account' && styles.navItemActive]}
+            onPress={() => router.push('/account')}
+          >
+            <Image source={require('../assets/images/home-icon.png')} style={[styles.navIcon, pathname === '/account' && styles.navIconActive]} />
+            <Text style={[styles.navLabel, pathname === '/account' && styles.navLabelActive]}>Inicio</Text>
           </TouchableOpacity>
 
-          {/* Áreas */}
           <TouchableOpacity
             style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
-            onPress={() => router.push('/areas')}>
-            <Image
-              source={require('../assets/images/areas-icon.png')}
-              style={[styles.navIcon, pathname === '/areas' && styles.navIconActive]}
-            />
-            <Text
-              style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive]}>
-              Áreas
-            </Text>
+            onPress={() => router.push('/areas')}
+          >
+            <Image source={require('../assets/images/areas-icon.png')} style={[styles.navIcon, pathname === '/areas' && styles.navIconActive]} />
+            <Text style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive]}>Áreas</Text>
           </TouchableOpacity>
 
-          {/* Convocatory */}
           <TouchableOpacity
             style={[styles.navItem, pathname === '/convocatoria' && styles.navItemActive]}
-            onPress={() => router.push('/convocatoria')}>
-            <Image
-              source={require('../assets/images/convocatory-icon.png')}
-              style={[styles.navIcon, pathname === '/convocatoria' && styles.navIconActive]}
-            />
-            <Text
-              style={[
-                styles.navLabel,
-                pathname === '/convocatoria' && styles.navLabelActive,
-              ]}>
-              Convocatory
-            </Text>
+            onPress={() => router.push('/convocatoria')}
+          >
+            <Image source={require('../assets/images/convocatory-icon.png')} style={[styles.navIcon, pathname === '/convocatoria' && styles.navIconActive]} />
+            <Text style={[styles.navLabel, pathname === '/convocatoria' && styles.navLabelActive]}>Convocatory</Text>
           </TouchableOpacity>
 
-          {/* Nosotros */}
           <TouchableOpacity
             style={[styles.navItem, pathname === '/nosotros' && styles.navItemActive]}
-            onPress={() => router.push('/nosotros')}>
-            <Image
-              source={require('../assets/images/nosotros-icon.png')}
-              style={[styles.navIcon, pathname === '/nosotros' && styles.navIconActive]}
-            />
-            <Text
-              style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive]}>
-              Nosotros
-            </Text>
+            onPress={() => router.push('/nosotros')}
+          >
+            <Image source={require('../assets/images/nosotros-icon.png')} style={[styles.navIcon, pathname === '/nosotros' && styles.navIconActive]} />
+            <Text style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive]}>Nosotros</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -304,103 +270,32 @@ export default function AreasScreen() {
 const styles = StyleSheet.create({
   safeArea: { flex: 1 },
   container: { flex: 1 },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'transparent',
-    zIndex: 999,
-  },
+  overlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'transparent', zIndex: 999 },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-  },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, borderBottomWidth: 1 },
   headerTitle: { fontSize: 18, fontWeight: 'bold' },
   headerRight: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
+  avatar: { width: 32, height: 32, borderRadius: 16, borderWidth: 1, borderColor: '#ddd' },
   scrollContent: { paddingHorizontal: 16, paddingVertical: 20, paddingBottom: 100 },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  areaCard: {
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 20, marginTop: 10, textAlign: 'center' },
+  areaCard: { borderRadius: 12, padding: 16, marginBottom: 16, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 },
   areaHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  locationBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
+  locationBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#4CAF50', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 },
   locationText: { color: '#fff', fontSize: 12, marginLeft: 4 },
-  areaDirection: { fontSize: 12, color: '#666', marginBottom: 4 },
-  areaTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 4, color: '#333' },
-  areaDescription: { fontSize: 14, color: '#666' },
+  areaDirection: { fontSize: 12, marginBottom: 4 },
+  areaTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
+  areaDescription: { fontSize: 14 },
 
-  // 🔹 Barra inferior
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    paddingVertical: 8,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
+  bottomNav: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', borderTopWidth: 1, paddingVertical: 8, position: 'absolute', bottom: 0, left: 0, right: 0 },
   navItem: { alignItems: 'center', paddingVertical: 8 },
   navIcon: { width: 24, height: 24, marginBottom: 4, resizeMode: 'contain' },
   navLabel: { fontSize: 10, textAlign: 'center', color: '#333' },
-
-  // ✅ Activos (resaltados)
   navItemActive: { borderTopWidth: 2, borderTopColor: '#4CAF50' },
   navIconActive: { tintColor: '#4CAF50' },
   navLabelActive: { color: '#4CAF50', fontWeight: 'bold' },
 
-  menuOverlay: {
-    position: 'absolute',
-    top: 60,
-    right: 16,
-    zIndex: 1000,
-    borderRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
+  menuOverlay: { position: 'absolute', top: 60, right: 16, zIndex: 1000, borderRadius: 8, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 5 },
   menuContainer: { padding: 8, minWidth: 160 },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 4,
-  },
+  menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 4 },
   menuText: { marginLeft: 8, fontSize: 14 },
 });
