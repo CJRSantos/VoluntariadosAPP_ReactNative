@@ -14,7 +14,6 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../app/providers/ThemeProvider'; // 👈 Importado
 
 const { width } = Dimensions.get('window');
 
@@ -161,7 +160,10 @@ export default function ConvocatoriaScreen() {
                     Final: {convocatoria.endDate}
                   </Text>
                   <View style={styles.buttonGroup}>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => router.push('/requisitos')}
+                    >
                       <Text style={styles.buttonText}>Requisitos</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button}>
