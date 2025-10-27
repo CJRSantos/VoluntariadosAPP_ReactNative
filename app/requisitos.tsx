@@ -4,13 +4,13 @@ import { Stack, useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import { useState } from 'react';
 import {
-    Alert,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function RequisitosScreen() {
@@ -150,7 +150,10 @@ function RequisitosContent() {
         <TouchableOpacity style={styles.pdfButton} onPress={handleGeneratePDF}>
           <Text style={styles.buttonText}>Guardar PDF</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.postularButton}>
+        <TouchableOpacity
+          style={styles.postularButton}
+          onPress={() => router.push('/postulacion-paso1')}
+        >
           <Text style={styles.buttonText}>Postular</Text>
         </TouchableOpacity>
       </View>
