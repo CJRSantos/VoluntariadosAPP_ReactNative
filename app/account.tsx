@@ -138,7 +138,7 @@ export default function AccountScreen() {
                             Aquí comienza tu espacio exclusivo de usuario
                         </Text>
                         <Text style={[styles.bannerSubtitle, { color: '#FFF' }]}>
-                            Bienvenido/a usuario/a parte de este nuevo...
+                            Bienvenido usuario se parte de este nuevo...
                         </Text>
                         <TouchableOpacity style={styles.bannerButton}>
                             <Text style={styles.bannerButtonText}>Conocer más</Text>
