@@ -16,7 +16,7 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../app/providers/ThemeProvider';
+import { useTheme } from '../app/providers/ThemeProvider'; 
 
 export default function ProfileScreen() {
     const router = useRouter();
