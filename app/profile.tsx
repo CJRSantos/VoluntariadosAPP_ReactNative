@@ -16,11 +16,11 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../app/providers/ThemeProvider'; // 👈 Importado
+import { useTheme } from '../app/providers/ThemeProvider'; 
 
 export default function ProfileScreen() {
     const router = useRouter();
-    const { theme } = useTheme(); // 👈 Usado
+    const { theme } = useTheme(); 
     const isDark = theme === 'dark';
 
     const [bannerImage, setBannerImage] = useState<string | null>(null);
