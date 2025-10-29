@@ -1,4 +1,3 @@
-// app/mas-info.tsx
 import { useRouter } from 'expo-router';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -7,19 +6,19 @@ export default function MasInfoScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Encabezado */}
-      <View style={styles.header}>
+      <ScrollView contentContainerStyle={styles.content}>
+        {/* Flecha para regresar */}
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Información adicional</Text>
-      </View>
 
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Imagen con overlay */}
+        {/* Título */}
+        <Text style={styles.title}>Información adicional</Text>
+
+        {/* Imagen */}
         <View style={styles.imageContainer}>
           <Image
-            source={require('../assets/images/Tutorial2.png')} 
+            source={require('../assets/images/Tutorial2.png')}
             style={styles.image}
             resizeMode="cover"
           />
@@ -35,7 +34,7 @@ export default function MasInfoScreen() {
           Para postular a una vacante de voluntario en BOSQUES, puedes elegir entre dos modalidades de presentación: presencial o virtual.
         </Text>
 
-        {/* Opción Presencial */}
+        {/* Presencial */}
         <TouchableOpacity style={styles.optionCard}>
           <View style={styles.iconContainer}>
             <Text style={styles.icon}>🏢</Text>
@@ -49,7 +48,7 @@ export default function MasInfoScreen() {
           <Text style={styles.arrow}>→</Text>
         </TouchableOpacity>
 
-        {/* Opción Virtual */}
+        {/* Virtual */}
         <TouchableOpacity style={styles.optionCard}>
           <View style={styles.iconContainer}>
             <Text style={styles.icon}>🌐</Text>
@@ -78,20 +77,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
-    paddingTop: 90,
-    paddingBottom: 8,
-    paddingHorizontal: 20,
-    position: 'relative',
-  },
   backButton: {
     position: 'absolute',
     top: 50,
     left: 20,
     zIndex: 10,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 6,
+    elevation: 3,
   },
   backArrow: {
-    fontSize: 24,
+    fontSize: 22,
     color: '#000',
     fontWeight: 'bold',
   },
@@ -99,17 +96,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#000',
-    marginTop: 20,
+    marginTop: 100,
+    marginLeft: 20,
   },
   content: {
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 40,
     paddingBottom: 100,
   },
   imageContainer: {
     position: 'relative',
     width: '100%',
     height: 200,
+    marginTop: 20,
     marginBottom: 20,
     borderRadius: 12,
     overflow: 'hidden',
