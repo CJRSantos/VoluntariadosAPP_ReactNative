@@ -17,13 +17,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
-;
 
 export default function ProfileScreen() {
     const router = useRouter();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
-
     const [bannerImage, setBannerImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [showPersonalInfoForm, setShowPersonalInfoForm] = useState(false);
@@ -40,11 +38,9 @@ export default function ProfileScreen() {
     const [showPublicationModal, setShowPublicationModal] = useState(false);
     const [showLanguageModal, setShowLanguageModal] = useState(false);
     const [academicStatus, setAcademicStatus] = useState<string>('Actualmente');
-
     // Modales para imágenes
     const [isBannerModalVisible, setIsBannerModalVisible] = useState(false);
     const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
-
     // Menús de cámara
     const [bannerMenuVisible, setBannerMenuVisible] = useState(false);
     const [profileMenuVisible, setProfileMenuVisible] = useState(false);
@@ -147,12 +143,12 @@ export default function ProfileScreen() {
     };
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+        <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#0f0f0f' : '#fff' }]}>
             {/* Header */}
             <View
                 style={[
                     styles.header,
-                    { backgroundColor: isDark ? '#111' : '#fff', borderBottomColor: isDark ? '#333' : '#ddd' },
+                    { backgroundColor: isDark ? '#0f0f0f' : '#fff', borderBottomColor: isDark ? '#0f0f0f' : '#ddd' },
                 ]}
             >
                 <TouchableOpacity onPress={() => router.back()}>
@@ -175,7 +171,6 @@ export default function ProfileScreen() {
                         </View>
                     )}
                 </TouchableOpacity>
-
                 <View style={styles.profilePhotoContainer}>
                     <TouchableOpacity onPress={showProfileMenu}>
                         {profileImage ? (
@@ -207,25 +202,45 @@ export default function ProfileScreen() {
                     style={[styles.tab, activeTab === 'info' && styles.activeTab]}
                     onPress={() => setActiveTab('info')}
                 >
-                    <Text style={[styles.tabText, activeTab === 'info' && styles.activeTabText]}>Info</Text>
+                    <Text style={[
+                        styles.tabText,
+                        { color: isDark ? (activeTab === 'info' ? '#10b981' : '#AAAAAA') : (activeTab === 'info' ? '#10b981' : '#666666') }
+                    ]}>
+                        Info
+                    </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.tab, activeTab === 'formacion' && styles.activeTab]}
                     onPress={() => setActiveTab('formacion')}
                 >
-                    <Text style={[styles.tabText, activeTab === 'formacion' && styles.activeTabText]}>Formación</Text>
+                    <Text style={[
+                        styles.tabText,
+                        { color: isDark ? (activeTab === 'formacion' ? '#10b981' : '#AAAAAA') : (activeTab === 'formacion' ? '#10b981' : '#666666') }
+                    ]}>
+                        Formación
+                    </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.tab, activeTab === 'experiencia' && styles.activeTab]}
                     onPress={() => setActiveTab('experiencia')}
                 >
-                    <Text style={[styles.tabText, activeTab === 'experiencia' && styles.activeTabText]}>Experiencia</Text>
+                    <Text style={[
+                        styles.tabText,
+                        { color: isDark ? (activeTab === 'experiencia' ? '#10b981' : '#AAAAAA') : (activeTab === 'experiencia' ? '#10b981' : '#666666') }
+                    ]}>
+                        Experiencia
+                    </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.tab, activeTab === 'adicional' && styles.activeTab]}
                     onPress={() => setActiveTab('adicional')}
                 >
-                    <Text style={[styles.tabText, activeTab === 'adicional' && styles.activeTabText]}>Adicional</Text>
+                    <Text style={[
+                        styles.tabText,
+                        { color: isDark ? (activeTab === 'adicional' ? '#10b981' : '#AAAAAA') : (activeTab === 'adicional' ? '#10b981' : '#666666') }
+                    ]}>
+                        Adicional
+                    </Text>
                 </TouchableOpacity>
             </View>
 
@@ -234,14 +249,14 @@ export default function ProfileScreen() {
                 {activeTab === 'info' && (
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
-                            <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                            <Text style={[styles.sectionTitle, { color: isDark ? '#FFFFFF' : '#333333' }]}>
                                 Información Personal
                             </Text>
                             <TouchableOpacity style={styles.addIconContainer} onPress={handleAddInfo}>
                                 <Ionicons name="add" size={24} color="#10b981" />
                             </TouchableOpacity>
                         </View>
-                        <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                        <Text style={[styles.noDataText, { color: isDark ? '#AAAAAA' : '#666666' }]}>
                             No se visualiza ninguna información
                         </Text>
                     </View>
@@ -250,7 +265,7 @@ export default function ProfileScreen() {
                     <>
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFFFFF' : '#333333' }]}>
                                     Información académica
                                 </Text>
                                 <TouchableOpacity
@@ -260,13 +275,13 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAAAAA' : '#666666' }]}>
                                 No se visualiza ninguna información
                             </Text>
                         </View>
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFFFFF' : '#333333' }]}>
                                     Formación técnica / especializada
                                 </Text>
                                 <TouchableOpacity
@@ -276,13 +291,13 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAAAAA' : '#666666' }]}>
                                 No se visualiza ninguna información
                             </Text>
                         </View>
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFFFFF' : '#333333' }]}>
                                     Formación Complementaria
                                 </Text>
                                 <TouchableOpacity
@@ -292,7 +307,7 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAAAAA' : '#666666' }]}>
                                 No se visualiza ninguna información
                             </Text>
                         </View>
@@ -301,7 +316,7 @@ export default function ProfileScreen() {
                 {activeTab === 'experiencia' && (
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
-                            <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                            <Text style={[styles.sectionTitle, { color: isDark ? '#FFFFFF' : '#333333' }]}>
                                 Experiencia Laboral
                             </Text>
                             <TouchableOpacity
@@ -311,7 +326,7 @@ export default function ProfileScreen() {
                                 <Ionicons name="add" size={24} color="#10b981" />
                             </TouchableOpacity>
                         </View>
-                        <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                        <Text style={[styles.noDataText, { color: isDark ? '#AAAAAA' : '#666666' }]}>
                             No se visualiza ninguna información
                         </Text>
                     </View>
@@ -320,7 +335,7 @@ export default function ProfileScreen() {
                     <>
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFFFFF' : '#333333' }]}>
                                     Voluntariados
                                 </Text>
                                 <TouchableOpacity
@@ -330,13 +345,13 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAAAAA' : '#666666' }]}>
                                 No se visualiza ninguna información
                             </Text>
                         </View>
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFFFFF' : '#333333' }]}>
                                     Publicaciones
                                 </Text>
                                 <TouchableOpacity
@@ -346,13 +361,13 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAAAAA' : '#666666' }]}>
                                 No se visualiza ninguna información
                             </Text>
                         </View>
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
-                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFFFFF' : '#333333' }]}>
                                     Idiomas
                                 </Text>
                                 <TouchableOpacity
@@ -362,7 +377,7 @@ export default function ProfileScreen() {
                                     <Ionicons name="add" size={24} color="#10b981" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>
+                            <Text style={[styles.noDataText, { color: isDark ? '#AAAAAA' : '#666666' }]}>
                                 No se visualiza ninguna información
                             </Text>
                         </View>
@@ -510,7 +525,7 @@ export default function ProfileScreen() {
                 </View>
             )}
 
-            {/* === Aquí van los demás modales (sin cambios) === */}
+            {/* === Resto de modales (sin cambios visuales) === */}
             {showTechnicalModal && (
                 <View style={styles.modalOverlay}>
                     <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#e8d7d7' }]}>
@@ -948,8 +963,8 @@ const styles = StyleSheet.create({
     },
     tab: { paddingHorizontal: 12, paddingVertical: 8 },
     activeTab: { borderBottomWidth: 2, borderBottomColor: '#10b981' },
-    tabText: { fontSize: 14 },
-    activeTabText: { color: '#10b981', fontWeight: '600' },
+    tabText: { fontSize: 14, fontWeight: '500' },
+    // Elimina activeTabText si no lo usas, o déjalo vacío
     content: { flex: 1, paddingHorizontal: 16, paddingTop: 20 },
     section: { marginBottom: 20 },
     sectionHeader: {
@@ -958,7 +973,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 12,
     },
-    sectionTitle: { fontSize: 18, fontWeight: 'bold' },
+    // 🔥 ¡Clave! sectionTitle ya NO tiene color fijo
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: 'white', // 👈 aquí agregas el color blanco
+    },
     addIconContainer: {
         backgroundColor: '#d4f5e0',
         width: 40,
@@ -967,9 +987,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    noDataText: { fontSize: 16, textAlign: 'center', marginTop: 20 },
 
-    // Modal de imagen grande
+    noDataText: { fontSize: 16, textAlign: 'center', marginTop: 20 },
     modalOverlay: {
         position: 'absolute',
         top: 0,
@@ -996,8 +1015,6 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         borderRadius: 12,
     },
-
-    // Menú moderno (reutilizable)
     bannerMenuOverlay: {
         position: 'absolute',
         top: 0,
@@ -1053,8 +1070,6 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: '600',
     },
-
-    // Estilos de formularios (sin cambios)
     modalContent: {
         width: '90%',
         maxWidth: 400,
