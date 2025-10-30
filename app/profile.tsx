@@ -17,7 +17,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
-;
 
 export default function ProfileScreen() {
     const router = useRouter();
@@ -152,7 +151,7 @@ export default function ProfileScreen() {
             <View
                 style={[
                     styles.header,
-                    { backgroundColor: isDark ? '#111' : '#fff', borderBottomColor: isDark ? '#333' : '#ddd' },
+                    { backgroundColor: isDark ? '#0f0f0f' : '#fff', borderBottomColor: isDark ? '#0f0f0f' : '#ddd' },
                 ]}
             >
                 <TouchableOpacity onPress={() => router.back()}>
