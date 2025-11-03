@@ -25,11 +25,9 @@ export default function ProfileScreen() {
     const router = useRouter();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
-
     // Imágenes
     const [bannerImage, setBannerImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
-
     // Estados para los modales
     const [showPersonalInfoForm, setShowPersonalInfoForm] = useState(false);
     const [showAcademicModal, setShowAcademicModal] = useState(false);
@@ -40,7 +38,8 @@ export default function ProfileScreen() {
     const [showPublicationModal, setShowPublicationModal] = useState(false);
     const [showLanguageModal, setShowLanguageModal] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
-    const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+    // Estado para el picker de idiomas
+    const [showLanguagePicker, setShowLanguagePicker] = useState(false); // 👈 Nuevo estado    const [showLanguagePicker, setShowLanguagePicker] = useState(false);
 
     // Estados para los formularios
     const [documentType, setDocumentType] = useState('');
@@ -48,18 +47,14 @@ export default function ProfileScreen() {
     const [languageProficiency, setLanguageProficiency] = useState('');
     const [currentlyInRole, setCurrentlyInRole] = useState(false);
     const [academicStatus, setAcademicStatus] = useState<string>('Actualmente');
-
     // Pestañas
     const [activeTab, setActiveTab] = useState<'info' | 'formacion' | 'experiencia' | 'adicional'>('info');
-
     // Modales de imagen
     const [isBannerModalVisible, setIsBannerModalVisible] = useState(false);
     const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
-
     // Menús
     const [bannerMenuVisible, setBannerMenuVisible] = useState(false);
     const [profileMenuVisible, setProfileMenuVisible] = useState(false);
-
     // === Estados para los datos (CRUD) ===
     const [personalInfo, setPersonalInfo] = useState<any>(null);
     const [academicRecords, setAcademicRecords] = useState<any[]>([]);
@@ -69,7 +64,6 @@ export default function ProfileScreen() {
     const [volunteerRecords, setVolunteerRecords] = useState<any[]>([]);
     const [publicationRecords, setPublicationRecords] = useState<any[]>([]);
     const [languageRecords, setLanguageRecords] = useState<any[]>([]);
-
     // === Estados de edición ===
     const [editingPersonal, setEditingPersonal] = useState<any>(null);
     const [editingAcademic, setEditingAcademic] = useState<any>(null);
@@ -79,7 +73,6 @@ export default function ProfileScreen() {
     const [editingVolunteer, setEditingVolunteer] = useState<any>(null);
     const [editingPublication, setEditingPublication] = useState<any>(null);
     const [editingLanguage, setEditingLanguage] = useState<any>(null);
-
     // === Estados de los inputs ===
     const [nameInput, setNameInput] = useState('');
     const [birthDateInput, setBirthDateInput] = useState('');
@@ -509,7 +502,6 @@ export default function ProfileScreen() {
                     <Ionicons name="settings" size={24} color={isDark ? '#FFF' : '#333'} />
                 </TouchableOpacity>
             </View>
-
             {/* Banner con foto */}
             <View style={styles.bannerContainer}>
                 <TouchableOpacity onPress={showBannerMenu}>
@@ -536,13 +528,11 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </View>
             </View>
-
             {/* Información del usuario */}
             <View style={styles.userInfo}>
                 <Text style={[styles.userName, { color: isDark ? '#FFF' : '#333' }]}>Ethan Carter Murayari</Text>
                 <Text style={[styles.userEmail, { color: isDark ? '#AAA' : '#666' }]}>etcar@gmail.com</Text>
             </View>
-
             {/* Pestañas */}
             <View style={styles.tabs}>
                 <TouchableOpacity
@@ -570,7 +560,6 @@ export default function ProfileScreen() {
                     <Text style={[styles.tabText, activeTab === 'adicional' && styles.activeTabText]}>Adicional</Text>
                 </TouchableOpacity>
             </View>
-
             {/* Contenido con KeyboardAvoidingView */}
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -628,7 +617,6 @@ export default function ProfileScreen() {
                             )}
                         </View>
                     )}
-
                     {activeTab === 'formacion' && (
                         <>
                             <View style={styles.section}>
@@ -724,7 +712,6 @@ export default function ProfileScreen() {
                             </View>
                         </>
                     )}
-
                     {activeTab === 'experiencia' && (
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
@@ -782,7 +769,6 @@ export default function ProfileScreen() {
                             )}
                         </View>
                     )}
-
                     {activeTab === 'adicional' && (
                         <>
                             <View style={styles.section}>
@@ -882,7 +868,6 @@ export default function ProfileScreen() {
                     )}
                 </ScrollView>
             </KeyboardAvoidingView>
-
             {/* Modales de imagen */}
             {isBannerModalVisible && (
                 <TouchableOpacity
@@ -896,7 +881,6 @@ export default function ProfileScreen() {
                     <Image source={{ uri: bannerImage! }} style={styles.modalImage} resizeMode="contain" />
                 </TouchableOpacity>
             )}
-
             {isProfileModalVisible && (
                 <TouchableOpacity
                     style={styles.modalOverlay}
@@ -909,7 +893,6 @@ export default function ProfileScreen() {
                     <Image source={{ uri: profileImage! }} style={styles.modalImage} resizeMode="contain" />
                 </TouchableOpacity>
             )}
-
             {/* Menús */}
             {bannerMenuVisible && (
                 <View style={styles.bannerMenuOverlay}>
@@ -934,7 +917,6 @@ export default function ProfileScreen() {
                     </View>
                 </View>
             )}
-
             {profileMenuVisible && (
                 <View style={styles.bannerMenuOverlay}>
                     <View style={[styles.bannerMenuContent, { backgroundColor: isDark ? '#222' : '#fff' }]}>
@@ -958,7 +940,6 @@ export default function ProfileScreen() {
                     </View>
                 </View>
             )}
-
             {/* Modales de formularios */}
             {showPersonalInfoForm && (
                 <TouchableOpacity
@@ -1014,15 +995,28 @@ export default function ProfileScreen() {
                         />
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Seleccione su tipo de documento:</Text>
                         <View style={styles.row}>
-                            <View style={[styles.pickerWrapper, { backgroundColor: isDark ? '#333' : '#f9f9f9' }]}>
+                            <View style={[styles.pickerWrapper, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}>
                                 <Picker
                                     selectedValue={documentType}
                                     onValueChange={(itemValue) => setDocumentType(itemValue)}
-                                    style={[styles.picker, { color: isDark ? '#FFF' : '#333' }]}
+                                    style={[
+                                        styles.picker,
+                                        {
+                                            color: isDark ? '#FFF' : '#333',
+                                            textAlign: 'center',
+                                            paddingTop: 6,
+                                            paddingBottom: 6,
+                                            height: 48,
+                                        },
+                                    ]}
+                                    itemStyle={{
+                                        textAlign: 'center',
+                                        fontSize: 16,
+                                    }}
                                 >
                                     <Picker.Item label="Seleccionar" value="" />
                                     <Picker.Item label="DNI" value="dni" />
-                                    <Picker.Item label="Carnet de Extranjeria" value="carnet de extranjeria" />
+                                    <Picker.Item label="Carnet de Extranjería" value="carnet de extranjeria" />
                                 </Picker>
                             </View>
                             <TextInput
@@ -1075,7 +1069,6 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </TouchableOpacity>
             )}
-
             {showAcademicModal && (
                 <TouchableOpacity
                     style={styles.modalOverlay}
@@ -1171,7 +1164,6 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </TouchableOpacity>
             )}
-
             {showTechnicalModal && (
                 <TouchableOpacity
                     style={styles.modalOverlay}
@@ -1248,7 +1240,6 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </TouchableOpacity>
             )}
-
             {showComplementaryModal && (
                 <TouchableOpacity
                     style={styles.modalOverlay}
@@ -1316,7 +1307,6 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </TouchableOpacity>
             )}
-
             {showExperienceModal && (
                 <TouchableOpacity
                     style={styles.modalOverlay}
@@ -1411,7 +1401,6 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </TouchableOpacity>
             )}
-
             {showVolunteerModal && (
                 <TouchableOpacity
                     style={styles.modalOverlay}
@@ -1516,7 +1505,6 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </TouchableOpacity>
             )}
-
             {showPublicationModal && (
                 <TouchableOpacity
                     style={styles.modalOverlay}
@@ -1613,7 +1601,6 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </TouchableOpacity>
             )}
-
             {showLanguageModal && (
                 <TouchableOpacity
                     style={styles.modalOverlay}
@@ -1635,19 +1622,25 @@ export default function ProfileScreen() {
                             onChangeText={setLanguageInput}
                         />
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Nivel de dominio</Text>
-                        <View style={[styles.pickerWrapper, { backgroundColor: isDark ? '#333' : '#f9f9f9' }]}>
-                            <Picker
-                                selectedValue={languageProficiency}
-                                onValueChange={(itemValue) => setLanguageProficiency(itemValue)}
-                                style={[styles.picker, { color: isDark ? '#FFF' : '#333' }]}
-                            >
-                                <Picker.Item label="Seleccionar" value="" />
-                                <Picker.Item label="Básico" value="Básico" />
-                                <Picker.Item label="Intermedio" value="Intermedio" />
-                                <Picker.Item label="Avanzado" value="Avanzado" />
-                                <Picker.Item label="Nativo" value="Nativo" />
-                            </Picker>
-                        </View>
+                        {/* Reemplazamos el Picker por un TouchableOpacity que abre el modal personalizado */}
+                        <TouchableOpacity
+                            style={[
+                                styles.input,
+                                {
+                                    backgroundColor: isDark ? '#333' : '#f9f9f9',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                }
+                            ]}
+                            onPress={() => setShowLanguagePicker(true)} // 👈 Abre el modal personalizado
+                        >
+                            <Text style={{ color: languageProficiency ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                {languageProficiency || 'Seleccionar'}
+                            </Text>
+                            <Ionicons name="chevron-down" size={20} color={isDark ? '#AAA' : '#666'} />
+                        </TouchableOpacity>
+
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowLanguageModal(false)}>
                                 <Text style={styles.buttonText}>Cancelar</Text>
@@ -1678,6 +1671,56 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </TouchableOpacity>
             )}
+
+            {/* Modal personalizado para seleccionar Nivel de dominio */}
+            {showLanguagePicker && (
+                <TouchableOpacity
+                    style={styles.modalOverlay}
+                    activeOpacity={1}
+                    onPressOut={() => setShowLanguagePicker(false)}
+                >
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={(e) => e.stopPropagation()}
+                        style={[styles.languagePickerModal, { backgroundColor: isDark ? '#222' : '#fff' }]}
+                    >
+                        <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Nivel de dominio</Text>
+                        {['Básico', 'Intermedio', 'Avanzado', 'Nativo'].map((level) => (
+                            <TouchableOpacity
+                                key={level}
+                                style={[
+                                    styles.languageOption,
+                                    {
+                                        backgroundColor: isDark ? '#333' : '#f9f9f9',
+                                        marginVertical: 4,
+                                        borderWidth: 1,
+                                        borderColor: level === languageProficiency ? '#10b981' : 'transparent',
+                                    }
+                                ]}
+                                onPress={() => {
+                                    setLanguageProficiency(level);
+                                    setShowLanguagePicker(false);
+                                }}
+                            >
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{level}</Text>
+                            </TouchableOpacity>
+                        ))}
+                        <TouchableOpacity
+                            style={[
+                                styles.languageOption,
+                                { backgroundColor: isDark ? '#333' : '#f9f9f9', marginTop: 10, borderColor: 'transparent' }
+                            ]}
+                            onPress={() => {
+                                setLanguageProficiency('');
+                                setShowLanguagePicker(false);
+                            }}
+                        >
+                            <Text style={{ color: isDark ? '#AAA' : '#666', fontStyle: 'italic' }}>Limpiar selección</Text>
+                        </TouchableOpacity>
+                    </TouchableOpacity>
+                </TouchableOpacity>
+            )}
+
         </SafeAreaView>
     );
 }
@@ -1971,6 +2014,24 @@ const styles = StyleSheet.create({
         borderRadius: 17,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+
+    // Estilos para el modal personalizado de idiomas
+    languagePickerModal: {
+        width: '80%',
+        maxWidth: 300,
+        maxHeight: 300,
+        borderRadius: 12,
+        padding: 20,
+        elevation: 5,
+        alignItems: 'center',
+    },
+    languageOption: {
+        width: '100%',
+        padding: 12,
+        borderRadius: 8,
+        alignItems: 'center',
+        borderWidth: 2, // 👈 Añadido para resaltar la opción seleccionada
     },
     // === Estilos nuevos para las tarjetas de formación ===
     academicCard: {
