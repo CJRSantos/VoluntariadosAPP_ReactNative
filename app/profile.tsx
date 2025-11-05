@@ -100,6 +100,10 @@ export default function ProfileScreen() {
     const [pubUrlInput, setPubUrlInput] = useState('');
     const [pubAbstractInput, setPubAbstractInput] = useState('');
     const [languageInput, setLanguageInput] = useState('');
+    // === Estados para los date pickers en Voluntariado y Publicaciones ===
+    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+    const [showPubDatePicker, setShowPubDatePicker] = useState(false);
 
     // === Estados para los date pickers en Formación Académica, Técnica, Complementaria y Experiencia ===
     const [showAcademicStartDatePicker, setShowAcademicStartDatePicker] = useState(false);
@@ -108,11 +112,6 @@ export default function ProfileScreen() {
     const [showComplementaryDatePicker, setShowComplementaryDatePicker] = useState(false);
     const [showExperienceStartDatePicker, setShowExperienceStartDatePicker] = useState(false);
     const [showExperienceEndDatePicker, setShowExperienceEndDatePicker] = useState(false);
-
-    // === Estados para los date pickers en Voluntariado y Publicaciones (ya existentes) ===
-    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-    const [showPubDatePicker, setShowPubDatePicker] = useState(false);
 
     // Cargar datos guardados
     useEffect(() => {
