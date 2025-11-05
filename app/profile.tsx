@@ -43,7 +43,7 @@ export default function ProfileScreen() {
 
     // Estado para el picker de idiomas
     const [showLanguagePicker, setShowLanguagePicker] = useState(false);
-
+    const [showLanguagePicker, setShowLanguagePicker] = useState(false);
     // Estados para los formularios (aquí van las declaraciones únicas)
     const [documentType, setDocumentType] = useState('');
     const [gender, setGender] = useState('');
@@ -774,6 +774,7 @@ export default function ProfileScreen() {
                     )}
                     {activeTab === 'adicional' && (
                         <>
+                            {/* Voluntariados */}
                             <View style={styles.section}>
                                 <View style={styles.sectionHeader}>
                                     <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Voluntariados</Text>
@@ -785,26 +786,34 @@ export default function ProfileScreen() {
                                     <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
                                 ) : (
                                     volunteerRecords.map((record) => (
-                                        <View key={record.id} style={[styles.recordItem, { backgroundColor: isDark ? '#222' : '#f9f9f9' }]}>
-                                            <Text style={{ color: isDark ? '#FFF' : '#333' }}>{record.organization}</Text>
-                                            <Text style={{ color: isDark ? '#AAA' : '#666' }}>{record.role}</Text>
-                                            <View style={styles.recordActions}>
-                                                <TouchableOpacity style={styles.editButton} onPress={() => openVolunteerModal(record)}>
-                                                    <Ionicons name="pencil" size={18} color="#10b981" />
-                                                </TouchableOpacity>
-                                                <TouchableOpacity style={styles.deleteButton} onPress={() => {
-                                                    Alert.alert('Confirmar', '¿Eliminar este registro?', [
-                                                        { text: 'Cancelar', style: 'cancel' },
-                                                        { text: 'Eliminar', style: 'destructive', onPress: () => deleteRecord(volunteerRecords, setVolunteerRecords, record.id, 'volunteerRecords') }
-                                                    ]);
-                                                }}>
-                                                    <Ionicons name="trash" size={18} color="#e74c3c" />
-                                                </TouchableOpacity>
+                                        <View key={record.id} style={[styles.volunteerCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                            <View style={styles.iconContainer}>
+                                                <Ionicons name="people" size={24} color="#10b981" />
                                             </View>
+                                            <View style={styles.cardContent}>
+                                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.organization}</Text>
+                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                                                    {record.role} • {record.cause}
+                                                </Text>
+                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                                                    {record.country} - {record.startDate} - {record.endDate || 'Actualmente'}
+                                                </Text>
+                                                <View style={styles.statusContainer}>
+                                                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>Estado:</Text>
+                                                    <View style={[styles.statusBadge, { backgroundColor: record.currentlyInRole ? '#3b82f6' : '#e74c3c' }]}>
+                                                        <Text style={styles.statusBadgeText}>{record.currentlyInRole ? 'En curso' : 'Finalizado'}</Text>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openVolunteerModal(record)}>
+                                                <Ionicons name="pencil" size={18} color="#10b981" />
+                                            </TouchableOpacity>
                                         </View>
                                     ))
                                 )}
                             </View>
+
+                            {/* Publicaciones */}
                             <View style={styles.section}>
                                 <View style={styles.sectionHeader}>
                                     <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Publicaciones</Text>
@@ -816,26 +825,37 @@ export default function ProfileScreen() {
                                     <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
                                 ) : (
                                     publicationRecords.map((record) => (
-                                        <View key={record.id} style={[styles.recordItem, { backgroundColor: isDark ? '#222' : '#f9f9f9' }]}>
-                                            <Text style={{ color: isDark ? '#FFF' : '#333' }}>{record.title}</Text>
-                                            <Text style={{ color: isDark ? '#AAA' : '#666' }}>{record.editorial}</Text>
-                                            <View style={styles.recordActions}>
-                                                <TouchableOpacity style={styles.editButton} onPress={() => openPublicationModal(record)}>
-                                                    <Ionicons name="pencil" size={18} color="#10b981" />
-                                                </TouchableOpacity>
-                                                <TouchableOpacity style={styles.deleteButton} onPress={() => {
-                                                    Alert.alert('Confirmar', '¿Eliminar este registro?', [
-                                                        { text: 'Cancelar', style: 'cancel' },
-                                                        { text: 'Eliminar', style: 'destructive', onPress: () => deleteRecord(publicationRecords, setPublicationRecords, record.id, 'publicationRecords') }
-                                                    ]);
-                                                }}>
-                                                    <Ionicons name="trash" size={18} color="#e74c3c" />
-                                                </TouchableOpacity>
+                                        <View key={record.id} style={[styles.publicationCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                            <View style={styles.iconContainer}>
+                                                <Ionicons name="book" size={24} color="#10b981" />
                                             </View>
+                                            <View style={styles.cardContent}>
+                                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.title}</Text>
+                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Revista: {record.editorial}</Text>
+                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Autores: {record.author}</Text>
+                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                                                    {record.country} - {record.date}
+                                                </Text>
+                                                {record.url && (
+                                                    <Text style={[styles.cardLink, { color: '#10b981' }]}>
+                                                        {record.url}
+                                                    </Text>
+                                                )}
+                                                {record.abstract && (
+                                                    <Text style={[styles.cardAbstract, { color: isDark ? '#AAA' : '#666' }]}>
+                                                        "{record.abstract}"
+                                                    </Text>
+                                                )}
+                                            </View>
+                                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openPublicationModal(record)}>
+                                                <Ionicons name="pencil" size={18} color="#10b981" />
+                                            </TouchableOpacity>
                                         </View>
                                     ))
                                 )}
                             </View>
+
+                            {/* Idiomas */}
                             <View style={styles.section}>
                                 <View style={styles.sectionHeader}>
                                     <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Idiomas</Text>
@@ -847,22 +867,19 @@ export default function ProfileScreen() {
                                     <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
                                 ) : (
                                     languageRecords.map((record) => (
-                                        <View key={record.id} style={[styles.recordItem, { backgroundColor: isDark ? '#222' : '#f9f9f9' }]}>
-                                            <Text style={{ color: isDark ? '#FFF' : '#333' }}>{record.language}</Text>
-                                            <Text style={{ color: isDark ? '#AAA' : '#666' }}>{record.proficiency}</Text>
-                                            <View style={styles.recordActions}>
-                                                <TouchableOpacity style={styles.editButton} onPress={() => openLanguageModal(record)}>
-                                                    <Ionicons name="pencil" size={18} color="#10b981" />
-                                                </TouchableOpacity>
-                                                <TouchableOpacity style={styles.deleteButton} onPress={() => {
-                                                    Alert.alert('Confirmar', '¿Eliminar este registro?', [
-                                                        { text: 'Cancelar', style: 'cancel' },
-                                                        { text: 'Eliminar', style: 'destructive', onPress: () => deleteRecord(languageRecords, setLanguageRecords, record.id, 'languageRecords') }
-                                                    ]);
-                                                }}>
-                                                    <Ionicons name="trash" size={18} color="#e74c3c" />
-                                                </TouchableOpacity>
+                                        <View key={record.id} style={[styles.languageCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                            <View style={styles.iconContainer}>
+                                                <Ionicons name="globe" size={24} color="#10b981" />
                                             </View>
+                                            <View style={styles.cardContent}>
+                                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.language}</Text>
+                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                                                    {record.proficiency}
+                                                </Text>
+                                            </View>
+                                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openLanguageModal(record)}>
+                                                <Ionicons name="pencil" size={18} color="#10b981" />
+                                            </TouchableOpacity>
                                         </View>
                                     ))
                                 )}
@@ -1732,7 +1749,6 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </TouchableOpacity>
             )}
-
             {/* DatePicker reutilizable */}
             {datePickerVisible && (
                 <DateTimePicker
@@ -2075,6 +2091,158 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: 'center',
         borderWidth: 2, // 👈 Añadido para resaltar la opción seleccionada
+    },
+    // === Estilos nuevos para las tarjetas de formación ===
+    academicCard: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+    },
+    technicalCard: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+    },
+    complementaryCard: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+    },
+    iconContainer: {
+        marginRight: 12,
+        marginTop: 2,
+    },
+    cardContent: {
+        flex: 1,
+    },
+    cardTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 4,
+    },
+    cardSubtitle: {
+        fontSize: 14,
+        marginBottom: 2,
+    },
+    statusContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 8,
+    },
+    statusText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginRight: 8,
+    },
+    statusBadge: {
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 12,
+    },
+    statusBadgeText: {
+        color: '#fff',
+        fontSize: 12,
+        fontWeight: 'bold',
+    },
+    editButtonCircle: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#d4f5e0',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    // === Estilo nuevo para la tarjeta de experiencia laboral ===
+    experienceCard: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+    },
+    experienceDetails: {
+        flex: 1,
+        marginLeft: 12,
+    },
+    detailRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 4,
+    },
+    detailLabel: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginLeft: 4,
+        marginRight: 8,
+    },
+    detailValue: {
+        fontSize: 14,
+        marginBottom: 8,
+        marginLeft: 24,
+    },
+    dateRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 8,
+    },
+    dateContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    dateLabel: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        marginLeft: 4,
+        marginRight: 4,
+    },
+    dateValue: {
+        fontSize: 12,
+    },
+
+    // === Estilos nuevos para la sección "Adicional" (Voluntariados, Publicaciones, Idiomas) ===
+    volunteerCard: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+    },
+    publicationCard: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+    },
+    languageCard: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+    },
+    cardLink: {
+        fontSize: 14,
+        textDecorationLine: 'underline',
+        marginBottom: 4,
+    },
+    cardAbstract: {
+        fontSize: 14,
+        fontStyle: 'italic',
+        marginTop: 4,
     },
     // === Estilos nuevos para las tarjetas de formación ===
     academicCard: {
