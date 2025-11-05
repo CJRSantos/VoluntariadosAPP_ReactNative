@@ -25,11 +25,9 @@ export default function ProfileScreen() {
     const router = useRouter();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
-
     // Imágenes
     const [bannerImage, setBannerImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
-
     // Estados para los modales
     const [showPersonalInfoForm, setShowPersonalInfoForm] = useState(false);
     const [showAcademicModal, setShowAcademicModal] = useState(false);
@@ -40,28 +38,22 @@ export default function ProfileScreen() {
     const [showPublicationModal, setShowPublicationModal] = useState(false);
     const [showLanguageModal, setShowLanguageModal] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
-
     // Estado para el picker de idiomas
-    const [showLanguagePicker, setShowLanguagePicker] = useState(false);
-    const [showLanguagePicker, setShowLanguagePicker] = useState(false);
-    // Estados para los formularios (aquí van las declaraciones únicas)
+    const [showLanguagePicker, setShowLanguagePicker] = useState(false); // 👈 Nuevo estado    const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+    // Estados para los formularios
     const [documentType, setDocumentType] = useState('');
     const [gender, setGender] = useState('');
     const [languageProficiency, setLanguageProficiency] = useState('');
     const [currentlyInRole, setCurrentlyInRole] = useState(false);
     const [academicStatus, setAcademicStatus] = useState<string>('Actualmente');
-
     // Pestañas
     const [activeTab, setActiveTab] = useState<'info' | 'formacion' | 'experiencia' | 'adicional'>('info');
-
     // Modales de imagen
     const [isBannerModalVisible, setIsBannerModalVisible] = useState(false);
     const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
-
     // Menús
     const [bannerMenuVisible, setBannerMenuVisible] = useState(false);
     const [profileMenuVisible, setProfileMenuVisible] = useState(false);
-
     // === Estados para los datos (CRUD) ===
     const [personalInfo, setPersonalInfo] = useState<any>(null);
     const [academicRecords, setAcademicRecords] = useState<any[]>([]);
@@ -71,7 +63,6 @@ export default function ProfileScreen() {
     const [volunteerRecords, setVolunteerRecords] = useState<any[]>([]);
     const [publicationRecords, setPublicationRecords] = useState<any[]>([]);
     const [languageRecords, setLanguageRecords] = useState<any[]>([]);
-
     // === Estados de edición ===
     const [editingPersonal, setEditingPersonal] = useState<any>(null);
     const [editingAcademic, setEditingAcademic] = useState<any>(null);
@@ -81,7 +72,6 @@ export default function ProfileScreen() {
     const [editingVolunteer, setEditingVolunteer] = useState<any>(null);
     const [editingPublication, setEditingPublication] = useState<any>(null);
     const [editingLanguage, setEditingLanguage] = useState<any>(null);
-
     // === Estados de los inputs ===
     const [nameInput, setNameInput] = useState('');
     const [birthDateInput, setBirthDateInput] = useState('');
@@ -110,10 +100,6 @@ export default function ProfileScreen() {
     const [pubUrlInput, setPubUrlInput] = useState('');
     const [pubAbstractInput, setPubAbstractInput] = useState('');
     const [languageInput, setLanguageInput] = useState('');
-
-    // Estado para el date picker genérico
-    const [datePickerVisible, setDatePickerVisible] = useState(false);
-    const [datePickerField, setDatePickerField] = useState<string | null>(null);
 
     // Cargar datos guardados
     useEffect(() => {
@@ -1460,37 +1446,22 @@ export default function ProfileScreen() {
                             value={descriptionInput}
                             onChangeText={setDescriptionInput}
                         />
-                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha de inicio</Text>
-                        <TouchableOpacity
-                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                            onPress={() => {
-                                setDatePickerField('volunteerStart');
-                                setDatePickerVisible(true);
-                            }}
-                        >
-                            <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                {startDateInput || 'Seleccionar fecha'}
-                            </Text>
-                        </TouchableOpacity>
-
-                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha de fin</Text>
-                        <TouchableOpacity
-                            style={[
-                                styles.input,
-                                { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' },
-                                currentlyInRole && { opacity: 0.5 } // ✅ Correcto: aplica opacidad dentro del estilo
-                            ]}
-                            onPress={() => {
-                                setDatePickerField('volunteerEnd');
-                                setDatePickerVisible(true);
-                            }}
-                            disabled={currentlyInRole}
-                        >
-                            <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                {currentlyInRole ? 'Actualmente' : endDateInput || 'Seleccionar fecha'}
-                            </Text>
-                        </TouchableOpacity>
-
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
+                        <TextInput
+                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                            placeholder="YYYY"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
+                            value={startDateInput}
+                            onChangeText={setStartDateInput}
+                        />
+                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
+                        <TextInput
+                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                            placeholder="YYYY o 'Actualmente'"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
+                            value={endDateInput}
+                            onChangeText={setEndDateInput}
+                        />
                         <View style={styles.checkboxContainer}>
                             <TouchableOpacity
                                 style={[styles.checkbox, currentlyInRole && styles.checkboxChecked]}
@@ -1571,17 +1542,13 @@ export default function ProfileScreen() {
                             onChangeText={setPubAuthorInput}
                         />
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha</Text>
-                        <TouchableOpacity
-                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                            onPress={() => {
-                                setDatePickerField('publicationDate');
-                                setDatePickerVisible(true);
-                            }}
-                        >
-                            <Text style={{ color: pubDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                {pubDateInput || 'Seleccionar fecha'}
-                            </Text>
-                        </TouchableOpacity>
+                        <TextInput
+                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                            placeholder="dd/mm/yyyy"
+                            placeholderTextColor={isDark ? '#AAA' : '#999'}
+                            value={pubDateInput}
+                            onChangeText={setPubDateInput}
+                        />
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>URL (opcional)</Text>
                         <TextInput
                             style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
@@ -1749,38 +1716,6 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </TouchableOpacity>
             )}
-            {/* DatePicker reutilizable */}
-            {datePickerVisible && (
-                <DateTimePicker
-                    value={
-                        datePickerField === 'volunteerStart' && startDateInput
-                            ? new Date(startDateInput.split('/').reverse().join('-'))
-                            : datePickerField === 'volunteerEnd' && endDateInput
-                                ? new Date(endDateInput.split('/').reverse().join('-'))
-                                : datePickerField === 'publicationDate' && pubDateInput
-                                    ? new Date(pubDateInput.split('/').reverse().join('-'))
-                                    : new Date()
-                    }
-                    mode="date"
-                    display="default"
-                    onChange={(event, selectedDate) => {
-                        setDatePickerVisible(false);
-                        if (selectedDate) {
-                            const d = selectedDate;
-                            const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-                            if (datePickerField === 'volunteerStart') {
-                                setStartDateInput(formatted);
-                            } else if (datePickerField === 'volunteerEnd') {
-                                setEndDateInput(formatted);
-                            } else if (datePickerField === 'publicationDate') {
-                                setPubDateInput(formatted);
-                            }
-                        }
-                        setDatePickerField(null);
-                    }}
-                />
-            )}
-
         </SafeAreaView>
     );
 }
@@ -2243,121 +2178,5 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontStyle: 'italic',
         marginTop: 4,
-    },
-    // === Estilos nuevos para las tarjetas de formación ===
-    academicCard: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        padding: 16,
-        marginBottom: 12,
-        borderRadius: 8,
-        borderWidth: 1,
-    },
-    technicalCard: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        padding: 16,
-        marginBottom: 12,
-        borderRadius: 8,
-        borderWidth: 1,
-    },
-    complementaryCard: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        padding: 16,
-        marginBottom: 12,
-        borderRadius: 8,
-        borderWidth: 1,
-    },
-    iconContainer: {
-        marginRight: 12,
-        marginTop: 2,
-    },
-    cardContent: {
-        flex: 1,
-    },
-    cardTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 4,
-    },
-    cardSubtitle: {
-        fontSize: 14,
-        marginBottom: 2,
-    },
-    statusContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 8,
-    },
-    statusText: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginRight: 8,
-    },
-    statusBadge: {
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 12,
-    },
-    statusBadgeText: {
-        color: '#fff',
-        fontSize: 12,
-        fontWeight: 'bold',
-    },
-    editButtonCircle: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: '#d4f5e0',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    // === Estilo nuevo para la tarjeta de experiencia laboral ===
-    experienceCard: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        padding: 16,
-        marginBottom: 12,
-        borderRadius: 8,
-        borderWidth: 1,
-    },
-    experienceDetails: {
-        flex: 1,
-        marginLeft: 12,
-    },
-    detailRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 4,
-    },
-    detailLabel: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginLeft: 4,
-        marginRight: 8,
-    },
-    detailValue: {
-        fontSize: 14,
-        marginBottom: 8,
-        marginLeft: 24,
-    },
-    dateRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 8,
-    },
-    dateContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    dateLabel: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        marginLeft: 4,
-        marginRight: 4,
-    },
-    dateValue: {
-        fontSize: 12,
     },
 });
