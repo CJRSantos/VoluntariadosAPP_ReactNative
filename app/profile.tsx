@@ -101,6 +101,19 @@ export default function ProfileScreen() {
     const [pubAbstractInput, setPubAbstractInput] = useState('');
     const [languageInput, setLanguageInput] = useState('');
 
+    // === Estados para los date pickers en Formación Académica, Técnica, Complementaria y Experiencia ===
+    const [showAcademicStartDatePicker, setShowAcademicStartDatePicker] = useState(false);
+    const [showAcademicEndDatePicker, setShowAcademicEndDatePicker] = useState(false);
+    const [showTechnicalEndDatePicker, setShowTechnicalEndDatePicker] = useState(false);
+    const [showComplementaryDatePicker, setShowComplementaryDatePicker] = useState(false);
+    const [showExperienceStartDatePicker, setShowExperienceStartDatePicker] = useState(false);
+    const [showExperienceEndDatePicker, setShowExperienceEndDatePicker] = useState(false);
+
+    // === Estados para los date pickers en Voluntariado y Publicaciones (ya existentes) ===
+    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+    const [showPubDatePicker, setShowPubDatePicker] = useState(false);
+
     // Cargar datos guardados
     useEffect(() => {
         const loadAllData = async () => {
@@ -798,7 +811,6 @@ export default function ProfileScreen() {
                                     ))
                                 )}
                             </View>
-
                             {/* Publicaciones */}
                             <View style={styles.section}>
                                 <View style={styles.sectionHeader}>
@@ -840,7 +852,6 @@ export default function ProfileScreen() {
                                     ))
                                 )}
                             </View>
-
                             {/* Idiomas */}
                             <View style={styles.section}>
                                 <View style={styles.sectionHeader}>
@@ -1110,22 +1121,58 @@ export default function ProfileScreen() {
                             value={countryInput}
                             onChangeText={setCountryInput}
                         />
+                        {/* Año de inicio con DatePicker */}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
-                        <TextInput
-                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                            placeholder="YYYY"
-                            placeholderTextColor={isDark ? '#AAA' : '#999'}
-                            value={startDateInput}
-                            onChangeText={setStartDateInput}
-                        />
+                        <TouchableOpacity
+                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                            onPress={() => setShowAcademicStartDatePicker(true)}
+                        >
+                            <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                {startDateInput || 'Seleccionar año'}
+                            </Text>
+                        </TouchableOpacity>
+                        {showAcademicStartDatePicker && (
+                            <DateTimePicker
+                                value={startDateInput ? new Date(`${startDateInput}-01-01`) : new Date()}
+                                mode="date"
+                                display="default"
+                                onChange={(event, selectedDate) => {
+                                    setShowAcademicStartDatePicker(false);
+                                    if (selectedDate) {
+                                        const d = selectedDate;
+                                        const formatted = String(d.getFullYear());
+                                        setStartDateInput(formatted);
+                                    }
+                                }}
+                            />
+                        )}
+
+                        {/* Año de fin con DatePicker */}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
-                        <TextInput
-                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                            placeholder="YYYY"
-                            placeholderTextColor={isDark ? '#AAA' : '#999'}
-                            value={endDateInput}
-                            onChangeText={setEndDateInput}
-                        />
+                        <TouchableOpacity
+                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                            onPress={() => setShowAcademicEndDatePicker(true)}
+                        >
+                            <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                {endDateInput || 'Seleccionar año'}
+                            </Text>
+                        </TouchableOpacity>
+                        {showAcademicEndDatePicker && (
+                            <DateTimePicker
+                                value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
+                                mode="date"
+                                display="default"
+                                onChange={(event, selectedDate) => {
+                                    setShowAcademicEndDatePicker(false);
+                                    if (selectedDate) {
+                                        const d = selectedDate;
+                                        const formatted = String(d.getFullYear());
+                                        setEndDateInput(formatted);
+                                    }
+                                }}
+                            />
+                        )}
+
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Estado</Text>
                         <View style={styles.radioGroup}>
                             {['Actualmente', 'Graduado', 'Titulado'].map((option) => (
@@ -1204,14 +1251,31 @@ export default function ProfileScreen() {
                             value={durationInput}
                             onChangeText={setDurationInput}
                         />
+                        {/* Año de finalización con DatePicker */}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de finalización</Text>
-                        <TextInput
-                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                            placeholder="YYYY"
-                            placeholderTextColor={isDark ? '#AAA' : '#999'}
-                            value={endDateInput}
-                            onChangeText={setEndDateInput}
-                        />
+                        <TouchableOpacity
+                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                            onPress={() => setShowTechnicalEndDatePicker(true)}
+                        >
+                            <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                {endDateInput || 'Seleccionar año'}
+                            </Text>
+                        </TouchableOpacity>
+                        {showTechnicalEndDatePicker && (
+                            <DateTimePicker
+                                value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
+                                mode="date"
+                                display="default"
+                                onChange={(event, selectedDate) => {
+                                    setShowTechnicalEndDatePicker(false);
+                                    if (selectedDate) {
+                                        const d = selectedDate;
+                                        const formatted = String(d.getFullYear());
+                                        setEndDateInput(formatted);
+                                    }
+                                }}
+                            />
+                        )}
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowTechnicalModal(false)}>
                                 <Text style={styles.buttonText}>Cancelar</Text>
@@ -1271,14 +1335,31 @@ export default function ProfileScreen() {
                             value={descriptionInput}
                             onChangeText={setDescriptionInput}
                         />
+                        {/* Fecha con DatePicker */}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha</Text>
-                        <TextInput
-                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                            placeholder="dd/mm/yyyy"
-                            placeholderTextColor={isDark ? '#AAA' : '#999'}
-                            value={dateInput}
-                            onChangeText={setDateInput}
-                        />
+                        <TouchableOpacity
+                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                            onPress={() => setShowComplementaryDatePicker(true)}
+                        >
+                            <Text style={{ color: dateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                {dateInput || 'Seleccionar fecha'}
+                            </Text>
+                        </TouchableOpacity>
+                        {showComplementaryDatePicker && (
+                            <DateTimePicker
+                                value={dateInput ? new Date(dateInput.split('/').reverse().join('-')) : new Date()}
+                                mode="date"
+                                display="default"
+                                onChange={(event, selectedDate) => {
+                                    setShowComplementaryDatePicker(false);
+                                    if (selectedDate) {
+                                        const d = selectedDate;
+                                        const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+                                        setDateInput(formatted);
+                                    }
+                                }}
+                            />
+                        )}
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowComplementaryModal(false)}>
                                 <Text style={styles.buttonText}>Cancelar</Text>
@@ -1353,22 +1434,57 @@ export default function ProfileScreen() {
                             value={countryInput}
                             onChangeText={setCountryInput}
                         />
+                        {/* Año de inicio con DatePicker */}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
-                        <TextInput
-                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                            placeholder="YYYY"
-                            placeholderTextColor={isDark ? '#AAA' : '#999'}
-                            value={startDateInput}
-                            onChangeText={setStartDateInput}
-                        />
+                        <TouchableOpacity
+                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                            onPress={() => setShowExperienceStartDatePicker(true)}
+                        >
+                            <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                {startDateInput || 'Seleccionar año'}
+                            </Text>
+                        </TouchableOpacity>
+                        {showExperienceStartDatePicker && (
+                            <DateTimePicker
+                                value={startDateInput ? new Date(`${startDateInput}-01-01`) : new Date()}
+                                mode="date"
+                                display="default"
+                                onChange={(event, selectedDate) => {
+                                    setShowExperienceStartDatePicker(false);
+                                    if (selectedDate) {
+                                        const d = selectedDate;
+                                        const formatted = String(d.getFullYear());
+                                        setStartDateInput(formatted);
+                                    }
+                                }}
+                            />
+                        )}
+
+                        {/* Año de fin con DatePicker */}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
-                        <TextInput
-                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                            placeholder="YYYY o 'Actualmente'"
-                            placeholderTextColor={isDark ? '#AAA' : '#999'}
-                            value={endDateInput}
-                            onChangeText={setEndDateInput}
-                        />
+                        <TouchableOpacity
+                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                            onPress={() => setShowExperienceEndDatePicker(true)}
+                        >
+                            <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                {endDateInput || 'Seleccionar año'}
+                            </Text>
+                        </TouchableOpacity>
+                        {showExperienceEndDatePicker && (
+                            <DateTimePicker
+                                value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
+                                mode="date"
+                                display="default"
+                                onChange={(event, selectedDate) => {
+                                    setShowExperienceEndDatePicker(false);
+                                    if (selectedDate) {
+                                        const d = selectedDate;
+                                        const formatted = String(d.getFullYear());
+                                        setEndDateInput(formatted);
+                                    }
+                                }}
+                            />
+                        )}
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowExperienceModal(false)}>
                                 <Text style={styles.buttonText}>Cancelar</Text>
@@ -1446,22 +1562,57 @@ export default function ProfileScreen() {
                             value={descriptionInput}
                             onChangeText={setDescriptionInput}
                         />
+                        {/* Año de inicio con DatePicker */}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
-                        <TextInput
-                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                            placeholder="YYYY"
-                            placeholderTextColor={isDark ? '#AAA' : '#999'}
-                            value={startDateInput}
-                            onChangeText={setStartDateInput}
-                        />
+                        <TouchableOpacity
+                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                            onPress={() => setShowStartDatePicker(true)}
+                        >
+                            <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                {startDateInput || 'Seleccionar año'}
+                            </Text>
+                        </TouchableOpacity>
+                        {showStartDatePicker && (
+                            <DateTimePicker
+                                value={startDateInput ? new Date(`${startDateInput}-01-01`) : new Date()}
+                                mode="date"
+                                display="default"
+                                onChange={(event, selectedDate) => {
+                                    setShowStartDatePicker(false);
+                                    if (selectedDate) {
+                                        const d = selectedDate;
+                                        const formatted = String(d.getFullYear());
+                                        setStartDateInput(formatted);
+                                    }
+                                }}
+                            />
+                        )}
+
+                        {/* Año de fin con DatePicker */}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
-                        <TextInput
-                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                            placeholder="YYYY o 'Actualmente'"
-                            placeholderTextColor={isDark ? '#AAA' : '#999'}
-                            value={endDateInput}
-                            onChangeText={setEndDateInput}
-                        />
+                        <TouchableOpacity
+                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                            onPress={() => setShowEndDatePicker(true)}
+                        >
+                            <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                {endDateInput || 'Seleccionar año'}
+                            </Text>
+                        </TouchableOpacity>
+                        {showEndDatePicker && (
+                            <DateTimePicker
+                                value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
+                                mode="date"
+                                display="default"
+                                onChange={(event, selectedDate) => {
+                                    setShowEndDatePicker(false);
+                                    if (selectedDate) {
+                                        const d = selectedDate;
+                                        const formatted = String(d.getFullYear());
+                                        setEndDateInput(formatted);
+                                    }
+                                }}
+                            />
+                        )}
                         <View style={styles.checkboxContainer}>
                             <TouchableOpacity
                                 style={[styles.checkbox, currentlyInRole && styles.checkboxChecked]}
@@ -1541,14 +1692,31 @@ export default function ProfileScreen() {
                             value={pubAuthorInput}
                             onChangeText={setPubAuthorInput}
                         />
+                        {/* Fecha con DatePicker */}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha</Text>
-                        <TextInput
-                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                            placeholder="dd/mm/yyyy"
-                            placeholderTextColor={isDark ? '#AAA' : '#999'}
-                            value={pubDateInput}
-                            onChangeText={setPubDateInput}
-                        />
+                        <TouchableOpacity
+                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                            onPress={() => setShowPubDatePicker(true)}
+                        >
+                            <Text style={{ color: pubDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                {pubDateInput || 'Seleccionar fecha'}
+                            </Text>
+                        </TouchableOpacity>
+                        {showPubDatePicker && (
+                            <DateTimePicker
+                                value={pubDateInput ? new Date(pubDateInput.split('/').reverse().join('-')) : new Date()}
+                                mode="date"
+                                display="default"
+                                onChange={(event, selectedDate) => {
+                                    setShowPubDatePicker(false);
+                                    if (selectedDate) {
+                                        const d = selectedDate;
+                                        const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+                                        setPubDateInput(formatted);
+                                    }
+                                }}
+                            />
+                        )}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>URL (opcional)</Text>
                         <TextInput
                             style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
@@ -2143,7 +2311,6 @@ const styles = StyleSheet.create({
     dateValue: {
         fontSize: 12,
     },
-
     // === Estilos nuevos para la sección "Adicional" (Voluntariados, Publicaciones, Idiomas) ===
     volunteerCard: {
         flexDirection: 'row',
