@@ -273,6 +273,10 @@ export default function AccountScreen() {
                             source={require('../assets/images/home-icon.png')}
                             style={[
                                 styles.navIcon,
+                                {
+                                    backgroundColor: 'transparent', // 👈 Asegura que no haya fondo
+                                    tintColor: pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666'), // 👈 Cambia el color según el estado
+                                },
                                 pathname === '/account' && styles.navIconActive,
                             ]}
                         />
@@ -650,8 +654,11 @@ const styles = StyleSheet.create({
     },
     navItem: { alignItems: 'center', paddingVertical: 8 },
     navItemActive: {
-        backgroundColor: '#E8F5E8',
+        borderTopWidth: 2,
+        borderTopColor: '#4CAF50',
+        backgroundColor: 'transparent', // 🔹 evita el fondo blanco
     },
+
     navIcon: { width: 24, height: 24, marginBottom: 4, resizeMode: 'contain' },
     navIconActive: {
         tintColor: '#4CAF50',

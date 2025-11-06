@@ -456,8 +456,11 @@ const styles = StyleSheet.create({
   },
   navItem: { alignItems: 'center', paddingVertical: 8, borderRadius: 8 },
   navItemActive: {
-    backgroundColor: '#E8F5E8',
+    borderTopWidth: 2,
+    borderTopColor: '#4CAF50',
+    backgroundColor: 'transparent', // 🔹 evita el fondo blanco
   },
+
   navIcon: {
     width: 24,
     height: 24,
