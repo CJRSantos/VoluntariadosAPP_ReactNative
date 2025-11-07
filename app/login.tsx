@@ -11,10 +11,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons'; // 👈 Importa Icon
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // 👈 Estado para mostrar/ocultar contraseña
 
   const router = useRouter();
 
@@ -33,6 +35,8 @@ export default function LoginScreen() {
             };
 
             await AsyncStorage.setItem('user', JSON.stringify(mockUser));
+            await AsyncStorage.setItem('@user_logged_in', 'true');
+
             router.replace('/account');
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
@@ -73,16 +77,28 @@ export default function LoginScreen() {
           placeholderTextColor="#999"
         />
 
-        {/* Campo Password */}
+        {/* Campo Password con ojo */}
         <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          placeholderTextColor="#999"
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={[styles.input, styles.passwordInput]}
+            placeholder="Enter your password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword} // 👈 Alterna según el estado
+            placeholderTextColor="#999"
+          />
+          <TouchableOpacity
+            style={styles.eyeButton}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <Icon
+              name={showPassword ? 'eye-off' : 'eye'} // 👈 Cambia el ícono
+              size={20}
+              color="#999"
+            />
+          </TouchableOpacity>
+        </View>
 
         {/* Olvidó contraseña */}
         <TouchableOpacity onPress={handleForgotPassword}>
@@ -158,6 +174,23 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         backgroundColor: '#f8f9fa',
         fontSize: 16,
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 12,
+        backgroundColor: '#f8f9fa',
+        marginBottom: 20,
+    },
+    passwordInput: {
+        flex: 1,
+        padding: 14,
+        fontSize: 16,
+    },
+    eyeButton: {
+        paddingHorizontal: 10,
     },
     forgotPassword: {
         textAlign: 'right',

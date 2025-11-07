@@ -1,6 +1,7 @@
 // app/splash.tsx
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { Animated, Image, StyleSheet, Text } from 'react-native';
 
@@ -10,6 +11,18 @@ export default function SplashScreen() {
     const fadeAnim = useState(new Animated.Value(0))[0];
 
     useEffect(() => {
+        const checkLoginStatus = async () => {
+            const isLoggedIn = await AsyncStorage.getItem('@user_logged_in');
+
+            if (isLoggedIn === 'true') {
+                // 👇 Si ya está logueado, ve a la pantalla principal
+                router.replace('/');
+            } else {
+                // 👇 Si no, ve al login
+                router.replace('/login');
+            }
+        };
+
         // Mostrar texto después de 3 segundos
         const timer1 = setTimeout(() => {
             setShowText(true);
@@ -20,9 +33,9 @@ export default function SplashScreen() {
             }).start();
         }, 3000);
 
-        // Redirigir después de 4 segundos
+        // Redirigir después de 4 segundos (solo si no se ha redirigido antes)
         const timer2 = setTimeout(() => {
-            router.replace('/login');
+            checkLoginStatus(); // 👈 Llama a la función de verificación
         }, 4000);
 
         return () => {
