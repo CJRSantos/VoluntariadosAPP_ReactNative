@@ -38,7 +38,7 @@ export default function RegisterScreen() {
         <View style={styles.container}>
             <View style={styles.content}>
                 {/* Imagen superior */}
-                <Text style={styles.title}>Volunteer Intranet</Text>
+                <Text style={styles.title}>Volunteer Account</Text>
                 <Image
                     source={require('../assets/images/Volunteer_account.png')}
                     style={styles.headerImage}
