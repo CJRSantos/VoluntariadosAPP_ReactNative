@@ -1,6 +1,6 @@
 // app/register.tsx
-import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
     Image,
@@ -52,10 +52,8 @@ export default function RegisterScreen() {
     return (
         <View style={styles.container}>
             <View style={styles.content}>
-                {/* Título */}
-                <Text style={styles.title}>Volunteer Intranet</Text>
-
                 {/* Imagen superior */}
+                <Text style={styles.title}>Volunteer Account</Text>
                 <Image
                     source={require('../assets/images/Volunteer_account.png')}
                     style={styles.headerImage}
