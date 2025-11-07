@@ -1786,11 +1786,23 @@ export default function ProfileScreen() {
                                 <View style={styles.checkboxContainer}>
                                     <TouchableOpacity
                                         style={[styles.checkbox, currentlyInRole && styles.checkboxChecked]}
-                                        onPress={() => setCurrentlyInRole(!currentlyInRole)}
+                                        onPress={() => {
+                                            setCurrentlyInRole(true);
+                                        }}
                                     >
                                         {currentlyInRole && <Ionicons name="checkmark" size={16} color="#fff" />}
                                     </TouchableOpacity>
                                     <Text style={[styles.checkboxLabel, { color: isDark ? '#FFF' : '#333' }]}>Actualmente en este rol</Text>
+                                </View>
+                                <View style={styles.checkboxContainer}>
+                                    <TouchableOpacity
+                                        style={[styles.checkbox, !currentlyInRole && styles.checkboxChecked]}
+                                        onPress={() => {
+                                            setCurrentlyInRole(false);
+                                        }}
+                                    >
+                                        {!currentlyInRole && <Ionicons name="checkmark" size={16} color="#fff" />}
+                                    </TouchableOpacity>
                                     <Text style={[styles.checkboxLabel, { color: isDark ? '#FFF' : '#333' }]}>Finalizado</Text>
                                 </View>
                                 <View style={styles.buttonGroup}>
