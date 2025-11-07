@@ -10,6 +10,7 @@ import {
     Alert,
     Image,
     KeyboardAvoidingView,
+    Modal,
     Platform,
     ScrollView,
     StyleSheet,
@@ -18,6 +19,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import ImageViewer from 'react-native-image-zoom-viewer'; // 👈 Importado
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
 
@@ -25,9 +27,15 @@ export default function ProfileScreen() {
     const router = useRouter();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
+
     // Imágenes
     const [bannerImage, setBannerImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
+
+    // Estados para los modales de zoom
+    const [isBannerZoomVisible, setIsBannerZoomVisible] = useState(false); // 👈 Nuevo estado
+    const [isProfileZoomVisible, setIsProfileZoomVisible] = useState(false); // 👈 Nuevo estado
+
     // Estados para los modales
     const [showPersonalInfoForm, setShowPersonalInfoForm] = useState(false);
     const [showAcademicModal, setShowAcademicModal] = useState(false);
@@ -38,22 +46,24 @@ export default function ProfileScreen() {
     const [showPublicationModal, setShowPublicationModal] = useState(false);
     const [showLanguageModal, setShowLanguageModal] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
+
     // Estado para el picker de idiomas
-    const [showLanguagePicker, setShowLanguagePicker] = useState(false); // 👈 Nuevo estado    const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+    const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+
     // Estados para los formularios
     const [documentType, setDocumentType] = useState('');
     const [gender, setGender] = useState('');
     const [languageProficiency, setLanguageProficiency] = useState('');
     const [currentlyInRole, setCurrentlyInRole] = useState(false);
     const [academicStatus, setAcademicStatus] = useState<string>('Actualmente');
+
     // Pestañas
     const [activeTab, setActiveTab] = useState<'info' | 'formacion' | 'experiencia' | 'adicional'>('info');
-    // Modales de imagen
-    const [isBannerModalVisible, setIsBannerModalVisible] = useState(false);
-    const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
+
     // Menús
     const [bannerMenuVisible, setBannerMenuVisible] = useState(false);
     const [profileMenuVisible, setProfileMenuVisible] = useState(false);
+
     // === Estados para los datos (CRUD) ===
     const [personalInfo, setPersonalInfo] = useState<any>(null);
     const [academicRecords, setAcademicRecords] = useState<any[]>([]);
@@ -63,6 +73,7 @@ export default function ProfileScreen() {
     const [volunteerRecords, setVolunteerRecords] = useState<any[]>([]);
     const [publicationRecords, setPublicationRecords] = useState<any[]>([]);
     const [languageRecords, setLanguageRecords] = useState<any[]>([]);
+
     // === Estados de edición ===
     const [editingPersonal, setEditingPersonal] = useState<any>(null);
     const [editingAcademic, setEditingAcademic] = useState<any>(null);
@@ -72,6 +83,7 @@ export default function ProfileScreen() {
     const [editingVolunteer, setEditingVolunteer] = useState<any>(null);
     const [editingPublication, setEditingPublication] = useState<any>(null);
     const [editingLanguage, setEditingLanguage] = useState<any>(null);
+
     // === Estados de los inputs ===
     const [nameInput, setNameInput] = useState('');
     const [birthDateInput, setBirthDateInput] = useState('');
@@ -100,6 +112,7 @@ export default function ProfileScreen() {
     const [pubUrlInput, setPubUrlInput] = useState('');
     const [pubAbstractInput, setPubAbstractInput] = useState('');
     const [languageInput, setLanguageInput] = useState('');
+
     // === Estados para los date pickers en Voluntariado y Publicaciones ===
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
@@ -122,27 +135,35 @@ export default function ProfileScreen() {
                 if (savedBanner) setBannerImage(savedBanner);
                 const savedPhoto = await AsyncStorage.getItem('userPhotoURL');
                 if (savedPhoto) setProfileImage(savedPhoto);
+
                 // Información personal
                 const savedPersonal = await AsyncStorage.getItem('personalInfo');
                 if (savedPersonal) setPersonalInfo(JSON.parse(savedPersonal));
+
                 // Formación académica
                 const savedAcademic = await AsyncStorage.getItem('academicRecords');
                 if (savedAcademic) setAcademicRecords(JSON.parse(savedAcademic));
+
                 // Formación técnica
                 const savedTechnical = await AsyncStorage.getItem('technicalRecords');
                 if (savedTechnical) setTechnicalRecords(JSON.parse(savedTechnical));
+
                 // Formación complementaria
                 const savedComplementary = await AsyncStorage.getItem('complementaryRecords');
                 if (savedComplementary) setComplementaryRecords(JSON.parse(savedComplementary));
+
                 // Experiencia laboral
                 const savedExperience = await AsyncStorage.getItem('experienceRecords');
                 if (savedExperience) setExperienceRecords(JSON.parse(savedExperience));
+
                 // Voluntariados
                 const savedVolunteer = await AsyncStorage.getItem('volunteerRecords');
                 if (savedVolunteer) setVolunteerRecords(JSON.parse(savedVolunteer));
+
                 // Publicaciones
                 const savedPublication = await AsyncStorage.getItem('publicationRecords');
                 if (savedPublication) setPublicationRecords(JSON.parse(savedPublication));
+
                 // Idiomas
                 const savedLanguage = await AsyncStorage.getItem('languageRecords');
                 if (savedLanguage) setLanguageRecords(JSON.parse(savedLanguage));
@@ -228,7 +249,7 @@ export default function ProfileScreen() {
     const closeBannerMenu = () => setBannerMenuVisible(false);
     const viewBannerImage = () => {
         if (bannerImage) {
-            setIsBannerModalVisible(true);
+            setIsBannerZoomVisible(true); // 👈 Cambiado a nuevo estado
             closeBannerMenu();
         }
     };
@@ -246,7 +267,7 @@ export default function ProfileScreen() {
     const closeProfileMenu = () => setProfileMenuVisible(false);
     const viewProfileImage = () => {
         if (profileImage) {
-            setIsProfileModalVisible(true);
+            setIsProfileZoomVisible(true); // 👈 Cambiado a nuevo estado
             closeProfileMenu();
         }
     };
@@ -505,6 +526,7 @@ export default function ProfileScreen() {
                     <Ionicons name="settings" size={24} color={isDark ? '#FFF' : '#333'} />
                 </TouchableOpacity>
             </View>
+
             {/* Banner con foto */}
             <View style={styles.bannerContainer}>
                 <TouchableOpacity onPress={showBannerMenu}>
@@ -531,11 +553,13 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </View>
             </View>
+
             {/* Información del usuario */}
             <View style={styles.userInfo}>
                 <Text style={[styles.userName, { color: isDark ? '#FFF' : '#333' }]}>Ethan Carter Murayari</Text>
                 <Text style={[styles.userEmail, { color: isDark ? '#AAA' : '#666' }]}>etcar@gmail.com</Text>
             </View>
+
             {/* Pestañas */}
             <View style={styles.tabs}>
                 <TouchableOpacity
@@ -603,6 +627,7 @@ export default function ProfileScreen() {
                     </Text>
                 </TouchableOpacity>
             </View>
+
             {/* Contenido con KeyboardAvoidingView */}
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -924,31 +949,56 @@ export default function ProfileScreen() {
                     )}
                 </ScrollView>
             </KeyboardAvoidingView>
-            {/* Modales de imagen */}
-            {isBannerModalVisible && (
-                <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPress={() => setIsBannerModalVisible(false)}
+
+            {/* Modales de zoom para imágenes */}
+            {/* Modal para ver la portada con zoom */}
+            {isBannerZoomVisible && (
+                <Modal
+                    visible={isBannerZoomVisible}
+                    transparent={true}
+                    animationType="fade"
+                    onRequestClose={() => setIsBannerZoomVisible(false)}
                 >
-                    <TouchableOpacity style={styles.modalClose} onPress={() => setIsBannerModalVisible(false)}>
-                        <Ionicons name="close" size={32} color="#fff" />
-                    </TouchableOpacity>
-                    <Image source={{ uri: bannerImage! }} style={styles.modalImage} resizeMode="contain" />
-                </TouchableOpacity>
+                    <ImageViewer
+                        imageUrls={[
+                            {
+                                url: bannerImage || 'https://via.placeholder.com/400x200?text=Banner+Default',
+                            },
+                        ]}
+                        enableSwipeDown={true}
+                        onSwipeDown={() => setIsBannerZoomVisible(false)}
+                        saveToLocalByLongPress={false}
+                        backgroundColor="rgba(0,0,0,0.8)"
+                        loadingRender={() => <Text style={{ color: '#FFF' }}>Cargando...</Text>}
+                        onClick={() => setIsBannerZoomVisible(false)} // 👈 Cierra al tocar
+                    />
+                </Modal>
             )}
-            {isProfileModalVisible && (
-                <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPress={() => setIsProfileModalVisible(false)}
+
+            {/* Modal para ver la foto de perfil con zoom */}
+            {isProfileZoomVisible && (
+                <Modal
+                    visible={isProfileZoomVisible}
+                    transparent={true}
+                    animationType="fade"
+                    onRequestClose={() => setIsProfileZoomVisible(false)}
                 >
-                    <TouchableOpacity style={styles.modalClose} onPress={() => setIsProfileModalVisible(false)}>
-                        <Ionicons name="close" size={32} color="#fff" />
-                    </TouchableOpacity>
-                    <Image source={{ uri: profileImage! }} style={styles.modalImage} resizeMode="contain" />
-                </TouchableOpacity>
+                    <ImageViewer
+                        imageUrls={[
+                            {
+                                url: profileImage || 'https://via.placeholder.com/400x400?text=Profile+Default',
+                            },
+                        ]}
+                        enableSwipeDown={true}
+                        onSwipeDown={() => setIsProfileZoomVisible(false)}
+                        saveToLocalByLongPress={false}
+                        backgroundColor="rgba(0,0,0,0.8)"
+                        loadingRender={() => <Text style={{ color: '#FFF' }}>Cargando...</Text>}
+                        onClick={() => setIsProfileZoomVisible(false)} // 👈 Cierra al tocar
+                    />
+                </Modal>
             )}
+
             {/* Menús */}
             {bannerMenuVisible && (
                 <View style={styles.bannerMenuOverlay}>
@@ -996,6 +1046,7 @@ export default function ProfileScreen() {
                     </View>
                 </View>
             )}
+
             {/* Modales de formularios */}
             {showPersonalInfoForm && (
                 <TouchableOpacity
@@ -1185,7 +1236,6 @@ export default function ProfileScreen() {
                                 }}
                             />
                         )}
-
                         {/* Año de fin con DatePicker */}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
                         <TouchableOpacity
@@ -1211,7 +1261,6 @@ export default function ProfileScreen() {
                                 }}
                             />
                         )}
-
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Estado</Text>
                         <View style={styles.radioGroup}>
                             {['Actualmente', 'Graduado', 'Titulado'].map((option) => (
@@ -1498,7 +1547,6 @@ export default function ProfileScreen() {
                                 }}
                             />
                         )}
-
                         {/* Año de fin con DatePicker */}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
                         <TouchableOpacity
@@ -1626,7 +1674,6 @@ export default function ProfileScreen() {
                                 }}
                             />
                         )}
-
                         {/* Año de fin con DatePicker */}
                         <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
                         <TouchableOpacity
@@ -1839,7 +1886,7 @@ export default function ProfileScreen() {
                                     alignItems: 'center',
                                 }
                             ]}
-                            onPress={() => setShowLanguagePicker(true)} // 👈 Abre el modal personalizado
+                            onPress={() => setShowLanguagePicker(true)}
                         >
                             <Text style={{ color: languageProficiency ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
                                 {languageProficiency || 'Seleccionar'}
@@ -1973,8 +2020,8 @@ const styles = StyleSheet.create({
     },
     tab: { paddingHorizontal: 12, paddingVertical: 8 },
     activeTab: { borderBottomWidth: 2, borderBottomColor: '#10b981' },
-    tabText: { fontSize: 14 }, // 👈 Solo el tamaño, sin color
-    activeTabText: { fontWeight: '600' }, // 👈 Solo el peso, sin color    },
+    tabText: { fontSize: 14 },
+    activeTabText: { fontWeight: '600' },
     keyboardAvoidingContainer: {
         flex: 1,
     },
@@ -2232,7 +2279,7 @@ const styles = StyleSheet.create({
         padding: 12,
         borderRadius: 8,
         alignItems: 'center',
-        borderWidth: 2, // 👈 Añadido para resaltar la opción seleccionada
+        borderWidth: 2,
     },
     // === Estilos nuevos para las tarjetas de formación ===
     academicCard: {
