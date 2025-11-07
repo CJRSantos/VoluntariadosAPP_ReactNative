@@ -8,12 +8,14 @@ import {
     Alert,
     Dimensions,
     Image,
-    ScrollView,
+    Modal, // 👈 Importado
+    ScrollView, // 👈 Importado
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
 } from 'react-native';
+import ImageViewer from 'react-native-image-zoom-viewer';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
 
@@ -28,6 +30,8 @@ export default function AccountScreen() {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+    const [isProfileImageVisible, setIsProfileImageVisible] = useState(false); // 👈 Nuevo estado para la imagen
 
     useFocusEffect(
         useCallback(() => {
@@ -116,14 +120,18 @@ export default function AccountScreen() {
                         volunteer account
                     </Text>
                     <View style={styles.headerRight}>
-                        <Image
-                            source={
-                                user.photoURL
-                                    ? { uri: user.photoURL }
-                                    : require('../assets/images/avatar-default.png')
-                            }
-                            style={styles.avatar}
-                        />
+                        {/* 👇 Imagen de perfil con zoom */}
+                        <TouchableOpacity onPress={() => setIsProfileImageVisible(true)}>
+                            <Image
+                                source={
+                                    user.photoURL
+                                        ? { uri: user.photoURL }
+                                        : require('../assets/images/avatar-default.png')
+                                }
+                                style={styles.avatar}
+                            />
+                        </TouchableOpacity>
+
                         <TouchableOpacity onPress={toggleMenu}>
                             <Ionicons name="menu" size={24} color={isDark ? '#FFF' : '#333'} />
                         </TouchableOpacity>
@@ -438,6 +446,30 @@ export default function AccountScreen() {
                     </View>
                 </>
             )}
+
+            {/* Modal para ver la foto de perfil con zoom */}
+            <Modal
+                visible={isProfileImageVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setIsProfileImageVisible(false)}
+            >
+                <ImageViewer
+                    imageUrls={[
+                        {
+                            url: user.photoURL
+                                ? user.photoURL
+                                : 'https://via.placeholder.com/400x400?text=Default+Avatar',
+                        },
+                    ]}
+                    enableSwipeDown={true}
+                    onSwipeDown={() => setIsProfileImageVisible(false)}
+                    saveToLocalByLongPress={false}
+                    backgroundColor="rgba(0,0,0,0.8)"
+                    loadingRender={() => <Text style={{ color: '#FFF' }}>Cargando...</Text>}
+                    onClick={() => setIsProfileImageVisible(false)} // 👈 Cierra al tocar
+                />
+            </Modal>
         </SafeAreaView>
     );
 }
@@ -666,5 +698,17 @@ const styles = StyleSheet.create({
     navLabel: { fontSize: 10, marginTop: 4, textAlign: 'center' },
     navLabelActive: {
         color: '#4CAF50',
+    },
+    // 👇 Nuevos estilos para la modal de imagen
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });

@@ -1,4 +1,6 @@
+// app/register.tsx
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import {
     Image,
@@ -8,15 +10,18 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons'; // 👈 Importa Icon
 
 export default function RegisterScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // 👈 Estado para mostrar/ocultar contraseña
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false); // 👈 Para confirmar contraseña
 
     const router = useRouter();
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         if (!email || !password || !confirmPassword) {
             alert('Por favor completa todos los campos');
             return;
@@ -25,8 +30,19 @@ export default function RegisterScreen() {
             alert('Las contraseñas no coinciden');
             return;
         }
-        console.log('Registro:', email, password);
-        router.replace('/login');
+
+        const newUser = {
+            uid: `vol_${Date.now()}`,
+            email: email,
+            displayName: email.split('@')[0] || 'Voluntario',
+            photoURL: 'https://via.placeholder.com/40/4CAF50/FFFFFF?text=V',
+        };
+
+        await AsyncStorage.setItem('user', JSON.stringify(newUser));
+        await AsyncStorage.setItem('@user_logged_in', 'true');
+
+        console.log('Registro exitoso:', email);
+        router.replace('/account');
     };
 
     const handleLoginRedirect = () => {
@@ -58,27 +74,51 @@ export default function RegisterScreen() {
                     placeholderTextColor="#999"
                 />
 
-                {/* Campo Password */}
+                {/* Campo Password con ojo */}
                 <Text style={styles.label}>Password</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                    placeholderTextColor="#999"
-                />
+                <View style={styles.passwordContainer}>
+                    <TextInput
+                        style={[styles.input, styles.passwordInput]}
+                        placeholder="Enter your password"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={!showPassword}
+                        placeholderTextColor="#999"
+                    />
+                    <TouchableOpacity
+                        style={styles.eyeButton}
+                        onPress={() => setShowPassword(!showPassword)}
+                    >
+                        <Icon
+                            name={showPassword ? 'eye-off' : 'eye'}
+                            size={20}
+                            color="#999"
+                        />
+                    </TouchableOpacity>
+                </View>
 
-                {/* Campo Confirm Password */}
+                {/* Campo Confirm Password con ojo */}
                 <Text style={styles.label}>Confirm Password</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChangeText={setConfirmPassword}
-                    secureTextEntry
-                    placeholderTextColor="#999"
-                />
+                <View style={styles.passwordContainer}>
+                    <TextInput
+                        style={[styles.input, styles.passwordInput]}
+                        placeholder="Confirm your password"
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        secureTextEntry={!showConfirmPassword}
+                        placeholderTextColor="#999"
+                    />
+                    <TouchableOpacity
+                        style={styles.eyeButton}
+                        onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                        <Icon
+                            name={showConfirmPassword ? 'eye-off' : 'eye'}
+                            size={20}
+                            color="#999"
+                        />
+                    </TouchableOpacity>
+                </View>
 
                 {/* Botón Regístrese */}
                 <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
@@ -134,6 +174,23 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         backgroundColor: '#f8f9fa',
         fontSize: 16,
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 12,
+        backgroundColor: '#f8f9fa',
+        marginBottom: 20,
+    },
+    passwordInput: {
+        flex: 1,
+        padding: 14,
+        fontSize: 16,
+    },
+    eyeButton: {
+        paddingHorizontal: 10,
     },
     registerButton: {
         backgroundColor: '#1e293b',
