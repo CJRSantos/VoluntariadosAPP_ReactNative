@@ -15,6 +15,7 @@ export default function RootLayout() {
           <Stack.Screen name="account" options={{ headerShown: false }} />
           <Stack.Screen name="settings" options={{ headerShown: false }} />
           <Stack.Screen name="login" options={{ headerShown: false }} />
+          <Stack.Screen name="register" options={{ headerShown: false }} /> 
           <Stack.Screen name="profile" options={{ headerShown: false }} />
           <Stack.Screen name="areas" options={{ headerShown: false }} />
           <Stack.Screen name="convocatoria" options={{ headerShown: false }} />

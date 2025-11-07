@@ -34,19 +34,17 @@ export default function RegisterScreen() {
     };
 
     return (
-        
         <View style={styles.container}>
             <View style={styles.content}>
-                {/* Imagen superior */}
+                {/* Título */}
                 <Text style={styles.title}>Volunteer Intranet</Text>
+
+                {/* Imagen superior */}
                 <Image
                     source={require('../assets/images/Volunteer_account.png')}
                     style={styles.headerImage}
                     resizeMode="cover"
                 />
-
-                
-                
 
                 {/* Campo Email */}
                 <Text style={styles.label}>Email</Text>
@@ -100,20 +98,21 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         padding: 20,
+        paddingTop: 40,
     },
     content: {
         width: '100%',
         maxWidth: 400,
     },
-    title: { // 👈 AÑADIDO: estilo para el título
+    title: {
         fontSize: 28,
         fontWeight: 'bold',
         color: '#1e293b',
         textAlign: 'center',
-        marginBottom: 20,
+        marginBottom: 10,
     },
     headerImage: {
         width: '100%',
