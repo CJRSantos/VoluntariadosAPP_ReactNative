@@ -2240,9 +2240,9 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     modalContent: {
-        width: '90%',
+        width: '100%',
         maxWidth: 400,
-        maxHeight: '80%',
+        maxHeight: '100%',
         minHeight: 200,
         borderRadius: 12,
         padding: 20,
