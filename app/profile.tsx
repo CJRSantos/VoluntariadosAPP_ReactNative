@@ -1791,6 +1791,7 @@ export default function ProfileScreen() {
                                         {currentlyInRole && <Ionicons name="checkmark" size={16} color="#fff" />}
                                     </TouchableOpacity>
                                     <Text style={[styles.checkboxLabel, { color: isDark ? '#FFF' : '#333' }]}>Actualmente en este rol</Text>
+                                    <Text style={[styles.checkboxLabel, { color: isDark ? '#FFF' : '#333' }]}>Finalizado</Text>
                                 </View>
                                 <View style={styles.buttonGroup}>
                                     <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowVolunteerModal(false)}>
