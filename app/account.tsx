@@ -592,13 +592,14 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         borderWidth: 1,
         overflow: 'hidden',
-        width: 320,
+        width: 400,
+        height: 181,
         marginRight: 16,
         flexShrink: 0,
     },
     newsImage: {
-        width: 100,
-        height: 100,
+        width: 180,
+        height: 180,
         resizeMode: 'cover',
         borderTopLeftRadius: 8,
         borderBottomLeftRadius: 8,
@@ -617,7 +618,7 @@ const styles = StyleSheet.create({
     newsTitle: {
         fontSize: 14,
         fontWeight: 'bold',
-        marginBottom: 4,
+        marginBottom: 44,
     },
     newsTopics: {
         fontSize: 12,

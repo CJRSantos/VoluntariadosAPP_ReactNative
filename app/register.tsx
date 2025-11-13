@@ -4,20 +4,23 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
     Image,
+    KeyboardAvoidingView,
+    Platform, // Importa Platform
+    ScrollView,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
     View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons'; // 👈 Importa Icon
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function RegisterScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false); // 👈 Estado para mostrar/ocultar contraseña
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false); // 👈 Para confirmar contraseña
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const router = useRouter();
 
@@ -50,85 +53,97 @@ export default function RegisterScreen() {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.content}>
-                {/* Imagen superior */}
-                <Text style={styles.title}>Volunteer Account</Text>
-                <Image
-                    source={require('../assets/images/Volunteer_account.png')}
-                    style={styles.headerImage}
-                    resizeMode="cover"
-                />
+        // Envolvemos la vista completa con KeyboardAvoidingView
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // 'padding' en iOS, 'height' en Android
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0} // Ajuste fino en iOS
+        >
+            {/* ScrollView permite desplazamiento si el contenido es muy grande */}
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled" // Permite tocar fuera del input para ocultar el teclado
+            >
+                <View style={styles.content}>
+                    {/* Imagen superior */}
+                    <Text style={styles.title}>Volunteer Account</Text>
+                    <Image
+                        source={require('../assets/images/Volunteer_account.png')}
+                        style={styles.headerImage}
+                        resizeMode="cover"
+                    />
 
-                {/* Campo Email */}
-                <Text style={styles.label}>Email</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your email"
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    placeholderTextColor="#999"
-                />
-
-                {/* Campo Password con ojo */}
-                <Text style={styles.label}>Password</Text>
-                <View style={styles.passwordContainer}>
+                    {/* Campo Email */}
+                    <Text style={styles.label}>Email</Text>
                     <TextInput
-                        style={[styles.input, styles.passwordInput]}
-                        placeholder="Enter your password"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry={!showPassword}
+                        style={styles.input}
+                        placeholder="Enter your email"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
                         placeholderTextColor="#999"
                     />
-                    <TouchableOpacity
-                        style={styles.eyeButton}
-                        onPress={() => setShowPassword(!showPassword)}
-                    >
-                        <Icon
-                            name={showPassword ? 'eye-off' : 'eye'}
-                            size={20}
-                            color="#999"
+
+                    {/* Campo Password con ojo */}
+                    <Text style={styles.label}>Password</Text>
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            style={[styles.input, styles.passwordInput]}
+                            placeholder="Enter your password"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={!showPassword}
+                            placeholderTextColor="#999"
                         />
+                        <TouchableOpacity
+                            style={styles.eyeButton}
+                            onPress={() => setShowPassword(!showPassword)}
+                        >
+                            <Icon
+                                name={showPassword ? 'eye-off' : 'eye'}
+                                size={20}
+                                color="#999"
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Campo Confirm Password con ojo */}
+                    <Text style={styles.label}>Confirm Password</Text>
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            style={[styles.input, styles.passwordInput]}
+                            placeholder="Confirm your password"
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
+                            secureTextEntry={!showConfirmPassword}
+                            placeholderTextColor="#999"
+                        />
+                        <TouchableOpacity
+                            style={styles.eyeButton}
+                            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                            <Icon
+                                name={showConfirmPassword ? 'eye-off' : 'eye'}
+                                size={20}
+                                color="#999"
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Botón Regístrese */}
+                    <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+                        <Text style={styles.registerButtonText}>Regístrese</Text>
+                    </TouchableOpacity>
+
+                    {/* Enlace "¿Ya tienes una cuenta?" */}
+                    <TouchableOpacity onPress={handleLoginRedirect}>
+                        <Text style={styles.loginLink}>¿Ya tienes una cuenta?...</Text>
                     </TouchableOpacity>
                 </View>
-
-                {/* Campo Confirm Password con ojo */}
-                <Text style={styles.label}>Confirm Password</Text>
-                <View style={styles.passwordContainer}>
-                    <TextInput
-                        style={[styles.input, styles.passwordInput]}
-                        placeholder="Confirm your password"
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
-                        secureTextEntry={!showConfirmPassword}
-                        placeholderTextColor="#999"
-                    />
-                    <TouchableOpacity
-                        style={styles.eyeButton}
-                        onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                    >
-                        <Icon
-                            name={showConfirmPassword ? 'eye-off' : 'eye'}
-                            size={20}
-                            color="#999"
-                        />
-                    </TouchableOpacity>
-                </View>
-
-                {/* Botón Regístrese */}
-                <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-                    <Text style={styles.registerButtonText}>Regístrese</Text>
-                </TouchableOpacity>
-
-                {/* Enlace "¿Ya tienes una cuenta?" */}
-                <TouchableOpacity onPress={handleLoginRedirect}>
-                    <Text style={styles.loginLink}>¿Ya tienes una cuenta?...</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -136,10 +151,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        justifyContent: 'flex-start',
+    },
+    scrollContent: {
+        justifyContent: 'flex-start', // Se alinea al inicio, el ScrollView hará el resto
         alignItems: 'center',
         padding: 20,
-        paddingTop: 40,
+        paddingTop: 40, // Mantenemos el padding superior original
+        flexGrow: 1,
     },
     content: {
         width: '100%',
