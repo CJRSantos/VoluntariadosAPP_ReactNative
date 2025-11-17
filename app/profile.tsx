@@ -1009,6 +1009,7 @@ export default function ProfileScreen() {
                     </View>
                 </View>
             )}
+
             {profileMenuVisible && (
                 <View style={styles.bannerMenuOverlay}>
                     <View style={[styles.bannerMenuContent, { backgroundColor: isDark ? '#222' : '#fff' }]}>
@@ -1033,922 +1034,957 @@ export default function ProfileScreen() {
                 </View>
             )}
 
-            {/* Modales de formularios — CORREGIDOS PARA DESPLAZAMIENTO SUAVE */}
+            {/* Modales de formularios — MODIFICADOS (excepto idiomas) */}
+
+            {/* Modal de Información Personal */}
             {showPersonalInfoForm && (
-                <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPressOut={() => setShowPersonalInfoForm(false)}
+                <Modal
+                    visible={showPersonalInfoForm}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setShowPersonalInfoForm(false)}
                 >
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={{ width: '90%', maxWidth: 400 }}
-                    >
-                        <ScrollView
-                            keyboardShouldPersistTaps="handled"
-                            showsVerticalScrollIndicator={false}
+                    <View style={styles.modalOverlay}>
+                        <KeyboardAvoidingView
+                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                            style={{ width: '90%', maxWidth: 400 }}
                         >
-                            <TouchableOpacity
-                                activeOpacity={1}
-                                onPress={(e) => e.stopPropagation()}
-                                style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
+                            <ScrollView
+                                keyboardShouldPersistTaps="handled"
+                                showsVerticalScrollIndicator={false}
                             >
-                                <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Información Personal</Text>
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Nombre y Apellido</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Introduzca su nombre completo"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={nameInput}
-                                    onChangeText={setNameInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha de Nacimiento</Text>
                                 <TouchableOpacity
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                    onPress={() => setShowDatePicker(true)}
+                                    activeOpacity={1}
+                                    onPress={(e) => e.stopPropagation()}
+                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
                                 >
-                                    <Text style={{ color: birthDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                        {birthDateInput || 'Seleccionar fecha'}
-                                    </Text>
-                                </TouchableOpacity>
-                                {showDatePicker && (
-                                    <DateTimePicker
-                                        value={birthDateInput ? new Date(birthDateInput.split('/').reverse().join('-')) : new Date()}
-                                        mode="date"
-                                        display="default"
-                                        onChange={(event, selectedDate) => {
-                                            setShowDatePicker(false);
-                                            if (selectedDate) {
-                                                const d = selectedDate;
-                                                const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-                                                setBirthDateInput(formatted);
-                                            }
-                                        }}
-                                    />
-                                )}
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Celular N°</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Introducir número de celular"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={phoneInput}
-                                    onChangeText={setPhoneInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Seleccione su tipo de documento:</Text>
-                                <View style={styles.row}>
-                                    <View style={[styles.pickerWrapper, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}>
-                                        <Picker
-                                            selectedValue={documentType}
-                                            onValueChange={(itemValue) => setDocumentType(itemValue)}
-                                            style={styles.picker}
-                                            itemStyle={{ textAlign: 'center', fontSize: 16 }}
-                                        >
-                                            <Picker.Item label="Seleccionar" value="" />
-                                            <Picker.Item label="DNI" value="dni" />
-                                            <Picker.Item label="Carnet de Extranjería" value="carnet de extranjeria" />
-                                        </Picker>
-                                    </View>
+                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Información Personal</Text>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Nombre y Apellido</Text>
                                     <TextInput
-                                        style={[
-                                            styles.input,
-                                            { flex: 1, marginLeft: 10, backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
-                                        ]}
-                                        placeholder="N° de Documento"
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Introduzca su nombre completo"
                                         placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={documentNumberInput}
-                                        onChangeText={setDocumentNumberInput}
+                                        value={nameInput}
+                                        onChangeText={setNameInput}
                                         returnKeyType="next"
                                         blurOnSubmit={false}
                                     />
-                                </View>
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Género</Text>
-                                <View style={styles.radioGroup}>
-                                    {['Masculino', 'Femenino', 'Otros'].map((option) => (
-                                        <TouchableOpacity key={option} style={styles.radioOption} onPress={() => setGender(option)}>
-                                            <View style={[styles.radioButton, gender === option && styles.radioButtonSelected]} />
-                                            <Text style={[styles.radioLabel, { color: isDark ? '#FFF' : '#333' }]}>{option}</Text>
-                                        </TouchableOpacity>
-                                    ))}
-                                </View>
-                                <View style={styles.buttonGroup}>
-                                    <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowPersonalInfoForm(false)}>
-                                        <Text style={styles.buttonText}>Cancelar</Text>
-                                    </TouchableOpacity>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha de Nacimiento</Text>
                                     <TouchableOpacity
-                                        style={[styles.button, styles.addButton]}
-                                        onPress={async () => {
-                                            const missingField = validatePersonalFields();
-                                            if (showAlertIfMissingFields(missingField)) return;
-                                            const data = {
-                                                name: nameInput,
-                                                birthDate: birthDateInput,
-                                                phone: phoneInput,
-                                                documentType,
-                                                documentNumber: documentNumberInput,
-                                                gender,
-                                            };
-                                            setPersonalInfo(data);
-                                            await AsyncStorage.setItem('personalInfo', JSON.stringify(data));
-                                            Alert.alert('Éxito', editingPersonal ? 'Información actualizada' : 'Información guardada');
-                                            setShowPersonalInfoForm(false);
-                                        }}
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                                        onPress={() => setShowDatePicker(true)}
                                     >
-                                        <Text style={styles.buttonText}>{editingPersonal ? 'Actualizar' : 'Agregar'}</Text>
+                                        <Text style={{ color: birthDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                            {birthDateInput || 'Seleccionar fecha'}
+                                        </Text>
                                     </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        </ScrollView>
-                    </KeyboardAvoidingView>
-                </TouchableOpacity>
+                                    {showDatePicker && (
+                                        <DateTimePicker
+                                            value={birthDateInput ? new Date(birthDateInput.split('/').reverse().join('-')) : new Date()}
+                                            mode="date"
+                                            display="default"
+                                            onChange={(event, selectedDate) => {
+                                                setShowDatePicker(false);
+                                                if (selectedDate) {
+                                                    const d = selectedDate;
+                                                    const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+                                                    setBirthDateInput(formatted);
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Celular N°</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Introducir número de celular"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={phoneInput}
+                                        onChangeText={setPhoneInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Seleccione su tipo de documento:</Text>
+                                    <View style={styles.row}>
+                                        <View style={[styles.pickerWrapper, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}>
+                                            <Picker
+                                                selectedValue={documentType}
+                                                onValueChange={(itemValue) => setDocumentType(itemValue)}
+                                                style={styles.picker}
+                                                itemStyle={{ textAlign: 'center', fontSize: 16 }}
+                                            >
+                                                <Picker.Item label="Seleccionar" value="" />
+                                                <Picker.Item label="DNI" value="dni" />
+                                                <Picker.Item label="Carnet de Extranjería" value="carnet de extranjeria" />
+                                            </Picker>
+                                        </View>
+                                        <TextInput
+                                            style={[
+                                                styles.input,
+                                                { flex: 1, marginLeft: 10, backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
+                                            ]}
+                                            placeholder="N° de Documento"
+                                            placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                            value={documentNumberInput}
+                                            onChangeText={setDocumentNumberInput}
+                                            returnKeyType="next"
+                                            blurOnSubmit={false}
+                                        />
+                                    </View>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Género</Text>
+                                    <View style={styles.radioGroup}>
+                                        {['Masculino', 'Femenino', 'Otros'].map((option) => (
+                                            <TouchableOpacity key={option} style={styles.radioOption} onPress={() => setGender(option)}>
+                                                <View style={[styles.radioButton, gender === option && styles.radioButtonSelected]} />
+                                                <Text style={[styles.radioLabel, { color: isDark ? '#FFF' : '#333' }]}>{option}</Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+                                    <View style={styles.buttonGroup}>
+                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowPersonalInfoForm(false)}>
+                                            <Text style={styles.buttonText}>Cancelar</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={[styles.button, styles.addButton]}
+                                            onPress={async () => {
+                                                const missingField = validatePersonalFields();
+                                                if (showAlertIfMissingFields(missingField)) return;
+                                                const data = {
+                                                    name: nameInput,
+                                                    birthDate: birthDateInput,
+                                                    phone: phoneInput,
+                                                    documentType,
+                                                    documentNumber: documentNumberInput,
+                                                    gender,
+                                                };
+                                                setPersonalInfo(data);
+                                                await AsyncStorage.setItem('personalInfo', JSON.stringify(data));
+                                                Alert.alert('Éxito', editingPersonal ? 'Información actualizada' : 'Información guardada');
+                                                setShowPersonalInfoForm(false);
+                                            }}
+                                        >
+                                            <Text style={styles.buttonText}>{editingPersonal ? 'Actualizar' : 'Agregar'}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+                    </View>
+                </Modal>
             )}
+
+            {/* Modal de Formación Académica */}
             {showAcademicModal && (
-                <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPressOut={() => setShowAcademicModal(false)}
+                <Modal
+                    visible={showAcademicModal}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setShowAcademicModal(false)}
                 >
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={{ width: '90%', maxWidth: 400 }}
-                    >
-                        <ScrollView
-                            keyboardShouldPersistTaps="handled"
-                            showsVerticalScrollIndicator={false}
+                    <View style={styles.modalOverlay}>
+                        <KeyboardAvoidingView
+                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                            style={{ width: '90%', maxWidth: 400 }}
                         >
-                            <TouchableOpacity
-                                activeOpacity={1}
-                                onPress={(e) => e.stopPropagation()}
-                                style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
+                            <ScrollView
+                                keyboardShouldPersistTaps="handled"
+                                showsVerticalScrollIndicator={false}
                             >
-                                <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Formación Académica</Text>
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Grado</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Ingrese el nombre de su grado"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={degreeInput}
-                                    onChangeText={setDegreeInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Institución</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Ingrese el nombre de su carrera"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={institutionInput}
-                                    onChangeText={setInstitutionInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>País</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Ingrese su país"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={countryInput}
-                                    onChangeText={setCountryInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
                                 <TouchableOpacity
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                    onPress={() => setShowAcademicStartDatePicker(true)}
+                                    activeOpacity={1}
+                                    onPress={(e) => e.stopPropagation()}
+                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
                                 >
-                                    <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                        {startDateInput || 'Seleccionar año'}
-                                    </Text>
-                                </TouchableOpacity>
-                                {showAcademicStartDatePicker && (
-                                    <DateTimePicker
-                                        value={startDateInput ? new Date(`${startDateInput}-01-01`) : new Date()}
-                                        mode="date"
-                                        display="default"
-                                        onChange={(event, selectedDate) => {
-                                            setShowAcademicStartDatePicker(false);
-                                            if (selectedDate) {
-                                                const d = selectedDate;
-                                                const formatted = String(d.getFullYear());
-                                                setStartDateInput(formatted);
-                                            }
-                                        }}
+                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Formación Académica</Text>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Grado</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Ingrese el nombre de su grado"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={degreeInput}
+                                        onChangeText={setDegreeInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
                                     />
-                                )}
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
-                                <TouchableOpacity
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                    onPress={() => setShowAcademicEndDatePicker(true)}
-                                >
-                                    <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                        {endDateInput || 'Seleccionar año'}
-                                    </Text>
-                                </TouchableOpacity>
-                                {showAcademicEndDatePicker && (
-                                    <DateTimePicker
-                                        value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
-                                        mode="date"
-                                        display="default"
-                                        onChange={(event, selectedDate) => {
-                                            setShowAcademicEndDatePicker(false);
-                                            if (selectedDate) {
-                                                const d = selectedDate;
-                                                const formatted = String(d.getFullYear());
-                                                setEndDateInput(formatted);
-                                            }
-                                        }}
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Institución</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Ingrese el nombre de su carrera"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={institutionInput}
+                                        onChangeText={setInstitutionInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
                                     />
-                                )}
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Estado</Text>
-                                <View style={styles.radioGroup}>
-                                    {['Actualmente', 'Graduado', 'Titulado'].map((option) => (
-                                        <TouchableOpacity key={option} style={styles.radioOption} onPress={() => setAcademicStatus(option)}>
-                                            <View style={[styles.radioButton, academicStatus === option && styles.radioButtonSelected]} />
-                                            <Text style={[styles.radioLabel, { color: isDark ? '#FFF' : '#333' }]}>{option}</Text>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>País</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Ingrese su país"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={countryInput}
+                                        onChangeText={setCountryInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
+                                    <TouchableOpacity
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                                        onPress={() => setShowAcademicStartDatePicker(true)}
+                                    >
+                                        <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                            {startDateInput || 'Seleccionar año'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    {showAcademicStartDatePicker && (
+                                        <DateTimePicker
+                                            value={startDateInput ? new Date(`${startDateInput}-01-01`) : new Date()}
+                                            mode="date"
+                                            display="default"
+                                            onChange={(event, selectedDate) => {
+                                                setShowAcademicStartDatePicker(false);
+                                                if (selectedDate) {
+                                                    const d = selectedDate;
+                                                    const formatted = String(d.getFullYear());
+                                                    setStartDateInput(formatted);
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
+                                    <TouchableOpacity
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                                        onPress={() => setShowAcademicEndDatePicker(true)}
+                                    >
+                                        <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                            {endDateInput || 'Seleccionar año'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    {showAcademicEndDatePicker && (
+                                        <DateTimePicker
+                                            value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
+                                            mode="date"
+                                            display="default"
+                                            onChange={(event, selectedDate) => {
+                                                setShowAcademicEndDatePicker(false);
+                                                if (selectedDate) {
+                                                    const d = selectedDate;
+                                                    const formatted = String(d.getFullYear());
+                                                    setEndDateInput(formatted);
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Estado</Text>
+                                    <View style={styles.radioGroup}>
+                                        {['Actualmente', 'Graduado', 'Titulado'].map((option) => (
+                                            <TouchableOpacity key={option} style={styles.radioOption} onPress={() => setAcademicStatus(option)}>
+                                                <View style={[styles.radioButton, academicStatus === option && styles.radioButtonSelected]} />
+                                                <Text style={[styles.radioLabel, { color: isDark ? '#FFF' : '#333' }]}>{option}</Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+                                    <View style={styles.buttonGroup}>
+                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowAcademicModal(false)}>
+                                            <Text style={styles.buttonText}>Cancelar</Text>
                                         </TouchableOpacity>
-                                    ))}
-                                </View>
-                                <View style={styles.buttonGroup}>
-                                    <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowAcademicModal(false)}>
-                                        <Text style={styles.buttonText}>Cancelar</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[styles.button, styles.addButton]}
-                                        onPress={() => {
-                                            const missingField = validateAcademicFields();
-                                            if (showAlertIfMissingFields(missingField)) return;
-                                            const newRecord = {
-                                                degree: degreeInput,
-                                                institution: institutionInput,
-                                                country: countryInput,
-                                                startDate: startDateInput,
-                                                endDate: endDateInput,
-                                                status: academicStatus,
-                                            };
-                                            if (editingAcademic) {
-                                                updateRecord(academicRecords, setAcademicRecords, { ...editingAcademic, ...newRecord }, 'academicRecords');
-                                                Alert.alert('Éxito', 'Registro actualizado');
-                                            } else {
-                                                addRecord(academicRecords, setAcademicRecords, newRecord, 'academicRecords');
-                                                Alert.alert('Éxito', 'Registro guardado');
-                                            }
-                                            setShowAcademicModal(false);
-                                        }}
-                                    >
-                                        <Text style={styles.buttonText}>{editingAcademic ? 'Actualizar' : 'Agregar'}</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        </ScrollView>
-                    </KeyboardAvoidingView>
-                </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={[styles.button, styles.addButton]}
+                                            onPress={() => {
+                                                const missingField = validateAcademicFields();
+                                                if (showAlertIfMissingFields(missingField)) return;
+                                                const newRecord = {
+                                                    degree: degreeInput,
+                                                    institution: institutionInput,
+                                                    country: countryInput,
+                                                    startDate: startDateInput,
+                                                    endDate: endDateInput,
+                                                    status: academicStatus,
+                                                };
+                                                if (editingAcademic) {
+                                                    updateRecord(academicRecords, setAcademicRecords, { ...editingAcademic, ...newRecord }, 'academicRecords');
+                                                    Alert.alert('Éxito', 'Registro actualizado');
+                                                } else {
+                                                    addRecord(academicRecords, setAcademicRecords, newRecord, 'academicRecords');
+                                                    Alert.alert('Éxito', 'Registro guardado');
+                                                }
+                                                setShowAcademicModal(false);
+                                            }}
+                                        >
+                                            <Text style={styles.buttonText}>{editingAcademic ? 'Actualizar' : 'Agregar'}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+                    </View>
+                </Modal>
             )}
+
+            {/* Modal de Formación Técnica */}
             {showTechnicalModal && (
-                <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPressOut={() => setShowTechnicalModal(false)}
+                <Modal
+                    visible={showTechnicalModal}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setShowTechnicalModal(false)}
                 >
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={{ width: '90%', maxWidth: 400 }}
-                    >
-                        <ScrollView
-                            keyboardShouldPersistTaps="handled"
-                            showsVerticalScrollIndicator={false}
+                    <View style={styles.modalOverlay}>
+                        <KeyboardAvoidingView
+                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                            style={{ width: '90%', maxWidth: 400 }}
                         >
-                            <TouchableOpacity
-                                activeOpacity={1}
-                                onPress={(e) => e.stopPropagation()}
-                                style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
+                            <ScrollView
+                                keyboardShouldPersistTaps="handled"
+                                showsVerticalScrollIndicator={false}
                             >
-                                <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Formación Técnica / Especializada</Text>
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Curso</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Nombre del curso"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={courseInput}
-                                    onChangeText={setCourseInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Plataforma</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Plataforma o institución"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={platformInput}
-                                    onChangeText={setPlatformInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Duración</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Ej. 6 meses"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={durationInput}
-                                    onChangeText={setDurationInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de finalización</Text>
                                 <TouchableOpacity
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                    onPress={() => setShowTechnicalEndDatePicker(true)}
+                                    activeOpacity={1}
+                                    onPress={(e) => e.stopPropagation()}
+                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
                                 >
-                                    <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                        {endDateInput || 'Seleccionar año'}
-                                    </Text>
-                                </TouchableOpacity>
-                                {showTechnicalEndDatePicker && (
-                                    <DateTimePicker
-                                        value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
-                                        mode="date"
-                                        display="default"
-                                        onChange={(event, selectedDate) => {
-                                            setShowTechnicalEndDatePicker(false);
-                                            if (selectedDate) {
-                                                const d = selectedDate;
-                                                const formatted = String(d.getFullYear());
-                                                setEndDateInput(formatted);
-                                            }
-                                        }}
+                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Formación Técnica / Especializada</Text>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Curso</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Nombre del curso"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={courseInput}
+                                        onChangeText={setCourseInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
                                     />
-                                )}
-                                <View style={styles.buttonGroup}>
-                                    <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowTechnicalModal(false)}>
-                                        <Text style={styles.buttonText}>Cancelar</Text>
-                                    </TouchableOpacity>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Plataforma</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Plataforma o institución"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={platformInput}
+                                        onChangeText={setPlatformInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Duración</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Ej. 6 meses"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={durationInput}
+                                        onChangeText={setDurationInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de finalización</Text>
                                     <TouchableOpacity
-                                        style={[styles.button, styles.addButton]}
-                                        onPress={() => {
-                                            const missingField = validateTechnicalFields();
-                                            if (showAlertIfMissingFields(missingField)) return;
-                                            const newRecord = {
-                                                course: courseInput,
-                                                platform: platformInput,
-                                                duration: durationInput,
-                                                endDate: endDateInput,
-                                            };
-                                            if (editingTechnical) {
-                                                updateRecord(technicalRecords, setTechnicalRecords, { ...editingTechnical, ...newRecord }, 'technicalRecords');
-                                                Alert.alert('Éxito', 'Registro actualizado');
-                                            } else {
-                                                addRecord(technicalRecords, setTechnicalRecords, newRecord, 'technicalRecords');
-                                                Alert.alert('Éxito', 'Registro guardado');
-                                            }
-                                            setShowTechnicalModal(false);
-                                        }}
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                                        onPress={() => setShowTechnicalEndDatePicker(true)}
                                     >
-                                        <Text style={styles.buttonText}>{editingTechnical ? 'Actualizar' : 'Agregar'}</Text>
+                                        <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                            {endDateInput || 'Seleccionar año'}
+                                        </Text>
                                     </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        </ScrollView>
-                    </KeyboardAvoidingView>
-                </TouchableOpacity>
+                                    {showTechnicalEndDatePicker && (
+                                        <DateTimePicker
+                                            value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
+                                            mode="date"
+                                            display="default"
+                                            onChange={(event, selectedDate) => {
+                                                setShowTechnicalEndDatePicker(false);
+                                                if (selectedDate) {
+                                                    const d = selectedDate;
+                                                    const formatted = String(d.getFullYear());
+                                                    setEndDateInput(formatted);
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                    <View style={styles.buttonGroup}>
+                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowTechnicalModal(false)}>
+                                            <Text style={styles.buttonText}>Cancelar</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={[styles.button, styles.addButton]}
+                                            onPress={() => {
+                                                const missingField = validateTechnicalFields();
+                                                if (showAlertIfMissingFields(missingField)) return;
+                                                const newRecord = {
+                                                    course: courseInput,
+                                                    platform: platformInput,
+                                                    duration: durationInput,
+                                                    endDate: endDateInput,
+                                                };
+                                                if (editingTechnical) {
+                                                    updateRecord(technicalRecords, setTechnicalRecords, { ...editingTechnical, ...newRecord }, 'technicalRecords');
+                                                    Alert.alert('Éxito', 'Registro actualizado');
+                                                } else {
+                                                    addRecord(technicalRecords, setTechnicalRecords, newRecord, 'technicalRecords');
+                                                    Alert.alert('Éxito', 'Registro guardado');
+                                                }
+                                                setShowTechnicalModal(false);
+                                            }}
+                                        >
+                                            <Text style={styles.buttonText}>{editingTechnical ? 'Actualizar' : 'Agregar'}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+                    </View>
+                </Modal>
             )}
+
+            {/* Modal de Formación Complementaria */}
             {showComplementaryModal && (
-                <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPressOut={() => setShowComplementaryModal(false)}
+                <Modal
+                    visible={showComplementaryModal}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setShowComplementaryModal(false)}
                 >
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={{ width: '90%', maxWidth: 400 }}
-                    >
-                        <ScrollView
-                            keyboardShouldPersistTaps="handled"
-                            showsVerticalScrollIndicator={false}
+                    <View style={styles.modalOverlay}>
+                        <KeyboardAvoidingView
+                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                            style={{ width: '90%', maxWidth: 400 }}
                         >
-                            <TouchableOpacity
-                                activeOpacity={1}
-                                onPress={(e) => e.stopPropagation()}
-                                style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
+                            <ScrollView
+                                keyboardShouldPersistTaps="handled"
+                                showsVerticalScrollIndicator={false}
                             >
-                                <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Formación Complementaria</Text>
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Actividad</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Nombre de la actividad"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={activityInput}
-                                    onChangeText={setActivityInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Descripción</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Breve descripción"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={descriptionInput}
-                                    onChangeText={setDescriptionInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha</Text>
                                 <TouchableOpacity
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                    onPress={() => setShowComplementaryDatePicker(true)}
+                                    activeOpacity={1}
+                                    onPress={(e) => e.stopPropagation()}
+                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
                                 >
-                                    <Text style={{ color: dateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                        {dateInput || 'Seleccionar fecha'}
-                                    </Text>
-                                </TouchableOpacity>
-                                {showComplementaryDatePicker && (
-                                    <DateTimePicker
-                                        value={dateInput ? new Date(dateInput.split('/').reverse().join('-')) : new Date()}
-                                        mode="date"
-                                        display="default"
-                                        onChange={(event, selectedDate) => {
-                                            setShowComplementaryDatePicker(false);
-                                            if (selectedDate) {
-                                                const d = selectedDate;
-                                                const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-                                                setDateInput(formatted);
-                                            }
-                                        }}
+                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Formación Complementaria</Text>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Actividad</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Nombre de la actividad"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={activityInput}
+                                        onChangeText={setActivityInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
                                     />
-                                )}
-                                <View style={styles.buttonGroup}>
-                                    <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowComplementaryModal(false)}>
-                                        <Text style={styles.buttonText}>Cancelar</Text>
-                                    </TouchableOpacity>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Descripción</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Breve descripción"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={descriptionInput}
+                                        onChangeText={setDescriptionInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha</Text>
                                     <TouchableOpacity
-                                        style={[styles.button, styles.addButton]}
-                                        onPress={() => {
-                                            const missingField = validateComplementaryFields();
-                                            if (showAlertIfMissingFields(missingField)) return;
-                                            const newRecord = {
-                                                activity: activityInput,
-                                                description: descriptionInput,
-                                                date: dateInput,
-                                            };
-                                            if (editingComplementary) {
-                                                updateRecord(complementaryRecords, setComplementaryRecords, { ...editingComplementary, ...newRecord }, 'complementaryRecords');
-                                                Alert.alert('Éxito', 'Registro actualizado');
-                                            } else {
-                                                addRecord(complementaryRecords, setComplementaryRecords, newRecord, 'complementaryRecords');
-                                                Alert.alert('Éxito', 'Registro guardado');
-                                            }
-                                            setShowComplementaryModal(false);
-                                        }}
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                                        onPress={() => setShowComplementaryDatePicker(true)}
                                     >
-                                        <Text style={styles.buttonText}>{editingComplementary ? 'Actualizar' : 'Agregar'}</Text>
+                                        <Text style={{ color: dateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                            {dateInput || 'Seleccionar fecha'}
+                                        </Text>
                                     </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        </ScrollView>
-                    </KeyboardAvoidingView>
-                </TouchableOpacity>
+                                    {showComplementaryDatePicker && (
+                                        <DateTimePicker
+                                            value={dateInput ? new Date(dateInput.split('/').reverse().join('-')) : new Date()}
+                                            mode="date"
+                                            display="default"
+                                            onChange={(event, selectedDate) => {
+                                                setShowComplementaryDatePicker(false);
+                                                if (selectedDate) {
+                                                    const d = selectedDate;
+                                                    const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+                                                    setDateInput(formatted);
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                    <View style={styles.buttonGroup}>
+                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowComplementaryModal(false)}>
+                                            <Text style={styles.buttonText}>Cancelar</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={[styles.button, styles.addButton]}
+                                            onPress={() => {
+                                                const missingField = validateComplementaryFields();
+                                                if (showAlertIfMissingFields(missingField)) return;
+                                                const newRecord = {
+                                                    activity: activityInput,
+                                                    description: descriptionInput,
+                                                    date: dateInput,
+                                                };
+                                                if (editingComplementary) {
+                                                    updateRecord(complementaryRecords, setComplementaryRecords, { ...editingComplementary, ...newRecord }, 'complementaryRecords');
+                                                    Alert.alert('Éxito', 'Registro actualizado');
+                                                } else {
+                                                    addRecord(complementaryRecords, setComplementaryRecords, newRecord, 'complementaryRecords');
+                                                    Alert.alert('Éxito', 'Registro guardado');
+                                                }
+                                                setShowComplementaryModal(false);
+                                            }}
+                                        >
+                                            <Text style={styles.buttonText}>{editingComplementary ? 'Actualizar' : 'Agregar'}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+                    </View>
+                </Modal>
             )}
+
+            {/* Modal de Experiencia Laboral */}
             {showExperienceModal && (
-                <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPressOut={() => setShowExperienceModal(false)}
+                <Modal
+                    visible={showExperienceModal}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setShowExperienceModal(false)}
                 >
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={{ width: '90%', maxWidth: 400 }}
-                    >
-                        <ScrollView
-                            keyboardShouldPersistTaps="handled"
-                            showsVerticalScrollIndicator={false}
+                    <View style={styles.modalOverlay}>
+                        <KeyboardAvoidingView
+                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                            style={{ width: '90%', maxWidth: 400 }}
                         >
-                            <TouchableOpacity
-                                activeOpacity={1}
-                                onPress={(e) => e.stopPropagation()}
-                                style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
+                            <ScrollView
+                                keyboardShouldPersistTaps="handled"
+                                showsVerticalScrollIndicator={false}
                             >
-                                <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Experiencia Laboral</Text>
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Cargo</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Nombre del cargo"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={positionInput}
-                                    onChangeText={setPositionInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Institución</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Nombre de la empresa u organización"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={institutionInput}
-                                    onChangeText={setInstitutionInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Área</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Área o departamento"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={areaInput}
-                                    onChangeText={setAreaInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>País</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="País"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={countryInput}
-                                    onChangeText={setCountryInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
                                 <TouchableOpacity
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                    onPress={() => setShowExperienceStartDatePicker(true)}
+                                    activeOpacity={1}
+                                    onPress={(e) => e.stopPropagation()}
+                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
                                 >
-                                    <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                        {startDateInput || 'Seleccionar año'}
-                                    </Text>
-                                </TouchableOpacity>
-                                {showExperienceStartDatePicker && (
-                                    <DateTimePicker
-                                        value={startDateInput ? new Date(`${startDateInput}-01-01`) : new Date()}
-                                        mode="date"
-                                        display="default"
-                                        onChange={(event, selectedDate) => {
-                                            setShowExperienceStartDatePicker(false);
-                                            if (selectedDate) {
-                                                const d = selectedDate;
-                                                const formatted = String(d.getFullYear());
-                                                setStartDateInput(formatted);
-                                            }
-                                        }}
+                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Experiencia Laboral</Text>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Cargo</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Nombre del cargo"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={positionInput}
+                                        onChangeText={setPositionInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
                                     />
-                                )}
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
-                                <TouchableOpacity
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                    onPress={() => setShowExperienceEndDatePicker(true)}
-                                >
-                                    <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                        {endDateInput || 'Seleccionar año'}
-                                    </Text>
-                                </TouchableOpacity>
-                                {showExperienceEndDatePicker && (
-                                    <DateTimePicker
-                                        value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
-                                        mode="date"
-                                        display="default"
-                                        onChange={(event, selectedDate) => {
-                                            setShowExperienceEndDatePicker(false);
-                                            if (selectedDate) {
-                                                const d = selectedDate;
-                                                const formatted = String(d.getFullYear());
-                                                setEndDateInput(formatted);
-                                            }
-                                        }}
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Institución</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Nombre de la empresa u organización"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={institutionInput}
+                                        onChangeText={setInstitutionInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
                                     />
-                                )}
-                                <View style={styles.buttonGroup}>
-                                    <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowExperienceModal(false)}>
-                                        <Text style={styles.buttonText}>Cancelar</Text>
-                                    </TouchableOpacity>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Área</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Área o departamento"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={areaInput}
+                                        onChangeText={setAreaInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>País</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="País"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={countryInput}
+                                        onChangeText={setCountryInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
                                     <TouchableOpacity
-                                        style={[styles.button, styles.addButton]}
-                                        onPress={() => {
-                                            const missingField = validateExperienceFields();
-                                            if (showAlertIfMissingFields(missingField)) return;
-                                            const newRecord = {
-                                                position: positionInput,
-                                                institution: institutionInput,
-                                                area: areaInput,
-                                                country: countryInput,
-                                                startDate: startDateInput,
-                                                endDate: endDateInput,
-                                            };
-                                            if (editingExperience) {
-                                                updateRecord(experienceRecords, setExperienceRecords, { ...editingExperience, ...newRecord }, 'experienceRecords');
-                                                Alert.alert('Éxito', 'Registro actualizado');
-                                            } else {
-                                                addRecord(experienceRecords, setExperienceRecords, newRecord, 'experienceRecords');
-                                                Alert.alert('Éxito', 'Registro guardado');
-                                            }
-                                            setShowExperienceModal(false);
-                                        }}
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                                        onPress={() => setShowExperienceStartDatePicker(true)}
                                     >
-                                        <Text style={styles.buttonText}>{editingExperience ? 'Actualizar' : 'Agregar'}</Text>
+                                        <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                            {startDateInput || 'Seleccionar año'}
+                                        </Text>
                                     </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        </ScrollView>
-                    </KeyboardAvoidingView>
-                </TouchableOpacity>
+                                    {showExperienceStartDatePicker && (
+                                        <DateTimePicker
+                                            value={startDateInput ? new Date(`${startDateInput}-01-01`) : new Date()}
+                                            mode="date"
+                                            display="default"
+                                            onChange={(event, selectedDate) => {
+                                                setShowExperienceStartDatePicker(false);
+                                                if (selectedDate) {
+                                                    const d = selectedDate;
+                                                    const formatted = String(d.getFullYear());
+                                                    setStartDateInput(formatted);
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
+                                    <TouchableOpacity
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                                        onPress={() => setShowExperienceEndDatePicker(true)}
+                                    >
+                                        <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                            {endDateInput || 'Seleccionar año'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    {showExperienceEndDatePicker && (
+                                        <DateTimePicker
+                                            value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
+                                            mode="date"
+                                            display="default"
+                                            onChange={(event, selectedDate) => {
+                                                setShowExperienceEndDatePicker(false);
+                                                if (selectedDate) {
+                                                    const d = selectedDate;
+                                                    const formatted = String(d.getFullYear());
+                                                    setEndDateInput(formatted);
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                    <View style={styles.buttonGroup}>
+                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowExperienceModal(false)}>
+                                            <Text style={styles.buttonText}>Cancelar</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={[styles.button, styles.addButton]}
+                                            onPress={() => {
+                                                const missingField = validateExperienceFields();
+                                                if (showAlertIfMissingFields(missingField)) return;
+                                                const newRecord = {
+                                                    position: positionInput,
+                                                    institution: institutionInput,
+                                                    area: areaInput,
+                                                    country: countryInput,
+                                                    startDate: startDateInput,
+                                                    endDate: endDateInput,
+                                                };
+                                                if (editingExperience) {
+                                                    updateRecord(experienceRecords, setExperienceRecords, { ...editingExperience, ...newRecord }, 'experienceRecords');
+                                                    Alert.alert('Éxito', 'Registro actualizado');
+                                                } else {
+                                                    addRecord(experienceRecords, setExperienceRecords, newRecord, 'experienceRecords');
+                                                    Alert.alert('Éxito', 'Registro guardado');
+                                                }
+                                                setShowExperienceModal(false);
+                                            }}
+                                        >
+                                            <Text style={styles.buttonText}>{editingExperience ? 'Actualizar' : 'Agregar'}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+                    </View>
+                </Modal>
             )}
+
+            {/* Modal de Voluntariado */}
             {showVolunteerModal && (
-                <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPressOut={() => setShowVolunteerModal(false)}
+                <Modal
+                    visible={showVolunteerModal}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setShowVolunteerModal(false)}
                 >
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={{ width: '90%', maxWidth: 400 }}
-                    >
-                        <ScrollView
-                            keyboardShouldPersistTaps="handled"
-                            showsVerticalScrollIndicator={false}
+                    <View style={styles.modalOverlay}>
+                        <KeyboardAvoidingView
+                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                            style={{ width: '90%', maxWidth: 400 }}
                         >
-                            <TouchableOpacity
-                                activeOpacity={1}
-                                onPress={(e) => e.stopPropagation()}
-                                style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
+                            <ScrollView
+                                keyboardShouldPersistTaps="handled"
+                                showsVerticalScrollIndicator={false}
                             >
-                                <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Voluntariado</Text>
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Organización</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Nombre de la organización"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={orgInput}
-                                    onChangeText={setOrgInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Rol</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Rol desempeñado"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={roleInput}
-                                    onChangeText={setRoleInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Causa</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Causa o propósito"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={causeInput}
-                                    onChangeText={setCauseInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Descripción</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Breve descripción"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={descriptionInput}
-                                    onChangeText={setDescriptionInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
                                 <TouchableOpacity
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                    onPress={() => setShowStartDatePicker(true)}
+                                    activeOpacity={1}
+                                    onPress={(e) => e.stopPropagation()}
+                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
                                 >
-                                    <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                        {startDateInput || 'Seleccionar año'}
-                                    </Text>
-                                </TouchableOpacity>
-                                {showStartDatePicker && (
-                                    <DateTimePicker
-                                        value={startDateInput ? new Date(`${startDateInput}-01-01`) : new Date()}
-                                        mode="date"
-                                        display="default"
-                                        onChange={(event, selectedDate) => {
-                                            setShowStartDatePicker(false);
-                                            if (selectedDate) {
-                                                const d = selectedDate;
-                                                const formatted = String(d.getFullYear());
-                                                setStartDateInput(formatted);
-                                            }
-                                        }}
+                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Voluntariado</Text>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Organización</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Nombre de la organización"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={orgInput}
+                                        onChangeText={setOrgInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
                                     />
-                                )}
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
-                                <TouchableOpacity
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                    onPress={() => setShowEndDatePicker(true)}
-                                >
-                                    <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                        {endDateInput || 'Seleccionar año'}
-                                    </Text>
-                                </TouchableOpacity>
-                                {showEndDatePicker && (
-                                    <DateTimePicker
-                                        value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
-                                        mode="date"
-                                        display="default"
-                                        onChange={(event, selectedDate) => {
-                                            setShowEndDatePicker(false);
-                                            if (selectedDate) {
-                                                const d = selectedDate;
-                                                const formatted = String(d.getFullYear());
-                                                setEndDateInput(formatted);
-                                            }
-                                        }}
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Rol</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Rol desempeñado"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={roleInput}
+                                        onChangeText={setRoleInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
                                     />
-                                )}
-                                <View style={styles.checkboxContainer}>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Causa</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Causa o propósito"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={causeInput}
+                                        onChangeText={setCauseInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Descripción</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Breve descripción"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={descriptionInput}
+                                        onChangeText={setDescriptionInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
                                     <TouchableOpacity
-                                        style={[styles.checkbox, currentlyInRole && styles.checkboxChecked]}
-                                        onPress={() => {
-                                            setCurrentlyInRole(true);
-                                        }}
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                                        onPress={() => setShowStartDatePicker(true)}
                                     >
-                                        {currentlyInRole && <Ionicons name="checkmark" size={16} color="#fff" />}
+                                        <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                            {startDateInput || 'Seleccionar año'}
+                                        </Text>
                                     </TouchableOpacity>
-                                    <Text style={[styles.checkboxLabel, { color: isDark ? '#FFF' : '#333' }]}>Actualmente en este rol</Text>
-                                </View>
-                                <View style={styles.checkboxContainer}>
+                                    {showStartDatePicker && (
+                                        <DateTimePicker
+                                            value={startDateInput ? new Date(`${startDateInput}-01-01`) : new Date()}
+                                            mode="date"
+                                            display="default"
+                                            onChange={(event, selectedDate) => {
+                                                setShowStartDatePicker(false);
+                                                if (selectedDate) {
+                                                    const d = selectedDate;
+                                                    const formatted = String(d.getFullYear());
+                                                    setStartDateInput(formatted);
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
                                     <TouchableOpacity
-                                        style={[styles.checkbox, !currentlyInRole && styles.checkboxChecked]}
-                                        onPress={() => {
-                                            setCurrentlyInRole(false);
-                                        }}
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                                        onPress={() => setShowEndDatePicker(true)}
                                     >
-                                        {!currentlyInRole && <Ionicons name="checkmark" size={16} color="#fff" />}
+                                        <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                            {endDateInput || 'Seleccionar año'}
+                                        </Text>
                                     </TouchableOpacity>
-                                    <Text style={[styles.checkboxLabel, { color: isDark ? '#FFF' : '#333' }]}>Finalizado</Text>
-                                </View>
-                                <View style={styles.buttonGroup}>
-                                    <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowVolunteerModal(false)}>
-                                        <Text style={styles.buttonText}>Cancelar</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[styles.button, styles.addButton]}
-                                        onPress={() => {
-                                            const missingField = validateVolunteerFields();
-                                            if (showAlertIfMissingFields(missingField)) return;
-                                            const newRecord = {
-                                                organization: orgInput,
-                                                role: roleInput,
-                                                cause: causeInput,
-                                                description: descriptionInput,
-                                                startDate: startDateInput,
-                                                endDate: endDateInput,
-                                                currentlyInRole,
-                                            };
-                                            if (editingVolunteer) {
-                                                updateRecord(volunteerRecords, setVolunteerRecords, { ...editingVolunteer, ...newRecord }, 'volunteerRecords');
-                                                Alert.alert('Éxito', 'Registro actualizado');
-                                            } else {
-                                                addRecord(volunteerRecords, setVolunteerRecords, newRecord, 'volunteerRecords');
-                                                Alert.alert('Éxito', 'Registro guardado');
-                                            }
-                                            setShowVolunteerModal(false);
-                                        }}
-                                    >
-                                        <Text style={styles.buttonText}>{editingVolunteer ? 'Actualizar' : 'Agregar'}</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        </ScrollView>
-                    </KeyboardAvoidingView>
-                </TouchableOpacity>
+                                    {showEndDatePicker && (
+                                        <DateTimePicker
+                                            value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
+                                            mode="date"
+                                            display="default"
+                                            onChange={(event, selectedDate) => {
+                                                setShowEndDatePicker(false);
+                                                if (selectedDate) {
+                                                    const d = selectedDate;
+                                                    const formatted = String(d.getFullYear());
+                                                    setEndDateInput(formatted);
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                    <View style={styles.checkboxContainer}>
+                                        <TouchableOpacity
+                                            style={[styles.checkbox, currentlyInRole && styles.checkboxChecked]}
+                                            onPress={() => {
+                                                setCurrentlyInRole(true);
+                                            }}
+                                        >
+                                            {currentlyInRole && <Ionicons name="checkmark" size={16} color="#fff" />}
+                                        </TouchableOpacity>
+                                        <Text style={[styles.checkboxLabel, { color: isDark ? '#FFF' : '#333' }]}>Actualmente en este rol</Text>
+                                    </View>
+                                    <View style={styles.checkboxContainer}>
+                                        <TouchableOpacity
+                                            style={[styles.checkbox, !currentlyInRole && styles.checkboxChecked]}
+                                            onPress={() => {
+                                                setCurrentlyInRole(false);
+                                            }}
+                                        >
+                                            {!currentlyInRole && <Ionicons name="checkmark" size={16} color="#fff" />}
+                                        </TouchableOpacity>
+                                        <Text style={[styles.checkboxLabel, { color: isDark ? '#FFF' : '#333' }]}>Finalizado</Text>
+                                    </View>
+                                    <View style={styles.buttonGroup}>
+                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowVolunteerModal(false)}>
+                                            <Text style={styles.buttonText}>Cancelar</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={[styles.button, styles.addButton]}
+                                            onPress={() => {
+                                                const missingField = validateVolunteerFields();
+                                                if (showAlertIfMissingFields(missingField)) return;
+                                                const newRecord = {
+                                                    organization: orgInput,
+                                                    role: roleInput,
+                                                    cause: causeInput,
+                                                    description: descriptionInput,
+                                                    startDate: startDateInput,
+                                                    endDate: endDateInput,
+                                                    currentlyInRole,
+                                                };
+                                                if (editingVolunteer) {
+                                                    updateRecord(volunteerRecords, setVolunteerRecords, { ...editingVolunteer, ...newRecord }, 'volunteerRecords');
+                                                    Alert.alert('Éxito', 'Registro actualizado');
+                                                } else {
+                                                    addRecord(volunteerRecords, setVolunteerRecords, newRecord, 'volunteerRecords');
+                                                    Alert.alert('Éxito', 'Registro guardado');
+                                                }
+                                                setShowVolunteerModal(false);
+                                            }}
+                                        >
+                                            <Text style={styles.buttonText}>{editingVolunteer ? 'Actualizar' : 'Agregar'}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+                    </View>
+                </Modal>
             )}
+
+            {/* Modal de Publicación */}
             {showPublicationModal && (
-                <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPressOut={() => setShowPublicationModal(false)}
+                <Modal
+                    visible={showPublicationModal}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setShowPublicationModal(false)}
                 >
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={{ width: '90%', maxWidth: 400 }}
-                    >
-                        <ScrollView
-                            keyboardShouldPersistTaps="handled"
-                            showsVerticalScrollIndicator={false}
+                    <View style={styles.modalOverlay}>
+                        <KeyboardAvoidingView
+                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                            style={{ width: '90%', maxWidth: 400 }}
                         >
-                            <TouchableOpacity
-                                activeOpacity={1}
-                                onPress={(e) => e.stopPropagation()}
-                                style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
+                            <ScrollView
+                                keyboardShouldPersistTaps="handled"
+                                showsVerticalScrollIndicator={false}
                             >
-                                <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Publicación</Text>
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Título</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Título de la publicación"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={pubTitleInput}
-                                    onChangeText={setPubTitleInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Editorial</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Nombre de la editorial"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={pubEditorialInput}
-                                    onChangeText={setPubEditorialInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Autor(es)</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Autores"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={pubAuthorInput}
-                                    onChangeText={setPubAuthorInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha</Text>
                                 <TouchableOpacity
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                    onPress={() => setShowPubDatePicker(true)}
+                                    activeOpacity={1}
+                                    onPress={(e) => e.stopPropagation()}
+                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
                                 >
-                                    <Text style={{ color: pubDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                        {pubDateInput || 'Seleccionar fecha'}
-                                    </Text>
-                                </TouchableOpacity>
-                                {showPubDatePicker && (
-                                    <DateTimePicker
-                                        value={pubDateInput ? new Date(pubDateInput.split('/').reverse().join('-')) : new Date()}
-                                        mode="date"
-                                        display="default"
-                                        onChange={(event, selectedDate) => {
-                                            setShowPubDatePicker(false);
-                                            if (selectedDate) {
-                                                const d = selectedDate;
-                                                const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-                                                setPubDateInput(formatted);
-                                            }
-                                        }}
+                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Publicación</Text>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Título</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Título de la publicación"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={pubTitleInput}
+                                        onChangeText={setPubTitleInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
                                     />
-                                )}
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>URL (opcional)</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Enlace a la publicación"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={pubUrlInput}
-                                    onChangeText={setPubUrlInput}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                />
-                                <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Resumen</Text>
-                                <TextInput
-                                    style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                    placeholder="Resumen o abstract"
-                                    placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                    value={pubAbstractInput}
-                                    onChangeText={setPubAbstractInput}
-                                    multiline
-                                    numberOfLines={3}
-                                    returnKeyType="done"
-                                    blurOnSubmit={true}
-                                />
-                                <View style={styles.buttonGroup}>
-                                    <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowPublicationModal(false)}>
-                                        <Text style={styles.buttonText}>Cancelar</Text>
-                                    </TouchableOpacity>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Editorial</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Nombre de la editorial"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={pubEditorialInput}
+                                        onChangeText={setPubEditorialInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Autor(es)</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Autores"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={pubAuthorInput}
+                                        onChangeText={setPubAuthorInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha</Text>
                                     <TouchableOpacity
-                                        style={[styles.button, styles.addButton]}
-                                        onPress={() => {
-                                            const missingField = validatePublicationFields();
-                                            if (showAlertIfMissingFields(missingField)) return;
-                                            const newRecord = {
-                                                title: pubTitleInput,
-                                                editorial: pubEditorialInput,
-                                                author: pubAuthorInput,
-                                                date: pubDateInput,
-                                                url: pubUrlInput,
-                                                abstract: pubAbstractInput,
-                                            };
-                                            if (editingPublication) {
-                                                updateRecord(publicationRecords, setPublicationRecords, { ...editingPublication, ...newRecord }, 'publicationRecords');
-                                                Alert.alert('Éxito', 'Registro actualizado');
-                                            } else {
-                                                addRecord(publicationRecords, setPublicationRecords, newRecord, 'publicationRecords');
-                                                Alert.alert('Éxito', 'Registro guardado');
-                                            }
-                                            setShowPublicationModal(false);
-                                        }}
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
+                                        onPress={() => setShowPubDatePicker(true)}
                                     >
-                                        <Text style={styles.buttonText}>{editingPublication ? 'Actualizar' : 'Agregar'}</Text>
+                                        <Text style={{ color: pubDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                            {pubDateInput || 'Seleccionar fecha'}
+                                        </Text>
                                     </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        </ScrollView>
-                    </KeyboardAvoidingView>
-                </TouchableOpacity>
+                                    {showPubDatePicker && (
+                                        <DateTimePicker
+                                            value={pubDateInput ? new Date(pubDateInput.split('/').reverse().join('-')) : new Date()}
+                                            mode="date"
+                                            display="default"
+                                            onChange={(event, selectedDate) => {
+                                                setShowPubDatePicker(false);
+                                                if (selectedDate) {
+                                                    const d = selectedDate;
+                                                    const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+                                                    setPubDateInput(formatted);
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>URL (opcional)</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Enlace a la publicación"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={pubUrlInput}
+                                        onChangeText={setPubUrlInput}
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Resumen</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Resumen o abstract"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={pubAbstractInput}
+                                        onChangeText={setPubAbstractInput}
+                                        multiline
+                                        numberOfLines={3}
+                                        returnKeyType="done"
+                                        blurOnSubmit={true}
+                                    />
+                                    <View style={styles.buttonGroup}>
+                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowPublicationModal(false)}>
+                                            <Text style={styles.buttonText}>Cancelar</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={[styles.button, styles.addButton]}
+                                            onPress={() => {
+                                                const missingField = validatePublicationFields();
+                                                if (showAlertIfMissingFields(missingField)) return;
+                                                const newRecord = {
+                                                    title: pubTitleInput,
+                                                    editorial: pubEditorialInput,
+                                                    author: pubAuthorInput,
+                                                    date: pubDateInput,
+                                                    url: pubUrlInput,
+                                                    abstract: pubAbstractInput,
+                                                };
+                                                if (editingPublication) {
+                                                    updateRecord(publicationRecords, setPublicationRecords, { ...editingPublication, ...newRecord }, 'publicationRecords');
+                                                    Alert.alert('Éxito', 'Registro actualizado');
+                                                } else {
+                                                    addRecord(publicationRecords, setPublicationRecords, newRecord, 'publicationRecords');
+                                                    Alert.alert('Éxito', 'Registro guardado');
+                                                }
+                                                setShowPublicationModal(false);
+                                            }}
+                                        >
+                                            <Text style={styles.buttonText}>{editingPublication ? 'Actualizar' : 'Agregar'}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+                    </View>
+                </Modal>
             )}
             {/* Modal de Idiomas — SIN CAMBIOS */}
             {showLanguageModal && (
@@ -2202,11 +2238,15 @@ const styles = StyleSheet.create({
 
     // Estilo del overlay para el modal de imagen
     modalOverlay: {
-        position: 'absolute', // Se superpone a otros elementos
-        top: 0, left: 0, right: 0, bottom: 0, // Ocupa toda la pantalla
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semi-transparente
-        justifyContent: 'center', alignItems: 'center',
-        zIndex: 10, // Asegura que esté encima de otros elementos
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 30,
     },
 
     // Botón para cerrar el modal de imagen
