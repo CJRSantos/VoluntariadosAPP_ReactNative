@@ -900,7 +900,7 @@ export default function ProfileScreen() {
                                     ))
                                 )}
                             </View>
-                            {/* Idiomas (sin cambios) */}
+                            {/* Idiomas */}
                             <View style={styles.section}>
                                 <View style={styles.sectionHeader}>
                                     <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Idiomas</Text>
@@ -1989,122 +1989,148 @@ export default function ProfileScreen() {
                 </Modal>
             )}
 
-            {/* Modal de Idiomas — SIN CAMBIOS */}
+            {/* Modal de Idiomas */}
             {showLanguageModal && (
-                <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPressOut={() => setShowLanguageModal(false)}
+                <Modal
+                    visible={showLanguageModal}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setShowLanguageModal(false)}
                 >
-                    <TouchableOpacity
-                        activeOpacity={1}
-                        onPress={(e) => e.stopPropagation()}
-                        style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
-                    >
-                        <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Idioma</Text>
-                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Idioma</Text>
-                        <TextInput
-                            style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                            placeholder="Ej. Inglés, Francés"
-                            placeholderTextColor={isDark ? '#AAA' : '#999'}
-                            value={languageInput}
-                            onChangeText={setLanguageInput}
-                        />
-                        <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Nivel de dominio</Text>
-                        <TouchableOpacity
-                            style={[
-                                styles.input,
-                                {
-                                    backgroundColor: isDark ? '#333' : '#f9f9f9',
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                }
-                            ]}
-                            onPress={() => setShowLanguagePicker(true)}
+                    <View style={styles.modalOverlay}>
+                        <KeyboardAvoidingView
+                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                            style={{ width: '90%', maxWidth: 400 }}
                         >
-                            <Text style={{ color: languageProficiency ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                {languageProficiency || 'Seleccionar'}
-                            </Text>
-                            <Ionicons name="chevron-down" size={20} color={isDark ? '#AAA' : '#666'} />
-                        </TouchableOpacity>
-                        <View style={styles.buttonGroup}>
-                            <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowLanguageModal(false)}>
-                                <Text style={styles.buttonText}>Cancelar</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={[styles.button, styles.addButton]}
-                                onPress={() => {
-                                    const missingField = validateLanguageFields();
-                                    if (showAlertIfMissingFields(missingField)) return;
-                                    const newRecord = {
-                                        language: languageInput,
-                                        proficiency: languageProficiency,
-                                    };
-                                    if (editingLanguage) {
-                                        updateRecord(languageRecords, setLanguageRecords, { ...editingLanguage, ...newRecord }, 'languageRecords');
-                                        Alert.alert('Éxito', 'Registro actualizado');
-                                    } else {
-                                        addRecord(languageRecords, setLanguageRecords, newRecord, 'languageRecords');
-                                        Alert.alert('Éxito', 'Registro guardado');
-                                    }
-                                    setShowLanguageModal(false);
-                                }}
+                            <ScrollView
+                                keyboardShouldPersistTaps="handled"
+                                showsVerticalScrollIndicator={false}
                             >
-                                <Text style={styles.buttonText}>{editingLanguage ? 'Actualizar' : 'Agregar'}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </TouchableOpacity>
-                </TouchableOpacity>
+                                <TouchableOpacity
+                                    activeOpacity={1}
+                                    onPress={(e) => e.stopPropagation()}
+                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
+                                >
+                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Idioma</Text>
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Idioma</Text>
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Ej. Inglés, Francés"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
+                                        value={languageInput}
+                                        onChangeText={setLanguageInput}
+                                    />
+                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Nivel de dominio</Text>
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.input,
+                                            {
+                                                backgroundColor: isDark ? '#333' : '#f9f9f9',
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                            }
+                                        ]}
+                                        onPress={() => setShowLanguagePicker(true)}
+                                    >
+                                        <Text style={{ color: languageProficiency ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
+                                            {languageProficiency || 'Seleccionar'}
+                                        </Text>
+                                        <Ionicons name="chevron-down" size={20} color={isDark ? '#AAA' : '#666'} />
+                                    </TouchableOpacity>
+                                    <View style={styles.buttonGroup}>
+                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowLanguageModal(false)}>
+                                            <Text style={styles.buttonText}>Cancelar</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={[styles.button, styles.addButton]}
+                                            onPress={() => {
+                                                const missingField = validateLanguageFields();
+                                                if (showAlertIfMissingFields(missingField)) return;
+                                                const newRecord = {
+                                                    language: languageInput,
+                                                    proficiency: languageProficiency,
+                                                };
+                                                if (editingLanguage) {
+                                                    updateRecord(languageRecords, setLanguageRecords, { ...editingLanguage, ...newRecord }, 'languageRecords');
+                                                    Alert.alert('Éxito', 'Registro actualizado');
+                                                } else {
+                                                    addRecord(languageRecords, setLanguageRecords, newRecord, 'languageRecords');
+                                                    Alert.alert('Éxito', 'Registro guardado');
+                                                }
+                                                setShowLanguageModal(false);
+                                            }}
+                                        >
+                                            <Text style={styles.buttonText}>{editingLanguage ? 'Actualizar' : 'Agregar'}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+                    </View>
+                </Modal>
             )}
 
             {/* Modal personalizado para nivel de idioma */}
             {showLanguagePicker && (
-                <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPressOut={() => setShowLanguagePicker(false)}
+                <Modal
+                    visible={showLanguagePicker}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setShowLanguagePicker(false)}
                 >
-                    <TouchableOpacity
-                        activeOpacity={1}
-                        onPress={(e) => e.stopPropagation()}
-                        style={[styles.languagePickerModal, { backgroundColor: isDark ? '#222' : '#fff' }]}
-                    >
-                        <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Nivel de dominio</Text>
-                        {['Básico', 'Intermedio', 'Avanzado', 'Nativo'].map((level) => (
-                            <TouchableOpacity
-                                key={level}
-                                style={[
-                                    styles.languageOption,
-                                    {
-                                        backgroundColor: isDark ? '#333' : '#f9f9f9',
-                                        marginVertical: 4,
-                                        borderWidth: 1,
-                                        borderColor: level === languageProficiency ? '#10b981' : 'transparent',
-                                    }
-                                ]}
-                                onPress={() => {
-                                    setLanguageProficiency(level);
-                                    setShowLanguagePicker(false);
-                                }}
-                            >
-                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{level}</Text>
-                            </TouchableOpacity>
-                        ))}
-                        <TouchableOpacity
-                            style={[
-                                styles.languageOption,
-                                { backgroundColor: isDark ? '#333' : '#f9f9f9', marginTop: 10, borderColor: 'transparent' }
-                            ]}
-                            onPress={() => {
-                                setLanguageProficiency('');
-                                setShowLanguagePicker(false);
-                            }}
+                    <View style={styles.modalOverlay}>
+                        <KeyboardAvoidingView
+                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                            style={{ width: '90%', maxWidth: 300 }} // Ancho ajustado para el picker
                         >
-                            <Text style={{ color: isDark ? '#AAA' : '#666', fontStyle: 'italic' }}>Limpiar selección</Text>
-                        </TouchableOpacity>
-                    </TouchableOpacity>
-                </TouchableOpacity>
+                            <ScrollView
+                                keyboardShouldPersistTaps="handled"
+                                showsVerticalScrollIndicator={false}
+                            >
+                                <TouchableOpacity
+                                    activeOpacity={1}
+                                    onPress={(e) => e.stopPropagation()}
+                                    style={[styles.languagePickerModal, { backgroundColor: isDark ? '#222' : '#fff' }]}
+                                >
+                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Nivel de dominio</Text>
+                                    {['Básico', 'Intermedio', 'Avanzado', 'Nativo'].map((level) => (
+                                        <TouchableOpacity
+                                            key={level}
+                                            style={[
+                                                styles.languageOption,
+                                                {
+                                                    backgroundColor: isDark ? '#333' : '#f9f9f9',
+                                                    marginVertical: 4,
+                                                    borderWidth: 1,
+                                                    borderColor: level === languageProficiency ? '#10b981' : 'transparent',
+                                                }
+                                            ]}
+                                            onPress={() => {
+                                                setLanguageProficiency(level);
+                                                setShowLanguagePicker(false);
+                                            }}
+                                        >
+                                            <Text style={{ color: isDark ? '#FFF' : '#333' }}>{level}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.languageOption,
+                                            { backgroundColor: isDark ? '#333' : '#f9f9f9', marginTop: 10, borderColor: 'transparent' }
+                                        ]}
+                                        onPress={() => {
+                                            setLanguageProficiency('');
+                                            setShowLanguagePicker(false);
+                                        }}
+                                    >
+                                        <Text style={{ color: isDark ? '#AAA' : '#666', fontStyle: 'italic' }}>Limpiar selección</Text>
+                                    </TouchableOpacity>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+                    </View>
+                </Modal>
             )}
         </SafeAreaView>
     );
@@ -2297,7 +2323,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     picker: {
-        height: 40,
+        height: 50,
     },
     radioGroup: {
         flexDirection: 'row',
