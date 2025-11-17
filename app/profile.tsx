@@ -1687,13 +1687,17 @@ export default function ProfileScreen() {
                     onRequestClose={() => setShowVolunteerModal(false)}
                 >
                     <View style={styles.modalOverlay}>
+                        {/* --- CAMBIO 1: Eliminamos minHeight y maxHeight de modalContent --- */}
                         <KeyboardAvoidingView
                             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                            style={{ width: '90%', maxWidth: 400 }}
+                            // --- CAMBIO 2: Hacemos que el KeyboardAvoidingView ocupe todo el alto disponible ---
+                            style={{ flex: 1, width: '90%', maxWidth: 400 }}
                         >
                             <ScrollView
                                 keyboardShouldPersistTaps="handled"
                                 showsVerticalScrollIndicator={false}
+                                // --- Opcional: Añadimos padding bottom para que el último botón no quede pegado al teclado ---
+                                contentContainerStyle={{ paddingBottom: 80 }}
                             >
                                 <TouchableOpacity
                                     activeOpacity={1}
@@ -2266,8 +2270,6 @@ const styles = StyleSheet.create({
     modalContent: {
         width: '100%',
         maxWidth: 400,
-        maxHeight: '100%',
-        minHeight: 200,
         borderRadius: 12,
         padding: 20,
         elevation: 5,
