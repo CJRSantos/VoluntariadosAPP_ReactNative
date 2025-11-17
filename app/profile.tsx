@@ -228,19 +228,16 @@ export default function ProfileScreen() {
     // === Funciones para la portada ===
     const showBannerMenu = () => setBannerMenuVisible(true);
     const closeBannerMenu = () => setBannerMenuVisible(false);
-
     const viewBannerImage = () => {
         if (bannerImage) {
             setIsBannerZoomVisible(true); // 👈 Cambiado a nuevo estado
             closeBannerMenu();
         }
     };
-
     const changeBannerFromGallery = () => {
         pickImage('banner');
         closeBannerMenu();
     };
-
     const takeNewBannerPhoto = () => {
         takePhoto('banner');
         closeBannerMenu();
@@ -249,19 +246,16 @@ export default function ProfileScreen() {
     // === Funciones para el perfil ===
     const showProfileMenu = () => setProfileMenuVisible(true);
     const closeProfileMenu = () => setProfileMenuVisible(false);
-
     const viewProfileImage = () => {
         if (profileImage) {
             setIsProfileZoomVisible(true); // 👈 Cambiado a nuevo estado
             closeProfileMenu();
         }
     };
-
     const changeProfileFromGallery = () => {
         pickImage('profile');
         closeProfileMenu();
     };
-
     const takeNewProfilePhoto = () => {
         takePhoto('profile');
         closeProfileMenu();
@@ -672,6 +666,7 @@ export default function ProfileScreen() {
                             )}
                         </View>
                     )}
+
                     {activeTab === 'formacion' && (
                         <>
                             <View style={styles.section}>
@@ -765,6 +760,7 @@ export default function ProfileScreen() {
                             </View>
                         </>
                     )}
+
                     {activeTab === 'experiencia' && (
                         <View style={styles.section}>
                             <View style={styles.sectionHeader}>
@@ -822,6 +818,7 @@ export default function ProfileScreen() {
                             )}
                         </View>
                     )}
+
                     {activeTab === 'adicional' && (
                         <>
                             {/* Voluntariados */}
@@ -961,6 +958,7 @@ export default function ProfileScreen() {
                     />
                 </Modal>
             )}
+
             {/* Modal para ver la foto de perfil con zoom */}
             {isProfileZoomVisible && (
                 <Modal
@@ -1986,6 +1984,7 @@ export default function ProfileScreen() {
                     </View>
                 </Modal>
             )}
+
             {/* Modal de Idiomas — SIN CAMBIOS */}
             {showLanguageModal && (
                 <TouchableOpacity
@@ -2054,6 +2053,7 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </TouchableOpacity>
             )}
+
             {/* Modal personalizado para nivel de idioma */}
             {showLanguagePicker && (
                 <TouchableOpacity
@@ -2107,136 +2107,81 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-    // Estilo principal del contenedor de la pantalla
-    // Hace que el contenedor ocupe todo el espacio disponible
     container: { flex: 1 },
-
-    // Estilo del encabezado (header) de la pantalla
-    // Alinea elementos horizontalmente, añade padding, y una línea inferior
     header: {
-        flexDirection: 'row', // Alinea los iconos y el título horizontalmente
-        justifyContent: 'space-between', // Espacia el botón de atrás, el título y el de ajustes
-        alignItems: 'center', // Centra verticalmente los elementos
-        paddingHorizontal: 16, // Padding horizontal
-        paddingVertical: 12,   // Padding vertical
-        borderBottomWidth: 1,  // Línea inferior
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        borderBottomWidth: 1,
     },
-
-    // Estilo del texto del título en el encabezado
     headerTitle: { fontSize: 18, fontWeight: 'bold' },
-
-    // Contenedor de la imagen de portada
-    // Define una altura fija y posición relativa para posicionar la foto de perfil encima
     bannerContainer: { height: 200, position: 'relative' },
-
-    // Estilo de la imagen de portada
-    // Ocupa el 100% del contenedor y cubre su área
     bannerImage: { width: '100%', height: '100%', resizeMode: 'cover' },
-
-    // Estilo del contenedor de la imagen de portada cuando no hay imagen
-    // Muestra un color de fondo y texto de placeholder
     bannerPlaceholder: { backgroundColor: '#c8e6c9', justifyContent: 'center', alignItems: 'center' },
-
-    // Estilo del texto de placeholder para la imagen
     placeholderText: { fontSize: 16 },
-
-    // Contenedor de la foto de perfil
-    // Posicionado absolutamente sobre la portada
     profilePhotoContainer: {
         position: 'absolute',
-        top: 120, // Ajusta la distancia desde la parte superior
-        left: '50%', // Centrado horizontalmente
-        transform: [{ translateX: -50 }], // Corrige para centrar perfectamente
+        top: 120,
+        left: '50%',
+        transform: [{ translateX: -50 }],
         alignItems: 'center',
     },
-
-    // Estilo de la imagen de perfil
-    profilePhoto: {
-        width: 100, height: 100, borderRadius: 50, // Círculo
-        borderWidth: 3, borderColor: '#fff' // Borde blanco
-    },
-
-    // Estilo del contenedor de la imagen de perfil cuando no hay imagen
+    profilePhoto: { width: 100, height: 100, borderRadius: 50, borderWidth: 3, borderColor: '#fff' },
     profilePlaceholder: { backgroundColor: '#e8f5e8', justifyContent: 'center', alignItems: 'center' },
-
-    // Estilo del icono de cámara sobre la foto de perfil
     cameraIcon: {
         position: 'absolute',
-        bottom: 0, right: 0, // Posición en la esquina inferior derecha
-        backgroundColor: '#10b981', borderRadius: 15, // Fondo verde y forma circular
-        width: 30, height: 30,
-        justifyContent: 'center', alignItems: 'center',
+        bottom: 0,
+        right: 0,
+        backgroundColor: '#10b981',
+        borderRadius: 15,
+        width: 30,
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-
-    // Contenedor de la información del usuario (nombre, email)
     userInfo: { alignItems: 'center', marginTop: 20, marginBottom: 20 },
-
-    // Estilo del nombre del usuario
     userName: { fontSize: 18, fontWeight: 'bold' },
-
-    // Estilo del email del usuario
     userEmail: { fontSize: 14 },
-
-    // Contenedor de las pestañas (Info, Formación, etc.)
     tabs: {
-        flexDirection: 'row', // Alinea las pestañas horizontalmente
-        justifyContent: 'space-around', // Espacia las pestañas equitativamente
+        flexDirection: 'row',
+        justifyContent: 'space-around',
         paddingVertical: 12,
-        borderBottomWidth: 1, // Línea inferior
+        borderBottomWidth: 1,
     },
-
-    // Estilo de una pestaña inactiva
     tab: { paddingHorizontal: 12, paddingVertical: 8 },
-
-    // Estilo de la pestaña activa (añade una línea inferior verde)
     activeTab: { borderBottomWidth: 2, borderBottomColor: '#10b981' },
-
-    // Estilo del texto de las pestañas
     tabText: { fontSize: 14 },
-
-    // Contenedor para evitar que el teclado cubra contenido
     keyboardAvoidingContainer: { flex: 1 },
-
-    // Contenido principal deslizable
     content: {
         flex: 1,
-        paddingHorizontal: 16, // Padding horizontal
-        paddingTop: 20,       // Padding superior
+        paddingHorizontal: 16,
+        paddingTop: 20,
     },
-
-    // Contenedor de una sección (por ejemplo, "Información Personal")
     section: { marginBottom: 20 },
-
-    // Contenedor del encabezado de una sección
     sectionHeader: {
-        flexDirection: 'row', // Alinea el título y el botón de añadir horizontalmente
-        justifyContent: 'space-between', // Espacia título y botón
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 12, // Espacio debajo del encabezado
+        marginBottom: 12,
     },
-
-    // Estilo del título de una sección
     sectionTitle: { fontSize: 18, fontWeight: 'bold' },
-
-    // Contenedor del botón de añadir (+)
     addIconContainer: {
-        backgroundColor: '#d4f5e0', // Fondo verde claro
-        width: 40, height: 40, borderRadius: 20, // Forma circular
-        justifyContent: 'center', alignItems: 'center',
+        backgroundColor: '#d4f5e0',
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-
-    // Texto cuando no hay datos en una sección
     noDataText: { fontSize: 16, textAlign: 'center', marginTop: 20 },
-
-    // Estilo de un ítem de registro (por ejemplo, un ítem de información personal)
     recordItem: {
         padding: 16,
-        marginBottom: 12, // Espacio debajo del ítem
-        borderRadius: 8,  // Bordes redondeados
-        position: 'relative', // Necesario para posicionar botones de editar/eliminar
+        marginBottom: 12,
+        borderRadius: 8,
+        position: 'relative',
     },
-
-    // Estilo del overlay para el modal de imagen
     modalOverlay: {
         position: 'absolute',
         top: 0,
@@ -2248,350 +2193,363 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         zIndex: 30,
     },
-
-    // Botón para cerrar el modal de imagen
     modalClose: {
         position: 'absolute',
-        top: 40, right: 20,
-        zIndex: 1000, // Muy alto para estar encima del contenido del modal
-        backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 20,
+        top: 40,
+        right: 20,
+        zIndex: 1000,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        borderRadius: 20,
         padding: 8,
     },
-
-    // Estilo de la imagen dentro del modal
     modalImage: {
-        width: '90%', height: '80%',
-        resizeMode: 'contain', // Mantiene la proporción
+        width: '90%',
+        height: '80%',
+        resizeMode: 'contain',
         borderRadius: 12,
     },
-
-    // Overlay para los menús de la portada y perfil
     bannerMenuOverlay: {
-        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)', // Fondo oscuro semi-transparente
-        justifyContent: 'flex-end', alignItems: 'center', // Mueve el contenido al fondo
-        zIndex: 20, // Z-index más alto que el overlay normal
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        zIndex: 20,
     },
-
-    // Contenido del menú de la portada/perfil
     bannerMenuContent: {
-        width: '100%', maxHeight: 300, // Ancho total, altura máxima
-        borderTopLeftRadius: 20, borderTopRightRadius: 20, // Bordes redondeados arriba
-        paddingVertical: 20, paddingHorizontal: 24,
-        shadowColor: '#000', shadowOffset: { width: 0, height: -4 }, shadowOpacity: 0.2, shadowRadius: 10,
-        elevation: 10, // Sombra en Android
+        width: '100%',
+        maxHeight: 300,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        paddingVertical: 20,
+        paddingHorizontal: 24,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 10,
+        elevation: 10,
     },
-
-    // Título del menú
     bannerMenuTitle: {
-        fontSize: 18, fontWeight: '600', textAlign: 'center',
+        fontSize: 18,
+        fontWeight: '600',
+        textAlign: 'center',
         marginBottom: 16,
     },
-
-    // Elemento del menú (opción)
     bannerMenuItem: {
-        flexDirection: 'row', alignItems: 'center',
-        paddingVertical: 14, paddingHorizontal: 12,
-        borderRadius: 12, marginBottom: 8, // Espacio entre opciones
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 14,
+        paddingHorizontal: 12,
+        borderRadius: 12,
+        marginBottom: 8,
     },
-
-    // Texto de un elemento del menú
     bannerMenuText: {
-        fontSize: 16, marginLeft: 12,
+        fontSize: 16,
+        marginLeft: 12,
     },
-
-    // Línea divisoria en el menú
     bannerMenuDivider: {
-        height: 1, backgroundColor: '#eee',
+        height: 1,
+        backgroundColor: '#eee',
         marginVertical: 12,
     },
-
-    // Botón de cancelar en el menú
     bannerMenuItemCancel: {
-        paddingVertical: 12, alignItems: 'center',
+        paddingVertical: 12,
+        alignItems: 'center',
     },
-
-    // Texto del botón de cancelar en el menú
     bannerMenuCancelText: {
-        fontSize: 17, fontWeight: '600',
+        fontSize: 17,
+        fontWeight: '600',
     },
-
-    // Contenido del modal de formulario
     modalContent: {
-        width: '100%', maxWidth: 400, // Ancho máximo
-        maxHeight: '100%', minHeight: 200, // Altura máxima y mínima
-        borderRadius: 12, // Bordes redondeados
+        width: '100%',
+        maxWidth: 400,
+        maxHeight: '100%',
+        minHeight: 200,
+        borderRadius: 12,
         padding: 20,
-        elevation: 5, // Sombra en Android
+        elevation: 5,
     },
-
-    // Título del modal de formulario
     modalTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-
-    // Estilo de las etiquetas de los inputs
     label: { fontSize: 14, marginBottom: 5, marginTop: 10 },
-
-    // Estilo de los inputs de texto
     input: {
-        borderWidth: 1, borderColor: '#ccc', borderRadius: 8, // Borde y bordes redondeados
-        padding: 10, marginBottom: 10, fontSize: 16, paddingHorizontal: 12,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 10,
+        fontSize: 16,
+        paddingHorizontal: 12,
     },
-
-    // Contenedor para elementos en fila (como picker y input)
     row: {
-        flexDirection: 'row', alignItems: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
         marginBottom: 10,
     },
-
-    // Contenedor del picker
     pickerWrapper: {
-        flex: 1, borderWidth: 1, borderColor: '#ccc', borderRadius: 8,
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
     },
-
-    // Estilo del picker en sí
     picker: {
-        height: 40, // Altura fija
+        height: 40,
     },
-
-    // Contenedor del grupo de botones de radio
     radioGroup: {
-        flexDirection: 'row', justifyContent: 'space-between', // Espaciado entre opciones
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         marginTop: 10,
     },
-
-    // Contenedor de una opción de radio
     radioOption: {
-        flexDirection: 'row', alignItems: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
-
-    // Estilo del botón de radio inactivo
     radioButton: {
-        width: 20, height: 20, borderRadius: 10, // Forma circular
-        borderWidth: 2, borderColor: '#aaa', marginRight: 8,
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: '#aaa',
+        marginRight: 8,
     },
-
-    // Estilo del botón de radio activo
     radioButtonSelected: {
-        backgroundColor: '#10b981', borderColor: '#10b981', // Fondo verde cuando está seleccionado
+        backgroundColor: '#10b981',
+        borderColor: '#10b981',
     },
-
-    // Texto de la opción de radio
     radioLabel: {
         fontSize: 14,
     },
-
-    // Contenedor de los botones de acción en el modal (Cancelar, Agregar)
     buttonGroup: {
-        flexDirection: 'row', justifyContent: 'space-between', // Espaciado entre botones
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         marginTop: 20,
     },
-
-    // Estilo del botón de acción (Cancelar o Agregar)
     button: {
-        flex: 1, paddingVertical: 12, borderRadius: 8, alignItems: 'center',
+        flex: 1,
+        paddingVertical: 12,
+        borderRadius: 8,
+        alignItems: 'center',
     },
-
-    // Estilo del botón de cancelar
     cancelButton: {
-        backgroundColor: '#aaa', marginRight: 10, // Color gris y margen derecho
+        backgroundColor: '#aaa',
+        marginRight: 10,
     },
-
-    // Estilo del botón de agregar/actualizar
     addButton: {
-        backgroundColor: '#10b981', marginLeft: 10, // Color verde y margen izquierdo
+        backgroundColor: '#10b981',
+        marginLeft: 10,
     },
-
-    // Texto de los botones de acción
     buttonText: {
-        color: '#fff', fontSize: 16, fontWeight: 'bold',
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
-
-    // Contenedor de un checkbox
     checkboxContainer: {
-        flexDirection: 'row', alignItems: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
         marginTop: 10,
     },
-
-    // Estilo del checkbox inactivo
     checkbox: {
-        width: 20, height: 20, borderWidth: 2, borderColor: '#aaa',
-        marginRight: 10, justifyContent: 'center', alignItems: 'center',
+        width: 20,
+        height: 20,
+        borderWidth: 2,
+        borderColor: '#aaa',
+        marginRight: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-
-    // Estilo del checkbox activo
     checkboxChecked: {
-        backgroundColor: '#10b981', borderColor: '#10b981', // Fondo verde cuando está marcado
+        backgroundColor: '#10b981',
+        borderColor: '#10b981',
     },
-
-    // Texto del checkbox
     checkboxLabel: {
         fontSize: 14,
     },
-
-    // Contenedor para los botones de editar y eliminar en un ítem
     editDeleteContainer: {
-        position: 'absolute', top: 10, right: 10, // Posición en la esquina superior derecha
+        position: 'absolute',
+        top: 10,
+        right: 10,
     },
-
-    // Botón de editar
     editButton: {
-        backgroundColor: '#e8fbe8', width: 34, height: 34, borderRadius: 17,
-        justifyContent: 'center', alignItems: 'center', marginBottom: 4, // Espacio debajo
+        backgroundColor: '#e8fbe8',
+        width: 34,
+        height: 34,
+        borderRadius: 17,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 4,
     },
-
-    // Botón de eliminar
     deleteButton: {
-        backgroundColor: '#fde8e8', width: 34, height: 34, borderRadius: 17,
-        justifyContent: 'center', alignItems: 'center',
+        backgroundColor: '#fde8e8',
+        width: 34,
+        height: 34,
+        borderRadius: 17,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-
-    // Contenedor del modal para seleccionar nivel de idioma
     languagePickerModal: {
-        width: '80%', maxWidth: 300, maxHeight: 300,
-        borderRadius: 12, padding: 20, elevation: 5, alignItems: 'center',
+        width: '80%',
+        maxWidth: 300,
+        maxHeight: 300,
+        borderRadius: 12,
+        padding: 20,
+        elevation: 5,
+        alignItems: 'center',
     },
-
-    // Opción dentro del picker de idioma
     languageOption: {
-        width: '100%', padding: 12, borderRadius: 8, alignItems: 'center',
-        borderWidth: 2, // Borde para resaltar la selección
+        width: '100%',
+        padding: 12,
+        borderRadius: 8,
+        alignItems: 'center',
+        borderWidth: 2,
     },
-
-    // Estilo de la tarjeta para información académica
     academicCard: {
-        flexDirection: 'row', alignItems: 'flex-start', padding: 16,
-        marginBottom: 12, borderRadius: 8, borderWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
     },
-
-    // Estilo de la tarjeta para formación técnica
     technicalCard: {
-        flexDirection: 'row', alignItems: 'flex-start', padding: 16,
-        marginBottom: 12, borderRadius: 8, borderWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
     },
-
-    // Estilo de la tarjeta para formación complementaria
     complementaryCard: {
-        flexDirection: 'row', alignItems: 'flex-start', padding: 16,
-        marginBottom: 12, borderRadius: 8, borderWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
     },
-
-    // Contenedor para el icono dentro de las tarjetas
     iconContainer: {
-        marginRight: 12, marginTop: 2, // Margen derecho e inferior
+        marginRight: 12,
+        marginTop: 2,
     },
-
-    // Contenedor del contenido de la tarjeta
     cardContent: {
-        flex: 1, // Ocupa el espacio restante
+        flex: 1,
     },
-
-    // Título dentro de la tarjeta
     cardTitle: {
-        fontSize: 18, fontWeight: 'bold', marginBottom: 4,
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 4,
     },
-
-    // Subtítulo dentro de la tarjeta
     cardSubtitle: {
-        fontSize: 14, marginBottom: 2,
+        fontSize: 14,
+        marginBottom: 2,
     },
-
-    // Contenedor para el estado (Graduado, Titulado, etc.)
     statusContainer: {
-        flexDirection: 'row', alignItems: 'center', marginTop: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 8,
     },
-
-    // Texto del estado
     statusText: {
-        fontSize: 14, fontWeight: 'bold', marginRight: 8,
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginRight: 8,
     },
-
-    // Badge del estado (Graduado, Titulado, etc.)
     statusBadge: {
-        paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12,
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 12,
     },
-
-    // Texto dentro del badge del estado
     statusBadgeText: {
-        color: '#fff', fontSize: 12, fontWeight: 'bold',
+        color: '#fff',
+        fontSize: 12,
+        fontWeight: 'bold',
     },
-
-    // Botón circular de editar en las tarjetas
     editButtonCircle: {
-        width: 40, height: 40, borderRadius: 20,
-        backgroundColor: '#d4f5e0', justifyContent: 'center', alignItems: 'center',
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#d4f5e0',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-
-    // Estilo de la tarjeta para experiencia laboral
     experienceCard: {
-        flexDirection: 'row', alignItems: 'flex-start', padding: 16,
-        marginBottom: 12, borderRadius: 8, borderWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
     },
-
-    // Contenido detallado de la experiencia laboral
     experienceDetails: {
-        flex: 1, marginLeft: 12, // Margen izquierdo para separar del icono
+        flex: 1,
+        marginLeft: 12,
     },
-
-    // Fila de detalle (por ejemplo, "Puesto:")
     detailRow: {
-        flexDirection: 'row', alignItems: 'center', marginBottom: 4,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 4,
     },
-
-    // Etiqueta del detalle (por ejemplo, "Puesto:")
     detailLabel: {
-        fontSize: 14, fontWeight: 'bold', marginLeft: 4, marginRight: 8,
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginLeft: 4,
+        marginRight: 8,
     },
-
-    // Valor del detalle (por ejemplo, "Desarrollador")
     detailValue: {
-        fontSize: 14, marginBottom: 8, marginLeft: 24, // Indentado
+        fontSize: 14,
+        marginBottom: 8,
+        marginLeft: 24,
     },
-
-    // Fila para las fechas de inicio y fin
     dateRow: {
-        flexDirection: 'row', justifyContent: 'space-between', marginTop: 8,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 8,
     },
-
-    // Contenedor para una fecha (inicio o fin)
     dateContainer: {
-        flexDirection: 'row', alignItems: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
-
-    // Etiqueta de la fecha (Inicio o Final)
     dateLabel: {
-        fontSize: 12, fontWeight: 'bold', marginLeft: 4, marginRight: 4,
+        fontSize: 12,
+        fontWeight: 'bold',
+        marginLeft: 4,
+        marginRight: 4,
     },
-
-    // Valor de la fecha
     dateValue: {
         fontSize: 12,
     },
-
-    // Estilo de la tarjeta para voluntariado
     volunteerCard: {
-        flexDirection: 'row', alignItems: 'flex-start', padding: 16,
-        marginBottom: 12, borderRadius: 8, borderWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
     },
-
-    // Estilo de la tarjeta para publicaciones
     publicationCard: {
-        flexDirection: 'row', alignItems: 'flex-start', padding: 16,
-        marginBottom: 12, borderRadius: 8, borderWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
     },
-
-    // Estilo de la tarjeta para idiomas
     languageCard: {
-        flexDirection: 'row', alignItems: 'flex-start', padding: 16,
-        marginBottom: 12, borderRadius: 8, borderWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
     },
-
-    // Estilo del enlace en la tarjeta de publicación
     cardLink: {
-        fontSize: 14, textDecorationLine: 'underline', marginBottom: 4,
+        fontSize: 14,
+        textDecorationLine: 'underline',
+        marginBottom: 4,
     },
-
-    // Estilo del resumen en la tarjeta de publicación
     cardAbstract: {
-        fontSize: 14, fontStyle: 'italic', marginTop: 4,
+        fontSize: 14,
+        fontStyle: 'italic',
+        marginTop: 4,
     },
 });
