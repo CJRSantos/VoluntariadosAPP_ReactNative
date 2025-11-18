@@ -258,126 +258,126 @@ export default function AccountScreen() {
                         style={styles.quickLinksImage}
                     />
                 </View>
-
-                {/* Barra de navegación inferior */}
-                <View
-                    style={[
-                        styles.bottomNav,
-                        {
-                            borderTopColor: isDark ? '#333' : '#EEE',
-                            backgroundColor: isDark ? '#111' : '#FFF',
-                        },
-                    ]}
-                >
-                    {/* Inicio */}
-                    <TouchableOpacity
-                        style={[
-                            styles.navItem,
-                            pathname === '/account' && styles.navItemActive,
-                        ]}
-                        onPress={() => router.push('/account')}
-                    >
-                        <Image
-                            source={require('../assets/images/home-icon.png')}
-                            style={[
-                                styles.navIcon,
-                                {
-                                    backgroundColor: 'transparent', // 👈 Asegura que no haya fondo
-                                    tintColor: pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666'), // 👈 Cambia el color según el estado
-                                },
-                                pathname === '/account' && styles.navIconActive,
-                            ]}
-                        />
-                        <Text
-                            style={[
-                                styles.navLabel,
-                                { color: isDark ? '#AAA' : '#666' },
-                                pathname === '/account' && styles.navLabelActive,
-                            ]}
-                        >
-                            Inicio
-                        </Text>
-                    </TouchableOpacity>
-
-                    {/* Áreas */}
-                    <TouchableOpacity
-                        style={[
-                            styles.navItem,
-                            pathname === '/areas' && styles.navItemActive,
-                        ]}
-                        onPress={() => router.push('/areas')}
-                    >
-                        <Image
-                            source={require('../assets/images/areas-icon.png')}
-                            style={[
-                                styles.navIcon,
-                                pathname === '/areas' && styles.navIconActive,
-                            ]}
-                        />
-                        <Text
-                            style={[
-                                styles.navLabel,
-                                { color: isDark ? '#AAA' : '#666' },
-                                pathname === '/areas' && styles.navLabelActive,
-                            ]}
-                        >
-                            Áreas
-                        </Text>
-                    </TouchableOpacity>
-
-                    {/* Convocatory */}
-                    <TouchableOpacity
-                        style={[
-                            styles.navItem,
-                            pathname === '/convocatoria' && styles.navItemActive,
-                        ]}
-                        onPress={() => router.push('/convocatoria')}
-                    >
-                        <Image
-                            source={require('../assets/images/convocatory-icon.png')}
-                            style={[
-                                styles.navIcon,
-                                pathname === '/convocatoria' && styles.navIconActive,
-                            ]}
-                        />
-                        <Text
-                            style={[
-                                styles.navLabel,
-                                { color: isDark ? '#AAA' : '#666' },
-                                pathname === '/convocatoria' && styles.navLabelActive,
-                            ]}
-                        >
-                            Convocatory
-                        </Text>
-                    </TouchableOpacity>
-
-                    {/* Nosotros */}
-                    <TouchableOpacity
-                        style={[
-                            styles.navItem,
-                            pathname === '/nosotros' && styles.navItemActive,
-                        ]}
-                        onPress={() => router.push('/nosotros')}
-                    >
-                        <Image
-                            source={require('../assets/images/nosotros-icon.png')}
-                            style={[
-                                styles.navIcon,
-                                pathname === '/nosotros' && styles.navIconActive,
-                            ]}
-                        />
-                        <Text
-                            style={[
-                                styles.navLabel,
-                                { color: isDark ? '#AAA' : '#666' },
-                                pathname === '/nosotros' && styles.navLabelActive,
-                            ]}
-                        >
-                            Nosotros
-                        </Text>
-                    </TouchableOpacity>
-                </View>
             </ScrollView>
+
+            {/* Barra de navegación inferior - Fija en la parte inferior */}
+            <View
+                style={[
+                    styles.bottomNav,
+                    {
+                        borderTopColor: isDark ? '#333' : '#EEE',
+                        backgroundColor: isDark ? '#111' : '#FFF',
+                    },
+                ]}
+            >
+                {/* Inicio */}
+                <TouchableOpacity
+                    style={[
+                        styles.navItem,
+                        pathname === '/account' && styles.navItemActive,
+                    ]}
+                    onPress={() => router.push('/account')}
+                >
+                    <Image
+                        source={require('../assets/images/home-icon.png')}
+                        style={[
+                            styles.navIcon,
+                            {
+                                backgroundColor: 'transparent',
+                                tintColor: pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666'),
+                            },
+                            pathname === '/account' && styles.navIconActive,
+                        ]}
+                    />
+                    <Text
+                        style={[
+                            styles.navLabel,
+                            { color: isDark ? '#AAA' : '#666' },
+                            pathname === '/account' && styles.navLabelActive,
+                        ]}
+                    >
+                        Inicio
+                    </Text>
+                </TouchableOpacity>
+
+                {/* Áreas */}
+                <TouchableOpacity
+                    style={[
+                        styles.navItem,
+                        pathname === '/areas' && styles.navItemActive,
+                    ]}
+                    onPress={() => router.push('/areas')}
+                >
+                    <Image
+                        source={require('../assets/images/areas-icon.png')}
+                        style={[
+                            styles.navIcon,
+                            pathname === '/areas' && styles.navIconActive,
+                        ]}
+                    />
+                    <Text
+                        style={[
+                            styles.navLabel,
+                            { color: isDark ? '#AAA' : '#666' },
+                            pathname === '/areas' && styles.navLabelActive,
+                        ]}
+                    >
+                        Áreas
+                    </Text>
+                </TouchableOpacity>
+
+                {/* Convocatory */}
+                <TouchableOpacity
+                    style={[
+                        styles.navItem,
+                        pathname === '/convocatoria' && styles.navItemActive,
+                    ]}
+                    onPress={() => router.push('/convocatoria')}
+                >
+                    <Image
+                        source={require('../assets/images/convocatory-icon.png')}
+                        style={[
+                            styles.navIcon,
+                            pathname === '/convocatoria' && styles.navIconActive,
+                        ]}
+                    />
+                    <Text
+                        style={[
+                            styles.navLabel,
+                            { color: isDark ? '#AAA' : '#666' },
+                            pathname === '/convocatoria' && styles.navLabelActive,
+                        ]}
+                    >
+                        Convocatory
+                    </Text>
+                </TouchableOpacity>
+
+                {/* Nosotros */}
+                <TouchableOpacity
+                    style={[
+                        styles.navItem,
+                        pathname === '/nosotros' && styles.navItemActive,
+                    ]}
+                    onPress={() => router.push('/nosotros')}
+                >
+                    <Image
+                        source={require('../assets/images/nosotros-icon.png')}
+                        style={[
+                            styles.navIcon,
+                            pathname === '/nosotros' && styles.navIconActive,
+                        ]}
+                    />
+                    <Text
+                        style={[
+                            styles.navLabel,
+                            { color: isDark ? '#AAA' : '#666' },
+                            pathname === '/nosotros' && styles.navLabelActive,
+                        ]}
+                    >
+                        Nosotros
+                    </Text>
+                </TouchableOpacity>
+            </View>
 
             {/* Menú desplegable + overlay */}
             {isMenuOpen && (
@@ -684,6 +684,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         borderTopWidth: 1,
         paddingVertical: 8,
+        zIndex: 1000,
     },
     navItem: { alignItems: 'center', paddingVertical: 8 },
     navItemActive: {
