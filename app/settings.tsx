@@ -1,15 +1,15 @@
 // app/settings.tsx
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert, Linking, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { useTheme } from '../app/providers/ThemeProvider';
+import React, { useState } from 'react';
+import { Alert, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../app/providers/ThemeProvider'; // ✅ Importar el hook
 
 export default function SettingsScreen() {
     const router = useRouter();
-    const { theme } = useTheme();
+    const { theme, toggleTheme } = useTheme(); // ✅ Obtener theme y toggleTheme
     const isDark = theme === 'dark';
 
     const [storageModalVisible, setStorageModalVisible] = useState(false); // Estado para controlar el modal de almacenamiento
@@ -164,14 +164,10 @@ export default function SettingsScreen() {
 
             {/* Contenido */}
             <View style={styles.content}>
-                {/* Apariencia */}
+                {/* Apariencia - AHORA FUNCIONA */}
                 <TouchableOpacity
                     style={[styles.settingItem, { backgroundColor: isDark ? '#222' : '#F5F5F5' }]}
-                    onPress={() => {
-                        // Aquí deberías llamar a toggleTheme si lo tienes en tu contexto.
-                        // Como no lo importaste, puedes agregarlo o simplemente hacer un placeholder.
-                        Alert.alert('Apariencia', 'Función de cambio de tema no implementada en este ejemplo.');
-                    }}
+                    onPress={toggleTheme} // ✅ Ahora llama a toggleTheme
                 >
                     <View style={[styles.iconContainer, { backgroundColor: isDark ? '#333' : '#E0E0E0' }]}>
                         <Text style={styles.icon}>{isDark ? '🌙' : '☀️'}</Text>
