@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../app/providers/ThemeProvider';
+import { useTheme } from './providers/ThemeProvider';
 
 const { width } = Dimensions.get('window');
 
