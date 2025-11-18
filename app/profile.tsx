@@ -1214,10 +1214,14 @@ export default function ProfileScreen() {
                                         blurOnSubmit={false}
                                     />
                                     <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>País</Text>
-                                    <CountryInput
+                                    <TextInput
+                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
+                                        placeholder="Ingrese su país"
+                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
                                         value={countryInput}
                                         onChangeText={setCountryInput}
-                                        placeholder="Buscar país..."
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
                                     />
                                     <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
                                     <TouchableOpacity
