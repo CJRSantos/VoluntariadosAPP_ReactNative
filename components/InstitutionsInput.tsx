@@ -1,7 +1,7 @@
 // src/components/InstitutionsInput.tsx
 import { useTheme } from '@/app/providers/ThemeProvider';
 import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import institutions from '../src/constants/Institutions.json'; // Asegura la ruta correcta
 
 type InstitutionsInputProps = {
@@ -54,20 +54,17 @@ const InstitutionsInput = ({ value, onChangeText, placeholder = "Buscar instituc
             />
 
             {filtered.length > 0 && (
-                <FlatList
-                    data={filtered}
-                    keyExtractor={item => item}
-                    renderItem={({ item }) => (
+                <View style={styles.list}>
+                    {filtered.map((item, index) => (
                         <TouchableOpacity
+                            key={`${item}-${index}`} // 👈 Clave única
                             style={[styles.item, { backgroundColor: isDark ? '#222' : '#fff' }]}
                             onPress={() => selectInstitution(item)}
                         >
                             <Text style={{ color: isDark ? '#FFF' : '#000' }}>{item}</Text>
                         </TouchableOpacity>
-                    )}
-                    style={styles.list}
-                    keyboardShouldPersistTaps="handled"
-                />
+                    ))}
+                </View>
             )}
         </View>
     );
@@ -88,6 +85,7 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 8,
         borderBottomRightRadius: 8,
         marginTop: -8,
+        backgroundColor: 'white', // 👈 Añadido para evitar fondo transparente
     },
     item: {
         padding: 12,

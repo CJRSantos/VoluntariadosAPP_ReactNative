@@ -1,7 +1,7 @@
 // src/components/CountryInput.tsx
 import { useTheme } from '@/app/providers/ThemeProvider';
 import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import countries from '../src/constants/countries.json'; // Ruta correcta según tu estructura
 
 type CountryInputProps = {
@@ -53,17 +53,19 @@ const CountryInput = ({ value, onChangeText, placeholder = "Buscar país..." }: 
                 autoCorrect={false}
             />
             {filtered.length > 0 && (
-                <FlatList
-                    data={filtered}
-                    keyExtractor={item => item}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity style={[styles.item, { backgroundColor: isDark ? '#222' : '#fff' }]} onPress={() => selectCountry(item)}>
+                <View style={styles.list}>
+                    {filtered.map((item, index) => (
+                        // ✅ Cambiamos FlatList por View con .map()
+                        // ✅ Usamos una clave única: `${item}-${index}`
+                        <TouchableOpacity
+                            key={`${item}-${index}`}
+                            style={[styles.item, { backgroundColor: isDark ? '#222' : '#fff' }]}
+                            onPress={() => selectCountry(item)}
+                        >
                             <Text style={{ color: isDark ? '#FFF' : '#000' }}>{item}</Text>
                         </TouchableOpacity>
-                    )}
-                    style={styles.list}
-                    keyboardShouldPersistTaps="handled"
-                />
+                    ))}
+                </View>
             )}
         </View>
     );
@@ -84,6 +86,7 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 8,
         borderBottomRightRadius: 8,
         marginTop: -8,
+        backgroundColor: 'white', // 👈 Añadido para evitar fondo transparente
     },
     item: {
         padding: 12,

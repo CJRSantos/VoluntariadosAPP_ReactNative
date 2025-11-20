@@ -63,10 +63,9 @@ export default function AccountScreen() {
         {
             id: 3,
             title: 'Monitoreo de carbono en bosques amazónicos',
-            date: '12/10/2025, Hr: 00:00   12/11/20, Hr: 11:59',
-            topics: [
-                'Lineas temática: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático',
-            ],
+            date: '12/10/2025, Hr: 00:00',
+            endDate: '12/11/20, Hr: 11:59',
+            topics: ['Lineas temática: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático'],
             status: 'Abierto',
             color: '#4CAF50',
             image: require('../assets/images/news3.png'),
@@ -75,9 +74,7 @@ export default function AccountScreen() {
             id: 4,
             title: 'Monitoreo de carbono en bosques amazónicos',
             date: '12/10/2025, Hr: 00:00     12/11/20, Hr: 11:59',
-            topics: [
-                'Lineas temáticas: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático',
-            ],
+            topics: ['Lineas temáticas: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático'],
             status: 'Cerrado',
             color: '#F44336',
             image: require('../assets/images/news4.png'),
@@ -182,12 +179,14 @@ export default function AccountScreen() {
                                 <Text style={[styles.newsEndDate, { color: isDark ? '#AAA' : '#666' }]}>
                                     {item.endDate}
                                 </Text>
-                                <Text style={[styles.newsTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                {/* 👇 Reducimos el marginBottom para que el título no empuje tanto hacia abajo */}
+                                <Text style={[styles.newsTitle, { color: isDark ? '#FFF' : '#333', marginBottom: 8 }]}>
                                     {item.title}
                                 </Text>
                                 <Text style={[styles.newsTopics, { color: isDark ? '#AAA' : '#666' }]}>
                                     {item.topics.join(', ')}
                                 </Text>
+                                {/* 👇 Movemos los botones más arriba, justo debajo de los temas */}
                                 <View style={styles.newsStatusContainer}>
                                     {item.status === 'Abierto' ? (
                                         <>
@@ -560,7 +559,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         padding: 12,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: 'transparent', // 👈 Quitamos el fondo
     },
     bannerTitle: {
         fontSize: 16,
@@ -607,6 +606,8 @@ const styles = StyleSheet.create({
     newsText: {
         flex: 1,
         padding: 12,
+        justifyContent: 'space-between', // 👈 Alinea los elementos en la parte superior e inferior
+        height: 180, // 👈 Fija la altura para que todas las tarjetas sean iguales
     },
     newsDate: {
         fontSize: 10,
@@ -618,7 +619,7 @@ const styles = StyleSheet.create({
     newsTitle: {
         fontSize: 14,
         fontWeight: 'bold',
-        marginBottom: 44,
+        marginBottom: 8, // 👈 Reducido para dejar más espacio
     },
     newsTopics: {
         fontSize: 12,
@@ -627,6 +628,7 @@ const styles = StyleSheet.create({
     newsStatusContainer: {
         flexDirection: 'row',
         gap: 8,
+        marginTop: 'auto', // 👈 Empuja los botones hacia abajo
     },
     statusButton: {
         paddingHorizontal: 8,

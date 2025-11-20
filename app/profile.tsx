@@ -25,7 +25,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
 import CountryInput from '../components/CountryInput'; // ✅ Ruta correcta
 import InstitutionsInput from '../components/InstitutionsInput'; // ✅ Agrega esta línea
-
 // --- Nuevo: Definir la interfaz para las secciones ---
 interface Section {
     title: string;
@@ -34,20 +33,16 @@ interface Section {
     // La propiedad 'component' es opcional, ya que solo la usamos en ciertas secciones.
     component?: (item: any) => React.ReactNode;
 }
-
 export default function ProfileScreen() {
     const router = useRouter();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
-
     // Imágenes
     const [bannerImage, setBannerImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
-
     // Estados para los modales de zoom
     const [isBannerZoomVisible, setIsBannerZoomVisible] = useState(false);
     const [isProfileZoomVisible, setIsProfileZoomVisible] = useState(false);
-
     // Estados para los modales
     const [showPersonalInfoForm, setShowPersonalInfoForm] = useState(false);
     const [showAcademicModal, setShowAcademicModal] = useState(false);
@@ -58,24 +53,19 @@ export default function ProfileScreen() {
     const [showPublicationModal, setShowPublicationModal] = useState(false);
     const [showLanguageModal, setShowLanguageModal] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
-
     // Estado para el picker de idiomas
     const [showLanguagePicker, setShowLanguagePicker] = useState(false);
-
     // Estados para los formularios
     const [documentType, setDocumentType] = useState('');
     const [gender, setGender] = useState('');
     const [languageProficiency, setLanguageProficiency] = useState('');
     const [currentlyInRole, setCurrentlyInRole] = useState(false);
     const [academicStatus, setAcademicStatus] = useState<string>('Actualmente');
-
     // Pestañas
     const [activeTab, setActiveTab] = useState<'info' | 'formacion' | 'experiencia' | 'adicional'>('info');
-
     // Menús
     const [bannerMenuVisible, setBannerMenuVisible] = useState(false);
     const [profileMenuVisible, setProfileMenuVisible] = useState(false);
-
     // === Estados para los datos (CRUD) ===
     const [personalInfo, setPersonalInfo] = useState<any>(null);
     const [academicRecords, setAcademicRecords] = useState<any[]>([]);
@@ -85,7 +75,6 @@ export default function ProfileScreen() {
     const [volunteerRecords, setVolunteerRecords] = useState<any[]>([]);
     const [publicationRecords, setPublicationRecords] = useState<any[]>([]);
     const [languageRecords, setLanguageRecords] = useState<any[]>([]);
-
     // === Estados de edición ===
     const [editingPersonal, setEditingPersonal] = useState<any>(null);
     const [editingAcademic, setEditingAcademic] = useState<any>(null);
@@ -95,7 +84,6 @@ export default function ProfileScreen() {
     const [editingVolunteer, setEditingVolunteer] = useState<any>(null);
     const [editingPublication, setEditingPublication] = useState<any>(null);
     const [editingLanguage, setEditingLanguage] = useState<any>(null);
-
     // === Estados de los inputs ===
     const [nameInput, setNameInput] = useState('');
     const [birthDateInput, setBirthDateInput] = useState('');
@@ -124,7 +112,6 @@ export default function ProfileScreen() {
     const [pubUrlInput, setPubUrlInput] = useState('');
     const [pubAbstractInput, setPubAbstractInput] = useState('');
     const [languageInput, setLanguageInput] = useState('');
-
     // === Estados para los date pickers ===
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
@@ -135,7 +122,6 @@ export default function ProfileScreen() {
     const [showComplementaryDatePicker, setShowComplementaryDatePicker] = useState(false);
     const [showExperienceStartDatePicker, setShowExperienceStartDatePicker] = useState(false);
     const [showExperienceEndDatePicker, setShowExperienceEndDatePicker] = useState(false);
-
     // Cargar datos guardados
     useEffect(() => {
         const loadAllData = async () => {
@@ -166,11 +152,9 @@ export default function ProfileScreen() {
         };
         loadAllData();
     }, []);
-
     const handleSettings = () => {
         router.push('/settings');
     };
-
     // === Funciones CRUD genéricas ===
     const saveToStorage = async (key: string, data: any) => {
         try {
@@ -179,25 +163,21 @@ export default function ProfileScreen() {
             console.log('Error guardando', key, e);
         }
     };
-
     const addRecord = (records: any[], setRecords: any, newRecord: any, key: string) => {
         const updated = [...records, { ...newRecord, id: Date.now().toString() }];
         setRecords(updated);
         saveToStorage(key, updated);
     };
-
     const updateRecord = (records: any[], setRecords: any, updatedRecord: any, key: string) => {
         const updated = records.map(r => r.id === updatedRecord.id ? updatedRecord : r);
         setRecords(updated);
         saveToStorage(key, updated);
     };
-
     const deleteRecord = (records: any[], setRecords: any, id: string, key: string) => {
         const updated = records.filter(r => r.id !== id);
         setRecords(updated);
         saveToStorage(key, updated);
     };
-
     // === Funciones para imágenes ===
     const pickImage = async (type: 'banner' | 'profile') => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -206,7 +186,6 @@ export default function ProfileScreen() {
             aspect: type === 'banner' ? [16, 9] : [1, 1],
             quality: 1,
         });
-
         if (!result.canceled && result.assets?.[0]) {
             const uri = result.assets[0].uri;
             if (type === 'banner') {
@@ -218,7 +197,6 @@ export default function ProfileScreen() {
             }
         }
     };
-
     const takePhoto = async (type: 'banner' | 'profile') => {
         let result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -226,7 +204,6 @@ export default function ProfileScreen() {
             aspect: type === 'banner' ? [16, 9] : [1, 1],
             quality: 1,
         });
-
         if (!result.canceled && result.assets?.[0]) {
             const uri = result.assets[0].uri;
             if (type === 'banner') {
@@ -238,7 +215,6 @@ export default function ProfileScreen() {
             }
         }
     };
-
     // === Funciones para la portada ===
     const showBannerMenu = () => setBannerMenuVisible(true);
     const closeBannerMenu = () => setBannerMenuVisible(false);
@@ -256,7 +232,6 @@ export default function ProfileScreen() {
         takePhoto('banner');
         closeBannerMenu();
     };
-
     // === Funciones para el perfil ===
     const showProfileMenu = () => setProfileMenuVisible(true);
     const closeProfileMenu = () => setProfileMenuVisible(false);
@@ -274,7 +249,6 @@ export default function ProfileScreen() {
         takePhoto('profile');
         closeProfileMenu();
     };
-
     // === Manejo de modales ===
     const openPersonalModal = () => {
         if (personalInfo) {
@@ -295,7 +269,6 @@ export default function ProfileScreen() {
         setEditingPersonal(personalInfo);
         setShowPersonalInfoForm(true);
     };
-
     const openAcademicModal = (record: any = null) => {
         if (record) {
             setDegreeInput(record.degree || '');
@@ -316,7 +289,6 @@ export default function ProfileScreen() {
         }
         setShowAcademicModal(true);
     };
-
     const openTechnicalModal = (record: any = null) => {
         if (record) {
             setCourseInput(record.course || '');
@@ -333,7 +305,6 @@ export default function ProfileScreen() {
         }
         setShowTechnicalModal(true);
     };
-
     const openComplementaryModal = (record: any = null) => {
         if (record) {
             setActivityInput(record.activity || '');
@@ -348,7 +319,6 @@ export default function ProfileScreen() {
         }
         setShowComplementaryModal(true);
     };
-
     const openExperienceModal = (record: any = null) => {
         if (record) {
             setPositionInput(record.position || '');
@@ -369,7 +339,6 @@ export default function ProfileScreen() {
         }
         setShowExperienceModal(true);
     };
-
     const openVolunteerModal = (record: any = null) => {
         if (record) {
             setOrgInput(record.organization || '');
@@ -392,7 +361,6 @@ export default function ProfileScreen() {
         }
         setShowVolunteerModal(true);
     };
-
     const openPublicationModal = (record: any = null) => {
         if (record) {
             setPubTitleInput(record.title || '');
@@ -413,7 +381,6 @@ export default function ProfileScreen() {
         }
         setShowPublicationModal(true);
     };
-
     const openLanguageModal = (record: any = null) => {
         if (record) {
             setLanguageInput(record.language || '');
@@ -426,7 +393,6 @@ export default function ProfileScreen() {
         }
         setShowLanguageModal(true);
     };
-
     // === Validación de campos ===
     const validatePersonalFields = () => {
         if (!nameInput.trim()) return 'Nombre y Apellido';
@@ -437,7 +403,6 @@ export default function ProfileScreen() {
         if (!gender) return 'Género';
         return null;
     };
-
     const validateAcademicFields = () => {
         if (!degreeInput.trim()) return 'Grado';
         if (!institutionInput.trim()) return 'Institución';
@@ -447,7 +412,6 @@ export default function ProfileScreen() {
         if (!academicStatus) return 'Estado';
         return null;
     };
-
     const validateTechnicalFields = () => {
         if (!courseInput.trim()) return 'Curso';
         if (!platformInput.trim()) return 'Plataforma';
@@ -455,14 +419,12 @@ export default function ProfileScreen() {
         if (!endDateInput.trim()) return 'Año de finalización';
         return null;
     };
-
     const validateComplementaryFields = () => {
         if (!activityInput.trim()) return 'Actividad';
         if (!descriptionInput.trim()) return 'Descripción';
         if (!dateInput.trim()) return 'Fecha';
         return null;
     };
-
     const validateExperienceFields = () => {
         if (!positionInput.trim()) return 'Cargo';
         if (!institutionInput.trim()) return 'Institución';
@@ -472,7 +434,6 @@ export default function ProfileScreen() {
         if (!endDateInput.trim()) return 'Año de fin';
         return null;
     };
-
     const validateVolunteerFields = () => {
         if (!orgInput.trim()) return 'Organización';
         if (!roleInput.trim()) return 'Rol';
@@ -481,7 +442,6 @@ export default function ProfileScreen() {
         if (!endDateInput.trim()) return 'Año de fin';
         return null;
     };
-
     const validatePublicationFields = () => {
         if (!pubTitleInput.trim()) return 'Título';
         if (!pubEditorialInput.trim()) return 'Editorial';
@@ -489,13 +449,11 @@ export default function ProfileScreen() {
         if (!pubDateInput.trim()) return 'Fecha';
         return null;
     };
-
     const validateLanguageFields = () => {
         if (!languageInput.trim()) return 'Idioma';
         if (!languageProficiency) return 'Nivel de dominio';
         return null;
     };
-
     const showAlertIfMissingFields = (missingField: string | null) => {
         if (missingField) {
             Alert.alert('Campos incompletos', `Por favor, complete el campo: ${missingField}`);
@@ -503,7 +461,6 @@ export default function ProfileScreen() {
         }
         return false;
     };
-
     // --- Nuevo: Función para renderizar items específicos ---
     const renderSpecificItem = ({ section, item }: { section: any, item: any }) => {
         if (section.key === 'info') {
@@ -551,7 +508,6 @@ export default function ProfileScreen() {
         return section.component(item);
     };
     // --- Fin Nuevo ---
-
     // --- Nuevo: Datos para SectionList ---
     const [sectionsData, setSectionsData] = useState<any[]>([]);
     // --- Nuevo: Definir la interfaz para las secciones ---
@@ -562,15 +518,11 @@ export default function ProfileScreen() {
         // La propiedad 'component' es opcional, ya que solo la usamos en ciertas secciones.
         component?: (item: any) => React.ReactNode;
     }
-
     // --- Fin Nuevo ---
-
     // ... (resto del código)
-
     // --- Corrección en el useEffect ---
     useEffect(() => {
         let sections: Section[] = []; // 👈 Aquí se define el tipo explícito
-
         if (activeTab === 'info') {
             sections = [
                 {
@@ -716,31 +668,33 @@ export default function ProfileScreen() {
                                 <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.position} - {record.institution}</Text>
                                 <View style={styles.experienceDetails}>
                                     <View style={styles.detailRow}>
-                                        <Ionicons name="person" size={18} color="#10b981" />
-                                        <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Puesto:</Text>
-                                    </View>
-                                    <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>{record.area || 'No especificado'}</Text>
-                                    <View style={styles.detailRow}>
-                                        <Ionicons name="list" size={18} color="#10b981" />
-                                        <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Funciones:</Text>
-                                    </View>
-                                    <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>
-                                        {record.description || 'No especificadas'}
-                                    </Text>
-                                    <View style={styles.dateRow}>
-                                        <View style={styles.dateContainer}>
-                                            <Ionicons name="play-circle" size={16} color="#10b981" />
-                                            <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Inicio:</Text>
-                                            <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
-                                                {record.startDate}
-                                            </Text>
+                                        <View style={styles.detailRow}>
+                                            <Ionicons name="person" size={18} color="#10b981" />
+                                            <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Puesto:</Text>
                                         </View>
-                                        <View style={styles.dateContainer}>
-                                            <Ionicons name="stop-circle" size={16} color="#3b82f6" />
-                                            <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Final:</Text>
-                                            <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
-                                                {record.endDate || 'Actualmente'}
-                                            </Text>
+                                        <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>{record.area || 'No especificado'}</Text>
+                                        <View style={styles.detailRow}>
+                                            <Ionicons name="list" size={18} color="#10b981" />
+                                            <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Funciones:</Text>
+                                        </View>
+                                        <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>
+                                            {record.description || 'No especificadas'}
+                                        </Text>
+                                        <View style={styles.dateRow}>
+                                            <View style={styles.dateContainer}>
+                                                <Ionicons name="play-circle" size={16} color="#10b981" />
+                                                <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Inicio:</Text>
+                                                <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
+                                                    {record.startDate}
+                                                </Text>
+                                            </View>
+                                            <View style={styles.dateContainer}>
+                                                <Ionicons name="stop-circle" size={16} color="#3b82f6" />
+                                                <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Final:</Text>
+                                                <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
+                                                    {record.endDate || 'Actualmente'}
+                                                </Text>
+                                            </View>
                                         </View>
                                     </View>
                                 </View>
@@ -840,11 +794,9 @@ export default function ProfileScreen() {
                 }
             ];
         }
-
         setSectionsData(sections); // 👈 Ya no debería dar error aquí
     }, [activeTab, personalInfo, academicRecords, technicalRecords, complementaryRecords, experienceRecords, volunteerRecords, publicationRecords, languageRecords, isDark]);
     // --- Fin Nuevo ---
-
     // --- Nuevo: Componentes de secciones ---
     const renderAcademicItem = (record: any) => (
         <View key={record.id} style={[styles.academicCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
@@ -868,7 +820,6 @@ export default function ProfileScreen() {
             </TouchableOpacity>
         </View>
     );
-
     const renderTechnicalItem = (record: any) => (
         <View key={record.id} style={[styles.technicalCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
@@ -885,7 +836,6 @@ export default function ProfileScreen() {
             </TouchableOpacity>
         </View>
     );
-
     const renderComplementaryItem = (record: any) => (
         <View key={record.id} style={[styles.complementaryCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
@@ -901,7 +851,6 @@ export default function ProfileScreen() {
             </TouchableOpacity>
         </View>
     );
-
     const renderExperienceItem = (record: any) => (
         <View key={record.id} style={[styles.experienceCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
@@ -947,7 +896,6 @@ export default function ProfileScreen() {
             </TouchableOpacity>
         </View>
     );
-
     const renderVolunteerItem = (record: any) => (
         <View key={record.id} style={[styles.volunteerCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
@@ -973,7 +921,6 @@ export default function ProfileScreen() {
             </TouchableOpacity>
         </View>
     );
-
     const renderPublicationItem = (record: any) => (
         <View key={record.id} style={[styles.publicationCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
@@ -1002,7 +949,6 @@ export default function ProfileScreen() {
             </TouchableOpacity>
         </View>
     );
-
     const renderLanguageItem = (record: any) => (
         <View key={record.id} style={[styles.languageCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
@@ -1020,8 +966,6 @@ export default function ProfileScreen() {
         </View>
     );
     // --- Fin Nuevo ---
-
-
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
             {/* Header */}
@@ -1039,7 +983,6 @@ export default function ProfileScreen() {
                     <Ionicons name="settings" size={24} color={isDark ? '#FFF' : '#333'} />
                 </TouchableOpacity>
             </View>
-
             {/* Banner con foto */}
             <View style={styles.bannerContainer}>
                 <TouchableOpacity onPress={showBannerMenu}>
@@ -1066,13 +1009,11 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </View>
             </View>
-
             {/* Información del usuario */}
             <View style={styles.userInfo}>
                 <Text style={[styles.userName, { color: isDark ? '#FFF' : '#333' }]}>Ethan Carter Murayari</Text>
                 <Text style={[styles.userEmail, { color: isDark ? '#AAA' : '#666' }]}>etcar@gmail.com</Text>
             </View>
-
             {/* Pestañas */}
             <View style={styles.tabs}>
                 <TouchableOpacity
@@ -1140,13 +1081,12 @@ export default function ProfileScreen() {
                     </Text>
                 </TouchableOpacity>
             </View>
-
             {/* Contenido con KeyboardAvoidingView y SectionList */}
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.keyboardAvoidingContainer}
             >
-                {/* Reemplazamos ScrollView por SectionList */}
+                {/* ✅ CORREGIDO: Reemplazamos ScrollView por SectionList */}
                 <SectionList
                     style={styles.content}
                     sections={sectionsData}
@@ -1238,7 +1178,6 @@ export default function ProfileScreen() {
                     }
                 />
             </KeyboardAvoidingView>
-
             {/* Modales de zoom para imágenes */}
             {/* Modal para ver la portada con zoom */}
             {isBannerZoomVisible && (
@@ -1286,7 +1225,6 @@ export default function ProfileScreen() {
                     />
                 </Modal>
             )}
-
             {/* Menús */}
             {bannerMenuVisible && (
                 <View style={styles.bannerMenuOverlay}>
@@ -1334,7 +1272,6 @@ export default function ProfileScreen() {
                     </View>
                 </View>
             )}
-
             {/* Modales de formularios — MODIFICADOS (excepto idiomas) */}
             {/* Modal de Información Personal */}
             {showPersonalInfoForm && (
@@ -1471,7 +1408,6 @@ export default function ProfileScreen() {
                     </View>
                 </Modal>
             )}
-
             {/* Modal de Formación Académica */}
             {showAcademicModal && (
                 <Modal
@@ -1603,7 +1539,6 @@ export default function ProfileScreen() {
                     </View>
                 </Modal>
             )}
-
             {/* Modal de Formación Técnica */}
             {showTechnicalModal && (
                 <Modal
@@ -1715,7 +1650,6 @@ export default function ProfileScreen() {
                     </View>
                 </Modal>
             )}
-
             {/* Modal de Formación Complementaria */}
             {showComplementaryModal && (
                 <Modal
@@ -1816,7 +1750,6 @@ export default function ProfileScreen() {
                     </View>
                 </Modal>
             )}
-
             {/* Modal de Experiencia Laboral */}
             {showExperienceModal && (
                 <Modal
@@ -1949,7 +1882,6 @@ export default function ProfileScreen() {
                     </View>
                 </Modal>
             )}
-
             {/* Modal de Voluntariado */}
             {showVolunteerModal && (
                 <Modal
@@ -2121,7 +2053,6 @@ export default function ProfileScreen() {
                     </View>
                 </Modal>
             )}
-
             {/* Modal de Publicación */}
             {showPublicationModal && (
                 <Modal
@@ -2257,7 +2188,6 @@ export default function ProfileScreen() {
                     </View>
                 </Modal>
             )}
-
             {/* Modal de Idiomas */}
             {showLanguageModal && (
                 <Modal
@@ -2339,7 +2269,6 @@ export default function ProfileScreen() {
                     </View>
                 </Modal>
             )}
-
             {/* Modal personalizado para nivel de idioma */}
             {showLanguagePicker && (
                 <Modal
@@ -2404,7 +2333,6 @@ export default function ProfileScreen() {
         </SafeAreaView>
     );
 }
-
 const styles = StyleSheet.create({
     container: { flex: 1 },
     header: {
