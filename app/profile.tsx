@@ -13,6 +13,7 @@ import {
     Modal,
     Platform,
     ScrollView,
+    SectionList, // 👈 Importado
     StyleSheet,
     Text,
     TextInput,
@@ -21,8 +22,18 @@ import {
 } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer'; // 👈 Importado
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../app/providers/ThemeProvider'; // ✅ Importación corregida
-import CountryInput from '../components/CountryInput'; // ✅ Importado
+import { useTheme } from '../app/providers/ThemeProvider';
+import CountryInput from '../components/CountryInput'; // ✅ Ruta correcta
+import InstitutionsInput from '../components/InstitutionsInput'; // ✅ Agrega esta línea
+
+// --- Nuevo: Definir la interfaz para las secciones ---
+interface Section {
+    title: string;
+    data: any[];
+    key: string;
+    // La propiedad 'component' es opcional, ya que solo la usamos en ciertas secciones.
+    component?: (item: any) => React.ReactNode;
+}
 
 export default function ProfileScreen() {
     const router = useRouter();
@@ -34,8 +45,8 @@ export default function ProfileScreen() {
     const [profileImage, setProfileImage] = useState<string | null>(null);
 
     // Estados para los modales de zoom
-    const [isBannerZoomVisible, setIsBannerZoomVisible] = useState(false); // 👈 Nuevo estado
-    const [isProfileZoomVisible, setIsProfileZoomVisible] = useState(false); // 👈 Nuevo estado
+    const [isBannerZoomVisible, setIsBannerZoomVisible] = useState(false);
+    const [isProfileZoomVisible, setIsProfileZoomVisible] = useState(false);
 
     // Estados para los modales
     const [showPersonalInfoForm, setShowPersonalInfoForm] = useState(false);
@@ -195,6 +206,7 @@ export default function ProfileScreen() {
             aspect: type === 'banner' ? [16, 9] : [1, 1],
             quality: 1,
         });
+
         if (!result.canceled && result.assets?.[0]) {
             const uri = result.assets[0].uri;
             if (type === 'banner') {
@@ -214,6 +226,7 @@ export default function ProfileScreen() {
             aspect: type === 'banner' ? [16, 9] : [1, 1],
             quality: 1,
         });
+
         if (!result.canceled && result.assets?.[0]) {
             const uri = result.assets[0].uri;
             if (type === 'banner') {
@@ -231,7 +244,7 @@ export default function ProfileScreen() {
     const closeBannerMenu = () => setBannerMenuVisible(false);
     const viewBannerImage = () => {
         if (bannerImage) {
-            setIsBannerZoomVisible(true); // 👈 Cambiado a nuevo estado
+            setIsBannerZoomVisible(true);
             closeBannerMenu();
         }
     };
@@ -249,7 +262,7 @@ export default function ProfileScreen() {
     const closeProfileMenu = () => setProfileMenuVisible(false);
     const viewProfileImage = () => {
         if (profileImage) {
-            setIsProfileZoomVisible(true); // 👈 Cambiado a nuevo estado
+            setIsProfileZoomVisible(true);
             closeProfileMenu();
         }
     };
@@ -491,6 +504,524 @@ export default function ProfileScreen() {
         return false;
     };
 
+    // --- Nuevo: Función para renderizar items específicos ---
+    const renderSpecificItem = ({ section, item }: { section: any, item: any }) => {
+        if (section.key === 'info') {
+            return (
+                <View style={[styles.recordItem, { backgroundColor: isDark ? '#222' : '#f9f9f9' }]}>
+                    <Text style={{ color: isDark ? '#FFF' : '#333' }}>{item.name}</Text>
+                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>F.n: {item.birthDate}</Text>
+                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>Celular: {item.phone}</Text>
+                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>
+                        {item.documentType === 'dni'
+                            ? `DNI: ${item.documentNumber}`
+                            : item.documentType === 'carnet de extranjeria'
+                                ? `Carnet de Extranjería: ${item.documentNumber}`
+                                : 'Tipo de documento no especificado'}
+                    </Text>
+                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>Género: {item.gender}</Text>
+                    <View style={styles.editDeleteContainer}>
+                        <TouchableOpacity
+                            style={styles.editButton}
+                            onPress={() => openPersonalModal()}
+                        >
+                            <Ionicons name="pencil" size={20} color="#10b981" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.deleteButton}
+                            onPress={() => {
+                                Alert.alert('Confirmar', '¿Eliminar información personal?', [
+                                    { text: 'Cancelar', style: 'cancel' },
+                                    {
+                                        text: 'Eliminar', style: 'destructive', onPress: () => {
+                                            setPersonalInfo(null);
+                                            AsyncStorage.removeItem('personalInfo');
+                                        }
+                                    }
+                                ]);
+                            }}
+                        >
+                            <Ionicons name="trash" size={20} color="#e74c3c" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            );
+        }
+        // Para otras secciones, el item ya es un record individual
+        return section.component(item);
+    };
+    // --- Fin Nuevo ---
+
+    // --- Nuevo: Datos para SectionList ---
+    const [sectionsData, setSectionsData] = useState<any[]>([]);
+    // --- Nuevo: Definir la interfaz para las secciones ---
+    interface Section {
+        title: string;
+        data: any[];
+        key: string;
+        // La propiedad 'component' es opcional, ya que solo la usamos en ciertas secciones.
+        component?: (item: any) => React.ReactNode;
+    }
+
+    // --- Fin Nuevo ---
+
+    // ... (resto del código)
+
+    // --- Corrección en el useEffect ---
+    useEffect(() => {
+        let sections: Section[] = []; // 👈 Aquí se define el tipo explícito
+
+        if (activeTab === 'info') {
+            sections = [
+                {
+                    title: 'Información Personal',
+                    data: personalInfo ? [personalInfo] : [], // Sección con un solo ítem o vacía
+                    key: 'info',
+                    component: (item: any) => (
+                        <View style={styles.section}>
+                            <View style={styles.sectionHeader}>
+                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Información Personal</Text>
+                                <TouchableOpacity style={styles.addIconContainer} onPress={openPersonalModal}>
+                                    <Ionicons name="add" size={24} color="#10b981" />
+                                </TouchableOpacity>
+                            </View>
+                            {item ? (
+                                <View style={[styles.recordItem, { backgroundColor: isDark ? '#222' : '#f9f9f9' }]}>
+                                    <Text style={{ color: isDark ? '#FFF' : '#333' }}>{item.name}</Text>
+                                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>F.n: {item.birthDate}</Text>
+                                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>Celular: {item.phone}</Text>
+                                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>
+                                        {item.documentType === 'dni'
+                                            ? `DNI: ${item.documentNumber}`
+                                            : item.documentType === 'carnet de extranjeria'
+                                                ? `Carnet de Extranjería: ${item.documentNumber}`
+                                                : 'Tipo de documento no especificado'}
+                                    </Text>
+                                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>Género: {item.gender}</Text>
+                                    <View style={styles.editDeleteContainer}>
+                                        <TouchableOpacity
+                                            style={styles.editButton}
+                                            onPress={() => openPersonalModal()}
+                                        >
+                                            <Ionicons name="pencil" size={20} color="#10b981" />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={styles.deleteButton}
+                                            onPress={() => {
+                                                Alert.alert('Confirmar', '¿Eliminar información personal?', [
+                                                    { text: 'Cancelar', style: 'cancel' },
+                                                    {
+                                                        text: 'Eliminar', style: 'destructive', onPress: () => {
+                                                            setPersonalInfo(null);
+                                                            AsyncStorage.removeItem('personalInfo');
+                                                        }
+                                                    }
+                                                ]);
+                                            }}
+                                        >
+                                            <Ionicons name="trash" size={20} color="#e74c3c" />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            ) : (
+                                <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
+                            )}
+                        </View>
+                    )
+                }
+            ];
+        } else if (activeTab === 'formacion') {
+            sections = [
+                {
+                    title: 'Información académica',
+                    data: academicRecords,
+                    key: 'academic',
+                    component: (record: any) => (
+                        <View key={record.id} style={[styles.academicCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+                            <View style={styles.iconContainer}>
+                                <Ionicons name="school" size={24} color="#10b981" />
+                            </View>
+                            <View style={styles.cardContent}>
+                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.degree}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Institución: {record.institution}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Carrera: {record.institution}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Tiempo: {record.startDate} - {record.endDate || 'Actualmente'}</Text>
+                                <View style={styles.statusContainer}>
+                                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>Estado:</Text>
+                                    <View style={[styles.statusBadge, { backgroundColor: record.status === 'Graduado' ? '#10b981' : record.status === 'Titulado' ? '#3b82f6' : '#f59e0b' }]}>
+                                        <Text style={styles.statusBadgeText}>{record.status}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openAcademicModal(record)}>
+                                <Ionicons name="pencil" size={18} color="#10b981" />
+                            </TouchableOpacity>
+                        </View>
+                    )
+                },
+                {
+                    title: 'Formación técnica / especializada',
+                    data: technicalRecords,
+                    key: 'technical',
+                    component: (record: any) => (
+                        <View key={record.id} style={[styles.technicalCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+                            <View style={styles.iconContainer}>
+                                <Ionicons name="construct" size={24} color="#10b981" />
+                            </View>
+                            <View style={styles.cardContent}>
+                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.course}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Plataforma: {record.platform}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Duración: {record.duration}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Finalizado: {record.endDate}</Text>
+                            </View>
+                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openTechnicalModal(record)}>
+                                <Ionicons name="pencil" size={18} color="#10b981" />
+                            </TouchableOpacity>
+                        </View>
+                    )
+                },
+                {
+                    title: 'Formación Complementaria',
+                    data: complementaryRecords,
+                    key: 'complementary',
+                    component: (record: any) => (
+                        <View key={record.id} style={[styles.complementaryCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+                            <View style={styles.iconContainer}>
+                                <Ionicons name="newspaper" size={24} color="#10b981" />
+                            </View>
+                            <View style={styles.cardContent}>
+                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.activity}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Descripción: {record.description}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Fecha: {record.date}</Text>
+                            </View>
+                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openComplementaryModal(record)}>
+                                <Ionicons name="pencil" size={18} color="#10b981" />
+                            </TouchableOpacity>
+                        </View>
+                    )
+                }
+            ];
+        } else if (activeTab === 'experiencia') {
+            sections = [
+                {
+                    title: 'Experiencia Laboral',
+                    data: experienceRecords,
+                    key: 'experience',
+                    component: (record: any) => (
+                        <View key={record.id} style={[styles.experienceCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+                            <View style={styles.iconContainer}>
+                                <Ionicons name="briefcase" size={24} color="#10b981" />
+                            </View>
+                            <View style={styles.cardContent}>
+                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.position} - {record.institution}</Text>
+                                <View style={styles.experienceDetails}>
+                                    <View style={styles.detailRow}>
+                                        <Ionicons name="person" size={18} color="#10b981" />
+                                        <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Puesto:</Text>
+                                    </View>
+                                    <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>{record.area || 'No especificado'}</Text>
+                                    <View style={styles.detailRow}>
+                                        <Ionicons name="list" size={18} color="#10b981" />
+                                        <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Funciones:</Text>
+                                    </View>
+                                    <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>
+                                        {record.description || 'No especificadas'}
+                                    </Text>
+                                    <View style={styles.dateRow}>
+                                        <View style={styles.dateContainer}>
+                                            <Ionicons name="play-circle" size={16} color="#10b981" />
+                                            <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Inicio:</Text>
+                                            <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
+                                                {record.startDate}
+                                            </Text>
+                                        </View>
+                                        <View style={styles.dateContainer}>
+                                            <Ionicons name="stop-circle" size={16} color="#3b82f6" />
+                                            <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Final:</Text>
+                                            <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
+                                                {record.endDate || 'Actualmente'}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openExperienceModal(record)}>
+                                <Ionicons name="pencil" size={18} color="#10b981" />
+                            </TouchableOpacity>
+                        </View>
+                    )
+                }
+            ];
+        } else if (activeTab === 'adicional') {
+            sections = [
+                {
+                    title: 'Voluntariados',
+                    data: volunteerRecords,
+                    key: 'volunteer',
+                    component: (record: any) => (
+                        <View key={record.id} style={[styles.volunteerCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+                            <View style={styles.iconContainer}>
+                                <Ionicons name="people" size={24} color="#10b981" />
+                            </View>
+                            <View style={styles.cardContent}>
+                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.organization}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                                    {record.role} • {record.cause}
+                                </Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                                    {record.country} - {record.startDate} - {record.endDate || 'Actualmente'}
+                                </Text>
+                                <View style={styles.statusContainer}>
+                                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>Estado:</Text>
+                                    <View style={[styles.statusBadge, { backgroundColor: record.currentlyInRole ? '#3b82f6' : '#e74c3c' }]}>
+                                        <Text style={styles.statusBadgeText}>{record.currentlyInRole ? 'En curso' : 'Finalizado'}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openVolunteerModal(record)}>
+                                <Ionicons name="pencil" size={18} color="#10b981" />
+                            </TouchableOpacity>
+                        </View>
+                    )
+                },
+                {
+                    title: 'Publicaciones',
+                    data: publicationRecords,
+                    key: 'publication',
+                    component: (record: any) => (
+                        <View key={record.id} style={[styles.publicationCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+                            <View style={styles.iconContainer}>
+                                <Ionicons name="book" size={24} color="#10b981" />
+                            </View>
+                            <View style={styles.cardContent}>
+                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.title}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Revista: {record.editorial}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Autores: {record.author}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                                    {record.country} - {record.date}
+                                </Text>
+                                {record.url && (
+                                    <Text style={[styles.cardLink, { color: '#10b981' }]}>
+                                        {record.url}
+                                    </Text>
+                                )}
+                                {record.abstract && (
+                                    <Text style={[styles.cardAbstract, { color: isDark ? '#AAA' : '#666' }]}>
+                                        "{record.abstract}"
+                                    </Text>
+                                )}
+                            </View>
+                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openPublicationModal(record)}>
+                                <Ionicons name="pencil" size={18} color="#10b981" />
+                            </TouchableOpacity>
+                        </View>
+                    )
+                },
+                {
+                    title: 'Idiomas',
+                    data: languageRecords,
+                    key: 'language',
+                    component: (record: any) => (
+                        <View key={record.id} style={[styles.languageCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+                            <View style={styles.iconContainer}>
+                                <Ionicons name="globe" size={24} color="#10b981" />
+                            </View>
+                            <View style={styles.cardContent}>
+                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.language}</Text>
+                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                                    {record.proficiency}
+                                </Text>
+                            </View>
+                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openLanguageModal(record)}>
+                                <Ionicons name="pencil" size={18} color="#10b981" />
+                            </TouchableOpacity>
+                        </View>
+                    )
+                }
+            ];
+        }
+
+        setSectionsData(sections); // 👈 Ya no debería dar error aquí
+    }, [activeTab, personalInfo, academicRecords, technicalRecords, complementaryRecords, experienceRecords, volunteerRecords, publicationRecords, languageRecords, isDark]);
+    // --- Fin Nuevo ---
+
+    // --- Nuevo: Componentes de secciones ---
+    const renderAcademicItem = (record: any) => (
+        <View key={record.id} style={[styles.academicCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+            <View style={styles.iconContainer}>
+                <Ionicons name="school" size={24} color="#10b981" />
+            </View>
+            <View style={styles.cardContent}>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.degree}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Institución: {record.institution}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Carrera: {record.institution}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Tiempo: {record.startDate} - {record.endDate || 'Actualmente'}</Text>
+                <View style={styles.statusContainer}>
+                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>Estado:</Text>
+                    <View style={[styles.statusBadge, { backgroundColor: record.status === 'Graduado' ? '#10b981' : record.status === 'Titulado' ? '#3b82f6' : '#f59e0b' }]}>
+                        <Text style={styles.statusBadgeText}>{record.status}</Text>
+                    </View>
+                </View>
+            </View>
+            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openAcademicModal(record)}>
+                <Ionicons name="pencil" size={18} color="#10b981" />
+            </TouchableOpacity>
+        </View>
+    );
+
+    const renderTechnicalItem = (record: any) => (
+        <View key={record.id} style={[styles.technicalCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+            <View style={styles.iconContainer}>
+                <Ionicons name="construct" size={24} color="#10b981" />
+            </View>
+            <View style={styles.cardContent}>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.course}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Plataforma: {record.platform}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Duración: {record.duration}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Finalizado: {record.endDate}</Text>
+            </View>
+            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openTechnicalModal(record)}>
+                <Ionicons name="pencil" size={18} color="#10b981" />
+            </TouchableOpacity>
+        </View>
+    );
+
+    const renderComplementaryItem = (record: any) => (
+        <View key={record.id} style={[styles.complementaryCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+            <View style={styles.iconContainer}>
+                <Ionicons name="newspaper" size={24} color="#10b981" />
+            </View>
+            <View style={styles.cardContent}>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.activity}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Descripción: {record.description}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Fecha: {record.date}</Text>
+            </View>
+            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openComplementaryModal(record)}>
+                <Ionicons name="pencil" size={18} color="#10b981" />
+            </TouchableOpacity>
+        </View>
+    );
+
+    const renderExperienceItem = (record: any) => (
+        <View key={record.id} style={[styles.experienceCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+            <View style={styles.iconContainer}>
+                <Ionicons name="briefcase" size={24} color="#10b981" />
+            </View>
+            <View style={styles.cardContent}>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.position} - {record.institution}</Text>
+                <View style={styles.experienceDetails}>
+                    <View style={styles.detailRow}>
+                        <View style={styles.detailRow}>
+                            <Ionicons name="person" size={18} color="#10b981" />
+                            <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Puesto:</Text>
+                        </View>
+                        <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>{record.area || 'No especificado'}</Text>
+                        <View style={styles.detailRow}>
+                            <Ionicons name="list" size={18} color="#10b981" />
+                            <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Funciones:</Text>
+                        </View>
+                        <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>
+                            {record.description || 'No especificadas'}
+                        </Text>
+                        <View style={styles.dateRow}>
+                            <View style={styles.dateContainer}>
+                                <Ionicons name="play-circle" size={16} color="#10b981" />
+                                <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Inicio:</Text>
+                                <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
+                                    {record.startDate}
+                                </Text>
+                            </View>
+                            <View style={styles.dateContainer}>
+                                <Ionicons name="stop-circle" size={16} color="#3b82f6" />
+                                <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Final:</Text>
+                                <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
+                                    {record.endDate || 'Actualmente'}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </View>
+            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openExperienceModal(record)}>
+                <Ionicons name="pencil" size={18} color="#10b981" />
+            </TouchableOpacity>
+        </View>
+    );
+
+    const renderVolunteerItem = (record: any) => (
+        <View key={record.id} style={[styles.volunteerCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+            <View style={styles.iconContainer}>
+                <Ionicons name="people" size={24} color="#10b981" />
+            </View>
+            <View style={styles.cardContent}>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.organization}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                    {record.role} • {record.cause}
+                </Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                    {record.country} - {record.startDate} - {record.endDate || 'Actualmente'}
+                </Text>
+                <View style={styles.statusContainer}>
+                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>Estado:</Text>
+                    <View style={[styles.statusBadge, { backgroundColor: record.currentlyInRole ? '#3b82f6' : '#e74c3c' }]}>
+                        <Text style={styles.statusBadgeText}>{record.currentlyInRole ? 'En curso' : 'Finalizado'}</Text>
+                    </View>
+                </View>
+            </View>
+            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openVolunteerModal(record)}>
+                <Ionicons name="pencil" size={18} color="#10b981" />
+            </TouchableOpacity>
+        </View>
+    );
+
+    const renderPublicationItem = (record: any) => (
+        <View key={record.id} style={[styles.publicationCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+            <View style={styles.iconContainer}>
+                <Ionicons name="book" size={24} color="#10b981" />
+            </View>
+            <View style={styles.cardContent}>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.title}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Revista: {record.editorial}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Autores: {record.author}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                    {record.country} - {record.date}
+                </Text>
+                {record.url && (
+                    <Text style={[styles.cardLink, { color: '#10b981' }]}>
+                        {record.url}
+                    </Text>
+                )}
+                {record.abstract && (
+                    <Text style={[styles.cardAbstract, { color: isDark ? '#AAA' : '#666' }]}>
+                        "{record.abstract}"
+                    </Text>
+                )}
+            </View>
+            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openPublicationModal(record)}>
+                <Ionicons name="pencil" size={18} color="#10b981" />
+            </TouchableOpacity>
+        </View>
+    );
+
+    const renderLanguageItem = (record: any) => (
+        <View key={record.id} style={[styles.languageCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+            <View style={styles.iconContainer}>
+                <Ionicons name="globe" size={24} color="#10b981" />
+            </View>
+            <View style={styles.cardContent}>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.language}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                    {record.proficiency}
+                </Text>
+            </View>
+            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openLanguageModal(record)}>
+                <Ionicons name="pencil" size={18} color="#10b981" />
+            </TouchableOpacity>
+        </View>
+    );
+    // --- Fin Nuevo ---
+
+
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
             {/* Header */}
@@ -515,7 +1046,7 @@ export default function ProfileScreen() {
                     {bannerImage ? (
                         <Image source={{ uri: bannerImage }} style={styles.bannerImage} resizeMode="cover" />
                     ) : (
-                        <View style={[styles.bannerImage, styles.bannerPlaceholder]}>
+                        <View style={[styles.bannerImage, styles.bannerPlaceholder, { backgroundColor: isDark ? '#111' : '#f0f0f0' }]}>
                             <Text style={[styles.placeholderText, { color: isDark ? '#AAA' : '#666' }]}>📷 Foto de portada</Text>
                         </View>
                     )}
@@ -525,7 +1056,7 @@ export default function ProfileScreen() {
                         {profileImage ? (
                             <Image source={{ uri: profileImage }} style={styles.profilePhoto} resizeMode="cover" />
                         ) : (
-                            <View style={[styles.profilePhoto, styles.profilePlaceholder]}>
+                            <View style={[styles.profilePhoto, styles.profilePlaceholder, { backgroundColor: isDark ? '#111' : '#f0f0f0' }]}>
                                 <Text style={[styles.placeholderText, { color: isDark ? '#AAA' : '#666' }]}>👤</Text>
                             </View>
                         )}
@@ -610,326 +1141,102 @@ export default function ProfileScreen() {
                 </TouchableOpacity>
             </View>
 
-            {/* Contenido con KeyboardAvoidingView */}
+            {/* Contenido con KeyboardAvoidingView y SectionList */}
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.keyboardAvoidingContainer}
             >
-                <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-                    {activeTab === 'info' && (
-                        <View style={styles.section}>
-                            <View style={styles.sectionHeader}>
-                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Información Personal</Text>
-                                <TouchableOpacity style={styles.addIconContainer} onPress={openPersonalModal}>
-                                    <Ionicons name="add" size={24} color="#10b981" />
-                                </TouchableOpacity>
-                            </View>
-                            {personalInfo ? (
-                                <View style={[styles.recordItem, { backgroundColor: isDark ? '#222' : '#f9f9f9' }]}>
-                                    <Text style={{ color: isDark ? '#FFF' : '#333' }}>{personalInfo.name}</Text>
-                                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>F.n: {personalInfo.birthDate}</Text>
-                                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>Celular: {personalInfo.phone}</Text>
-                                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>
-                                        {personalInfo.documentType === 'dni'
-                                            ? `DNI: ${personalInfo.documentNumber}`
-                                            : personalInfo.documentType === 'carnet de extranjeria'
-                                                ? `Carnet de Extranjería: ${personalInfo.documentNumber}`
-                                                : 'Tipo de documento no especificado'}
-                                    </Text>
-                                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>Género: {personalInfo.gender}</Text>
-                                    <View style={styles.editDeleteContainer}>
-                                        <TouchableOpacity
-                                            style={styles.editButton}
-                                            onPress={() => openPersonalModal()}
-                                        >
-                                            <Ionicons name="pencil" size={20} color="#10b981" />
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={styles.deleteButton}
-                                            onPress={() => {
-                                                Alert.alert('Confirmar', '¿Eliminar información personal?', [
-                                                    { text: 'Cancelar', style: 'cancel' },
-                                                    {
-                                                        text: 'Eliminar', style: 'destructive', onPress: () => {
-                                                            setPersonalInfo(null);
-                                                            AsyncStorage.removeItem('personalInfo');
-                                                        }
-                                                    }
-                                                ]);
-                                            }}
-                                        >
-                                            <Ionicons name="trash" size={20} color="#e74c3c" />
+                {/* Reemplazamos ScrollView por SectionList */}
+                <SectionList
+                    style={styles.content}
+                    sections={sectionsData}
+                    keyExtractor={(item, index) => item.id || `item-${index}`} // Asegura una key única
+                    renderItem={({ section, item }) => {
+                        // Usamos la nueva función para renderizar el item específico
+                        return renderSpecificItem({ section, item });
+                    }}
+                    renderSectionHeader={({ section: { title, key } }) => {
+                        // Renderizamos el header de cada sección
+                        // Solo mostramos el header si no es la sección de 'info' que tiene su propio header
+                        if (key === 'info') {
+                            // Para la sección 'info', renderizamos el encabezado aquí, incluyendo el botón "+".
+                            return (
+                                <View style={styles.section}>
+                                    <View style={styles.sectionHeader}>
+                                        <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Información Personal</Text>
+                                        <TouchableOpacity style={styles.addIconContainer} onPress={openPersonalModal}>
+                                            <Ionicons name="add" size={24} color="#10b981" />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                            ) : (
-                                <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
-                            )}
-                        </View>
-                    )}
-                    {activeTab === 'formacion' && (
-                        <>
+                            );
+                        }
+                        // Para otras secciones, mostramos el header
+                        return (
                             <View style={styles.section}>
                                 <View style={styles.sectionHeader}>
-                                    <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Información académica</Text>
-                                    <TouchableOpacity style={styles.addIconContainer} onPress={() => openAcademicModal()}>
-                                        <Ionicons name="add" size={24} color="#10b981" />
-                                    </TouchableOpacity>
-                                </View>
-                                {academicRecords.length === 0 ? (
-                                    <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
-                                ) : (
-                                    academicRecords.map((record) => (
-                                        <View key={record.id} style={[styles.academicCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                                            <View style={styles.iconContainer}>
-                                                <Ionicons name="school" size={24} color="#10b981" />
-                                            </View>
-                                            <View style={styles.cardContent}>
-                                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.degree}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Institución: {record.institution}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Carrera: {record.institution}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Tiempo: {record.startDate} - {record.endDate || 'Actualmente'}</Text>
-                                                <View style={styles.statusContainer}>
-                                                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>Estado:</Text>
-                                                    <View style={[styles.statusBadge, { backgroundColor: record.status === 'Graduado' ? '#10b981' : record.status === 'Titulado' ? '#3b82f6' : '#f59e0b' }]}>
-                                                        <Text style={styles.statusBadgeText}>{record.status}</Text>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openAcademicModal(record)}>
-                                                <Ionicons name="pencil" size={18} color="#10b981" />
-                                            </TouchableOpacity>
-                                        </View>
-                                    ))
-                                )}
-                            </View>
-                            <View style={styles.section}>
-                                <View style={styles.sectionHeader}>
-                                    <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Formación técnica / especializada</Text>
-                                    <TouchableOpacity style={styles.addIconContainer} onPress={() => openTechnicalModal()}>
-                                        <Ionicons name="add" size={24} color="#10b981" />
-                                    </TouchableOpacity>
-                                </View>
-                                {technicalRecords.length === 0 ? (
-                                    <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
-                                ) : (
-                                    technicalRecords.map((record) => (
-                                        <View key={record.id} style={[styles.technicalCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                                            <View style={styles.iconContainer}>
-                                                <Ionicons name="construct" size={24} color="#10b981" />
-                                            </View>
-                                            <View style={styles.cardContent}>
-                                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.course}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Plataforma: {record.platform}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Duración: {record.duration}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Finalizado: {record.endDate}</Text>
-                                            </View>
-                                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openTechnicalModal(record)}>
-                                                <Ionicons name="pencil" size={18} color="#10b981" />
-                                            </TouchableOpacity>
-                                        </View>
-                                    ))
-                                )}
-                            </View>
-                            <View style={styles.section}>
-                                <View style={styles.sectionHeader}>
-                                    <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Formación Complementaria</Text>
-                                    <TouchableOpacity style={styles.addIconContainer} onPress={() => openComplementaryModal()}>
-                                        <Ionicons name="add" size={24} color="#10b981" />
-                                    </TouchableOpacity>
-                                </View>
-                                {complementaryRecords.length === 0 ? (
-                                    <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
-                                ) : (
-                                    complementaryRecords.map((record) => (
-                                        <View key={record.id} style={[styles.complementaryCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                                            <View style={styles.iconContainer}>
-                                                <Ionicons name="newspaper" size={24} color="#10b981" />
-                                            </View>
-                                            <View style={styles.cardContent}>
-                                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.activity}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Descripción: {record.description}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Fecha: {record.date}</Text>
-                                            </View>
-                                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openComplementaryModal(record)}>
-                                                <Ionicons name="pencil" size={18} color="#10b981" />
-                                            </TouchableOpacity>
-                                        </View>
-                                    ))
-                                )}
-                            </View>
-                        </>
-                    )}
-                    {activeTab === 'experiencia' && (
-                        <View style={styles.section}>
-                            <View style={styles.sectionHeader}>
-                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Experiencia Laboral</Text>
-                                <TouchableOpacity style={styles.addIconContainer} onPress={() => openExperienceModal()}>
-                                    <Ionicons name="add" size={24} color="#10b981" />
-                                </TouchableOpacity>
-                            </View>
-                            {experienceRecords.length === 0 ? (
-                                <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
-                            ) : (
-                                experienceRecords.map((record) => (
-                                    <View key={record.id} style={[styles.experienceCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                                        <View style={styles.iconContainer}>
-                                            <Ionicons name="briefcase" size={24} color="#10b981" />
-                                        </View>
-                                        <View style={styles.cardContent}>
-                                            <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.position} - {record.institution}</Text>
-                                            <View style={styles.experienceDetails}>
-                                                <View style={styles.detailRow}>
-                                                    <Ionicons name="person" size={18} color="#10b981" />
-                                                    <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Puesto:</Text>
-                                                </View>
-                                                <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>{record.area || 'No especificado'}</Text>
-                                                <View style={styles.detailRow}>
-                                                    <Ionicons name="list" size={18} color="#10b981" />
-                                                    <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Funciones:</Text>
-                                                </View>
-                                                <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>
-                                                    {record.description || 'No especificadas'}
-                                                </Text>
-                                                <View style={styles.dateRow}>
-                                                    <View style={styles.dateContainer}>
-                                                        <Ionicons name="play-circle" size={16} color="#10b981" />
-                                                        <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Inicio:</Text>
-                                                        <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
-                                                            {record.startDate}
-                                                        </Text>
-                                                    </View>
-                                                    <View style={styles.dateContainer}>
-                                                        <Ionicons name="stop-circle" size={16} color="#3b82f6" />
-                                                        <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Final:</Text>
-                                                        <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
-                                                            {record.endDate || 'Actualmente'}
-                                                        </Text>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        </View>
-                                        <TouchableOpacity style={styles.editButtonCircle} onPress={() => openExperienceModal(record)}>
-                                            <Ionicons name="pencil" size={18} color="#10b981" />
+                                    <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>{title}</Text>
+                                    {/* Agregar botón de "Agregar" si corresponde */}
+                                    {/* Botón para Académica */}
+                                    {key === 'academic' && (
+                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openAcademicModal()}>
+                                            <Ionicons name="add" size={24} color="#10b981" />
                                         </TouchableOpacity>
-                                    </View>
-                                ))
-                            )}
-                        </View>
-                    )}
-                    {activeTab === 'adicional' && (
-                        <>
-                            {/* Voluntariados */}
-                            <View style={styles.section}>
-                                <View style={styles.sectionHeader}>
-                                    <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Voluntariados</Text>
-                                    <TouchableOpacity style={styles.addIconContainer} onPress={() => openVolunteerModal()}>
-                                        <Ionicons name="add" size={24} color="#10b981" />
-                                    </TouchableOpacity>
+                                    )}
+                                    {/* Botón para Técnica */}
+                                    {key === 'technical' && (
+                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openTechnicalModal()}>
+                                            <Ionicons name="add" size={24} color="#10b981" />
+                                        </TouchableOpacity>
+                                    )}
+                                    {/* Botón para Complementaria */}
+                                    {key === 'complementary' && (
+                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openComplementaryModal()}>
+                                            <Ionicons name="add" size={24} color="#10b981" />
+                                        </TouchableOpacity>
+                                    )}
+                                    {/* Botón para Experiencia */}
+                                    {key === 'experience' && (
+                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openExperienceModal()}>
+                                            <Ionicons name="add" size={24} color="#10b981" />
+                                        </TouchableOpacity>
+                                    )}
+                                    {/* Botón para Voluntariado */}
+                                    {key === 'volunteer' && (
+                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openVolunteerModal()}>
+                                            <Ionicons name="add" size={24} color="#10b981" />
+                                        </TouchableOpacity>
+                                    )}
+                                    {/* Botón para Publicación */}
+                                    {key === 'publication' && (
+                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openPublicationModal()}>
+                                            <Ionicons name="add" size={24} color="#10b981" />
+                                        </TouchableOpacity>
+                                    )}
+                                    {/* Botón para Idiomas */}
+                                    {key === 'language' && (
+                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openLanguageModal()}>
+                                            <Ionicons name="add" size={24} color="#10b981" />
+                                        </TouchableOpacity>
+                                    )}
                                 </View>
-                                {volunteerRecords.length === 0 ? (
-                                    <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
-                                ) : (
-                                    volunteerRecords.map((record) => (
-                                        <View key={record.id} style={[styles.volunteerCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                                            <View style={styles.iconContainer}>
-                                                <Ionicons name="people" size={24} color="#10b981" />
-                                            </View>
-                                            <View style={styles.cardContent}>
-                                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.organization}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                                                    {record.role} • {record.cause}
-                                                </Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                                                    {record.country} - {record.startDate} - {record.endDate || 'Actualmente'}
-                                                </Text>
-                                                <View style={styles.statusContainer}>
-                                                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>Estado:</Text>
-                                                    <View style={[styles.statusBadge, { backgroundColor: record.currentlyInRole ? '#3b82f6' : '#e74c3c' }]}>
-                                                        <Text style={styles.statusBadgeText}>{record.currentlyInRole ? 'En curso' : 'Finalizado'}</Text>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openVolunteerModal(record)}>
-                                                <Ionicons name="pencil" size={18} color="#10b981" />
-                                            </TouchableOpacity>
-                                        </View>
-                                    ))
-                                )}
                             </View>
-                            {/* Publicaciones */}
-                            <View style={styles.section}>
-                                <View style={styles.sectionHeader}>
-                                    <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Publicaciones</Text>
-                                    <TouchableOpacity style={styles.addIconContainer} onPress={() => openPublicationModal()}>
-                                        <Ionicons name="add" size={24} color="#10b981" />
-                                    </TouchableOpacity>
-                                </View>
-                                {publicationRecords.length === 0 ? (
-                                    <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
-                                ) : (
-                                    publicationRecords.map((record) => (
-                                        <View key={record.id} style={[styles.publicationCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                                            <View style={styles.iconContainer}>
-                                                <Ionicons name="book" size={24} color="#10b981" />
-                                            </View>
-                                            <View style={styles.cardContent}>
-                                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.title}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Revista: {record.editorial}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Autores: {record.author}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                                                    {record.country} - {record.date}
-                                                </Text>
-                                                {record.url && (
-                                                    <Text style={[styles.cardLink, { color: '#10b981' }]}>
-                                                        {record.url}
-                                                    </Text>
-                                                )}
-                                                {record.abstract && (
-                                                    <Text style={[styles.cardAbstract, { color: isDark ? '#AAA' : '#666' }]}>
-                                                        "{record.abstract}"
-                                                    </Text>
-                                                )}
-                                            </View>
-                                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openPublicationModal(record)}>
-                                                <Ionicons name="pencil" size={18} color="#10b981" />
-                                            </TouchableOpacity>
-                                        </View>
-                                    ))
-                                )}
-                            </View>
-                            {/* Idiomas */}
-                            <View style={styles.section}>
-                                <View style={styles.sectionHeader}>
-                                    <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Idiomas</Text>
-                                    <TouchableOpacity style={styles.addIconContainer} onPress={() => openLanguageModal()}>
-                                        <Ionicons name="add" size={24} color="#10b981" />
-                                    </TouchableOpacity>
-                                </View>
-                                {languageRecords.length === 0 ? (
-                                    <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
-                                ) : (
-                                    languageRecords.map((record) => (
-                                        <View key={record.id} style={[styles.languageCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                                            <View style={styles.iconContainer}>
-                                                <Ionicons name="globe" size={24} color="#10b981" />
-                                            </View>
-                                            <View style={styles.cardContent}>
-                                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.language}</Text>
-                                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                                                    {record.proficiency}
-                                                </Text>
-                                            </View>
-                                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openLanguageModal(record)}>
-                                                <Ionicons name="pencil" size={18} color="#10b981" />
-                                            </TouchableOpacity>
-                                        </View>
-                                    ))
-                                )}
-                            </View>
-                        </>
-                    )}
-                </ScrollView>
+                        );
+                    }}
+                    renderSectionFooter={({ section }) => {
+                        // Opcional: Agregar un footer a cada sección
+                        if (section.data.length === 0 && section.key !== 'info') { // No mostrar para info si está vacía, ya tiene su propio mensaje
+                            return (
+                                <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
+                            );
+                        }
+                        return null; // No footer si hay datos
+                    }}
+                    showsVerticalScrollIndicator={false}
+                    ListEmptyComponent={
+                        <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No hay secciones para mostrar.</Text>
+                    }
+                />
             </KeyboardAvoidingView>
 
             {/* Modales de zoom para imágenes */}
@@ -1199,15 +1506,7 @@ export default function ProfileScreen() {
                                         blurOnSubmit={false}
                                     />
                                     <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Institución</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Ingrese el nombre de su carrera"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={institutionInput}
-                                        onChangeText={setInstitutionInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
+                                    <InstitutionsInput value={institutionInput} onChangeText={setInstitutionInput} />
                                     <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>País</Text>
                                     {/* Reemplazado el TextInput por CountryInput */}
                                     <CountryInput value={countryInput} onChangeText={setCountryInput} />
@@ -1552,15 +1851,7 @@ export default function ProfileScreen() {
                                         blurOnSubmit={false}
                                     />
                                     <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Institución</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Nombre de la empresa u organización"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={institutionInput}
-                                        onChangeText={setInstitutionInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
+                                    <InstitutionsInput value={institutionInput} onChangeText={setInstitutionInput} />
                                     <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Área</Text>
                                     <TextInput
                                         style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
@@ -1668,16 +1959,13 @@ export default function ProfileScreen() {
                     onRequestClose={() => setShowVolunteerModal(false)}
                 >
                     <View style={styles.modalOverlay}>
-                        {/* --- CAMBIO 1: Eliminamos minHeight y maxHeight de modalContent --- */}
                         <KeyboardAvoidingView
                             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                            // --- CAMBIO 2: Hacemos que el KeyboardAvoidingView ocupe todo el alto disponible ---
                             style={{ flex: 1, width: '90%', maxWidth: 400 }}
                         >
                             <ScrollView
                                 keyboardShouldPersistTaps="handled"
                                 showsVerticalScrollIndicator={false}
-                                // --- Opcional: Añadimos padding bottom para que el último botón no quede pegado al teclado ---
                                 contentContainerStyle={{ paddingBottom: 80 }}
                             >
                                 <TouchableOpacity
@@ -2130,7 +2418,7 @@ const styles = StyleSheet.create({
     headerTitle: { fontSize: 18, fontWeight: 'bold' },
     bannerContainer: { height: 200, position: 'relative' },
     bannerImage: { width: '100%', height: '100%', resizeMode: 'cover' },
-    bannerPlaceholder: { backgroundColor: '#c8e6c9', justifyContent: 'center', alignItems: 'center' },
+    bannerPlaceholder: { justifyContent: 'center', alignItems: 'center' }, // Removed static color
     placeholderText: { fontSize: 16 },
     profilePhotoContainer: {
         position: 'absolute',
@@ -2140,7 +2428,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     profilePhoto: { width: 100, height: 100, borderRadius: 50, borderWidth: 3, borderColor: '#fff' },
-    profilePlaceholder: { backgroundColor: '#e8f5e8', justifyContent: 'center', alignItems: 'center' },
+    profilePlaceholder: { justifyContent: 'center', alignItems: 'center' }, // Removed static color
     cameraIcon: {
         position: 'absolute',
         bottom: 0,

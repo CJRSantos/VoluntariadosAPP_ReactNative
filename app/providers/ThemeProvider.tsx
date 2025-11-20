@@ -50,3 +50,5 @@ export function useTheme() {
     }
     return context;
 }
+// Asegúrate de que esto esté al final del archivo
+export default ThemeProvider;
