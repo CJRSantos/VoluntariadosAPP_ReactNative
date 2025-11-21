@@ -8,6 +8,7 @@ import {
     Alert,
     Dimensions,
     Image,
+    Linking, // 👈 Importado para abrir URLs
     Modal, // 👈 Importado
     ScrollView, // 👈 Importado
     StyleSheet,
@@ -20,6 +21,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from './providers/ThemeProvider';
 
 const { width } = Dimensions.get('window');
+
+// 👇 Definición de redes sociales del IIAP
+const SOCIAL_LINKS = [
+    { id: 'facebook', name: 'Facebook', icon: 'logo-facebook', color: '#1877F2', url: 'https://www.facebook.com/IIAPPeru' },
+    { id: 'twitter', name: 'Twitter', icon: 'logo-twitter', color: '#1DA1F2', url: 'https://twitter.com/IIAPPeru' },
+    { id: 'instagram', name: 'Instagram', icon: 'logo-instagram', color: '#E4405F', url: 'https://www.instagram.com/iiapperu/' },
+    { id: 'youtube', name: 'YouTube', icon: 'logo-youtube', color: '#FF0000', url: 'https://www.youtube.com/@webiiap' },
+    { id: 'linkedin', name: 'LinkedIn', icon: 'logo-linkedin', color: '#0077B5', url: 'https://www.linkedin.com/company/iiap' },
+    { id: 'web', name: 'Sitio Web', icon: 'globe-outline', color: '#4CAF50', url: 'https://www.gob.pe/iiap' },
+];
 
 export default function AccountScreen() {
     const { user, loading, reloadUser } = useAuth();
@@ -87,6 +98,14 @@ export default function AccountScreen() {
         { id: 3, image: require('../assets/images/guia3.png') },
         { id: 4, image: require('../assets/images/guia4.jpg') },
     ]);
+
+    // 👇 Función para abrir una URL
+    const openSocialLink = (url: string) => {
+        Linking.openURL(url).catch((err) => {
+            console.error('Error al abrir la URL:', err);
+            Alert.alert('Error', 'No se pudo abrir el enlace. Intente más tarde.');
+        });
+    };
 
     if (loading) {
         return (
@@ -247,15 +266,32 @@ export default function AccountScreen() {
                     ))}
                 </View>
 
-                {/* Enlaces rápidos */}
+                {/* Enlaces rápidos - AHORA CON REDES SOCIALES */}
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    Enlaces rápidos
+                    Enlaces Rápidos
                 </Text>
                 <View style={styles.quickLinksContainer}>
-                    <Image
-                        source={require('../assets/images/logo-IIAP_enlaces.png')}
-                        style={styles.quickLinksImage}
-                    />
+                    {/* 👇 Fila de iconos de redes sociales */}
+                    <View style={styles.socialLinksRow}>
+                        {SOCIAL_LINKS.map((social) => (
+                            <TouchableOpacity
+                                key={social.id}
+                                style={styles.socialLinkButton}
+                                onPress={() => openSocialLink(social.url)}
+                                activeOpacity={0.7}
+                            >
+                                <Ionicons
+                                    name={social.icon as any} // Type assertion segura para Ionicons
+                                    size={28}
+                                    color="#FFF"
+                                    style={[styles.socialIcon, { backgroundColor: social.color }]}
+                                />
+                                <Text style={[styles.socialLinkLabel, { color: isDark ? '#FFF' : '#333' }]}>
+                                    {social.name}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                 </View>
             </ScrollView>
 
@@ -473,7 +509,7 @@ export default function AccountScreen() {
     );
 }
 
-// 🎨 Estilos (con resaltado añadido al final)
+// 🎨 Estilos (con nuevos estilos añadidos para redes sociales)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -669,13 +705,32 @@ const styles = StyleSheet.create({
     quickLinksContainer: {
         marginHorizontal: 16,
         marginTop: 16,
-        borderRadius: 12,
-        overflow: 'hidden',
+        marginBottom: 16, // 👈 Añadido para separación
+        alignItems: 'center', // 👈 Centra la fila
     },
-    quickLinksImage: {
-        width: '100%',
-        height: 200,
-        resizeMode: 'cover',
+    socialLinksRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        gap: 20,
+    },
+    socialLinkButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 60,
+        height: 80,
+    },
+    socialIcon: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 4,
+    },
+    socialLinkLabel: {
+        fontSize: 10,
+        textAlign: 'center',
     },
     bottomNav: {
         position: 'absolute',
@@ -694,7 +749,6 @@ const styles = StyleSheet.create({
         borderTopColor: '#4CAF50',
         backgroundColor: 'transparent', // 🔹 evita el fondo blanco
     },
-
     navIcon: { width: 24, height: 24, marginBottom: 4, resizeMode: 'contain' },
     navIconActive: {
         tintColor: '#4CAF50',
@@ -703,7 +757,7 @@ const styles = StyleSheet.create({
     navLabelActive: {
         color: '#4CAF50',
     },
-    // 👇 Nuevos estilos para la modal de imagen
+    // 👇 Nuevos estilos para la modal de imagen (no cambiados)
     modalOverlay: {
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.8)',
