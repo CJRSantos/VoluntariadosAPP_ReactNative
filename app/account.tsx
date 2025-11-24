@@ -1,15 +1,15 @@
 import { useAuth } from '@/hooks/useAuth';
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons'; // 👈 FontAwesome5 añadido
 import { useFocusEffect } from '@react-navigation/native';
-import { Redirect, usePathname, useRouter } from 'expo-router'; // 👈 usePathname añadido
+import { Redirect, usePathname, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
     Alert,
     Dimensions,
     Image,
-    Linking, // 👈 Importado para abrir URLs
-    Modal, // 👈 Importado
-    ScrollView, // 👈 Importado
+    Linking,
+    Modal,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -29,19 +29,21 @@ const SOCIAL_LINKS = [
     { id: 'youtube', name: 'YouTube', icon: 'logo-youtube', color: '#FF0000', url: 'https://www.youtube.com/@webiiap' },
     { id: 'linkedin', name: 'LinkedIn', icon: 'logo-linkedin', color: '#0077B5', url: 'https://www.linkedin.com/company/iiap' },
     { id: 'web', name: 'Sitio Web', icon: 'globe-outline', color: '#4CAF50', url: 'https://www.gob.pe/iiap' },
+    { id: 'tiktok', name: 'Tiktok', icon: 'logo-tiktok', color: '#000000', url: 'https://www.tiktok.com/@iiapperu?is_from_webapp=1&sender_device=pc'},
+    { id: 'spotify', name: 'Spotify', icon: 'spotify', type: 'fontawesome', color: '#1DB954', url: 'https://open.spotify.com/show/22EKStrMUkA8MciXSj9EaE?si=3454d74d68a244b1'},
 ];
 
 export default function AccountScreen() {
     const { user, loading, reloadUser } = useAuth();
     const router = useRouter();
-    const pathname = usePathname(); // 👈 Nueva línea
+    const pathname = usePathname();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-    const [isProfileImageVisible, setIsProfileImageVisible] = useState(false); // 👈 Nuevo estado para la imagen
+    const [isProfileImageVisible, setIsProfileImageVisible] = useState(false);
 
     useFocusEffect(
         useCallback(() => {
@@ -98,7 +100,6 @@ export default function AccountScreen() {
         { id: 4, image: require('../assets/images/guia4.jpg') },
     ]);
 
-    // 👇 Función para abrir una URL
     const openSocialLink = (url: string) => {
         Linking.openURL(url).catch((err) => {
             console.error('Error al abrir la URL:', err);
@@ -135,7 +136,6 @@ export default function AccountScreen() {
                         volunteer account
                     </Text>
                     <View style={styles.headerRight}>
-                        {/* 👇 Imagen de perfil con zoom */}
                         <TouchableOpacity onPress={() => setIsProfileImageVisible(true)}>
                             <Image
                                 source={
@@ -197,14 +197,12 @@ export default function AccountScreen() {
                                 <Text style={[styles.newsEndDate, { color: isDark ? '#AAA' : '#666' }]}>
                                     {item.endDate}
                                 </Text>
-                                {/* 👇 Reducimos el marginBottom para que el título no empuje tanto hacia abajo */}
                                 <Text style={[styles.newsTitle, { color: isDark ? '#FFF' : '#333', marginBottom: 8 }]}>
                                     {item.title}
                                 </Text>
                                 <Text style={[styles.newsTopics, { color: isDark ? '#AAA' : '#666' }]}>
                                     {item.topics.join(', ')}
                                 </Text>
-                                {/* 👇 Movemos los botones más arriba, justo debajo de los temas */}
                                 <View style={styles.newsStatusContainer}>
                                     {item.status === 'Abierto' ? (
                                         <>
@@ -270,7 +268,6 @@ export default function AccountScreen() {
                     Enlaces Rápidos
                 </Text>
                 <View style={styles.quickLinksContainer}>
-                    {/* 👇 Fila de iconos de redes sociales */}
                     <View style={styles.socialLinksRow}>
                         {SOCIAL_LINKS.map((social) => (
                             <TouchableOpacity
@@ -279,12 +276,18 @@ export default function AccountScreen() {
                                 onPress={() => openSocialLink(social.url)}
                                 activeOpacity={0.7}
                             >
-                                <Ionicons
-                                    name={social.icon as any} // Type assertion segura para Ionicons
-                                    size={28}
-                                    color="#FFF"
-                                    style={[styles.socialIcon, { backgroundColor: social.color }]}
-                                />
+                                <View style={[styles.socialIconWrapper, { backgroundColor: social.color }]}>
+                                    {/* 👇 Solo Spotify usa FontAwesome5 */}
+                                    {social.type === 'fontawesome' ? (
+                                        <FontAwesome5 name={social.icon} size={24} color="#FFF" />
+                                    ) : (
+                                        <Ionicons
+                                            name={social.icon as any}
+                                            size={24}
+                                            color="#FFF"
+                                        />
+                                    )}
+                                </View>
                                 <Text style={[styles.socialLinkLabel, { color: isDark ? '#FFF' : '#333' }]}>
                                     {social.name}
                                 </Text>
@@ -294,7 +297,7 @@ export default function AccountScreen() {
                 </View>
             </ScrollView>
 
-            {/* Barra de navegación inferior - Fija en la parte inferior */}
+            {/* Barra de navegación inferior */}
             <View
                 style={[
                     styles.bottomNav,
@@ -304,7 +307,6 @@ export default function AccountScreen() {
                     },
                 ]}
             >
-                {/* Inicio */}
                 <TouchableOpacity
                     style={[
                         styles.navItem,
@@ -334,7 +336,6 @@ export default function AccountScreen() {
                     </Text>
                 </TouchableOpacity>
 
-                {/* Áreas */}
                 <TouchableOpacity
                     style={[
                         styles.navItem,
@@ -360,7 +361,6 @@ export default function AccountScreen() {
                     </Text>
                 </TouchableOpacity>
 
-                {/* Convocatory */}
                 <TouchableOpacity
                     style={[
                         styles.navItem,
@@ -386,7 +386,6 @@ export default function AccountScreen() {
                     </Text>
                 </TouchableOpacity>
 
-                {/* Nosotros */}
                 <TouchableOpacity
                     style={[
                         styles.navItem,
@@ -481,7 +480,6 @@ export default function AccountScreen() {
                 </>
             )}
 
-            {/* Modal para ver la foto de perfil con zoom */}
             <Modal
                 visible={isProfileImageVisible}
                 transparent={true}
@@ -501,14 +499,13 @@ export default function AccountScreen() {
                     saveToLocalByLongPress={false}
                     backgroundColor="rgba(0,0,0,0.8)"
                     loadingRender={() => <Text style={{ color: '#FFF' }}>Cargando...</Text>}
-                    onClick={() => setIsProfileImageVisible(false)} // 👈 Cierra al tocar
+                    onClick={() => setIsProfileImageVisible(false)}
                 />
             </Modal>
         </SafeAreaView>
     );
 }
 
-// 🎨 Estilos (con nuevos estilos añadidos para redes sociales)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -594,7 +591,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         padding: 12,
-        backgroundColor: 'transparent', // 👈 Quitamos el fondo
+        backgroundColor: 'transparent',
     },
     bannerTitle: {
         fontSize: 16,
@@ -641,8 +638,8 @@ const styles = StyleSheet.create({
     newsText: {
         flex: 1,
         padding: 12,
-        justifyContent: 'space-between', // 👈 Alinea los elementos en la parte superior e inferior
-        height: 180, // 👈 Fija la altura para que todas las tarjetas sean iguales
+        justifyContent: 'space-between',
+        height: 180,
     },
     newsDate: {
         fontSize: 10,
@@ -654,7 +651,7 @@ const styles = StyleSheet.create({
     newsTitle: {
         fontSize: 14,
         fontWeight: 'bold',
-        marginBottom: 8, // 👈 Reducido para dejar más espacio
+        marginBottom: 8,
     },
     newsTopics: {
         fontSize: 12,
@@ -663,7 +660,7 @@ const styles = StyleSheet.create({
     newsStatusContainer: {
         flexDirection: 'row',
         gap: 8,
-        marginTop: 'auto', // 👈 Empuja los botones hacia abajo
+        marginTop: 'auto',
     },
     statusButton: {
         paddingHorizontal: 8,
@@ -704,8 +701,8 @@ const styles = StyleSheet.create({
     quickLinksContainer: {
         marginHorizontal: 16,
         marginTop: 16,
-        marginBottom: 16, // 👈 Añadido para separación
-        alignItems: 'center', // 👈 Centra la fila
+        marginBottom: 16,
+        alignItems: 'center',
     },
     socialLinksRow: {
         flexDirection: 'row',
@@ -719,7 +716,7 @@ const styles = StyleSheet.create({
         width: 60,
         height: 80,
     },
-    socialIcon: {
+    socialIconWrapper: {
         width: 40,
         height: 40,
         borderRadius: 20,
@@ -746,7 +743,7 @@ const styles = StyleSheet.create({
     navItemActive: {
         borderTopWidth: 2,
         borderTopColor: '#4CAF50',
-        backgroundColor: 'transparent', // 🔹 evita el fondo blanco
+        backgroundColor: 'transparent',
     },
     navIcon: { width: 24, height: 24, marginBottom: 4, resizeMode: 'contain' },
     navIconActive: {
@@ -756,7 +753,6 @@ const styles = StyleSheet.create({
     navLabelActive: {
         color: '#4CAF50',
     },
-    // 👇 Nuevos estilos para la modal de imagen (no cambiados)
     modalOverlay: {
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.8)',
