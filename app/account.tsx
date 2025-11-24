@@ -1,5 +1,5 @@
 import { useAuth } from '@/hooks/useAuth';
-import { FontAwesome5, Ionicons } from '@expo/vector-icons'; // 👈 FontAwesome5 añadido
+import { FontAwesome5, Ionicons } from '@expo/vector-icons'; 
 import { useFocusEffect } from '@react-navigation/native';
 import { Redirect, usePathname, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
@@ -29,8 +29,8 @@ const SOCIAL_LINKS = [
     { id: 'youtube', name: 'YouTube', icon: 'logo-youtube', color: '#FF0000', url: 'https://www.youtube.com/@webiiap' },
     { id: 'linkedin', name: 'LinkedIn', icon: 'logo-linkedin', color: '#0077B5', url: 'https://www.linkedin.com/company/iiap' },
     { id: 'web', name: 'Sitio Web', icon: 'globe-outline', color: '#4CAF50', url: 'https://www.gob.pe/iiap' },
-    { id: 'tiktok', name: 'Tiktok', icon: 'logo-tiktok', color: '#000000', url: 'https://www.tiktok.com/@iiapperu?is_from_webapp=1&sender_device=pc'},
-    { id: 'spotify', name: 'Spotify', icon: 'spotify', type: 'fontawesome', color: '#1DB954', url: 'https://open.spotify.com/show/22EKStrMUkA8MciXSj9EaE?si=3454d74d68a244b1'},
+    { id: 'tiktok', name: 'Tiktok', icon: 'logo-tiktok', color: '#000000', url: 'https://www.tiktok.com/@iiapperu?is_from_webapp=1&sender_device=pc' },
+    { id: 'spotify', name: 'Spotify', icon: 'spotify', type: 'fontawesome', color: '#1DB954', url: 'https://open.spotify.com/show/22EKStrMUkA8MciXSj9EaE?si=3454d74d68a244b1' },
 ];
 
 export default function AccountScreen() {
@@ -163,7 +163,10 @@ export default function AccountScreen() {
                         <Text style={[styles.bannerSubtitle, { color: '#FFF' }]}>
                             Bienvenido usuario se parte de este nuevo...
                         </Text>
-                        <TouchableOpacity style={styles.bannerButton}>
+                        <TouchableOpacity
+                            style={styles.bannerButton}
+                            onPress={() => router.push('/onboarding-info')}
+                        >
                             <Text style={styles.bannerButtonText}>Conocer más</Text>
                         </TouchableOpacity>
                     </View>

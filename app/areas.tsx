@@ -15,8 +15,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../app/providers/ThemeProvider'; // 👈 Importado
-
+import { useTheme } from '../app/providers/ThemeProvider'; 
 const { width } = Dimensions.get('window');
 
 export default function AreasScreen() {
@@ -24,7 +23,7 @@ export default function AreasScreen() {
   const router = useRouter();
   const pathname = usePathname();
   const { theme } = useTheme();
-  const isDark = theme === 'dark'; // ✅ Corregido
+  const isDark = theme === 'dark'; 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
