@@ -1,10 +1,11 @@
 import { useAuth } from '@/hooks/useAuth';
-import { FontAwesome5, Ionicons } from '@expo/vector-icons'; 
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { Redirect, usePathname, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
     Alert,
+    Clipboard,
     Dimensions,
     Image,
     Linking,
@@ -93,11 +94,58 @@ export default function AccountScreen() {
         },
     ]);
 
+    // Videos //
     const [guides] = useState([
-        { id: 1, image: require('../assets/images/tutorial1.jpg') },
-        { id: 2, image: require('../assets/images/guia2.png') },
-        { id: 3, image: require('../assets/images/guia3.png') },
-        { id: 4, image: require('../assets/images/guia4.jpg') },
+        {
+            id: 1,
+            title: 'Video 1: Bienvenidos al IIAP',
+            videoUrl: 'https://youtu.be/HDSMeoQosN8?si=3b3Tn1Di6vx2bH_m',
+        },
+        {
+            id: 2,
+            title: 'Video 2: Mullaca - Ciencia a tu Alcance',
+            videoUrl: 'https://youtu.be/cQaQjp4iX44?si=i4Mg4BOgkRRCwhdJ',
+        },
+        {
+            id: 3,
+            title: 'Video 3: 43 Años del IIAP',
+            videoUrl: 'https://youtu.be/V5hnXID8TQc?si=o1wgt0Tb6W_j8k_R',
+        },
+        {
+            id: 4,
+            title: 'Video 4: Embajadora de Francia en el IIAP',
+            videoUrl: 'https://youtu.be/JBvkA-ZgQDw?si=nHXErOW6Ug0h1Y5y',
+        },
+        {
+            id: 5,
+            title: 'Video 5: Inauguración de la IIAP',
+            videoUrl: 'https://youtu.be/NMF_35Q4nCU?si=qcs466ORSvUM7Ewg',
+        },
+        {
+            id: 6,
+            title: 'Video 6: Los árboles, guardianes de la vida',
+            videoUrl: 'https://youtu.be/1p4Vd_g8igo?si=ayi1RGJF64DpLlY_',
+        },
+        {
+            id: 7,
+            title: 'Video 7: Educacación ambiental - Astoria',
+            videoUrl: 'https://youtu.be/MatQhCP9dCI?si=CbZGIM504jhUDoL6',
+        },
+        {
+            id: 8,
+            title: 'Video 8:Restauración de bosques Amazó nicos con Drones',
+            videoUrl: 'https://youtu.be/MMGx5A3Olio?si=9DBF2AMQ5dI4gt23',
+        },
+        {
+            id: 9,
+            title: 'Video 9: IIAP y Ejército del Perú impulsan nuevas oportunidades para jóvenes soldados en Ucayali',
+            videoUrl: 'https://youtu.be/u7EUUNYydiU?si=GKTcLguM2MvE-83U',
+        },
+        {
+            id: 10,
+            title: 'Video 10: Niños de Madre de Dios aprenden a cuidar la Amazonía',
+            videoUrl: 'https://youtu.be/bnNYooo3gHw?si=TywKUckAVHjMp4rY',
+        },
     ]);
 
     const openSocialLink = (url: string) => {
@@ -105,6 +153,13 @@ export default function AccountScreen() {
             console.error('Error al abrir la URL:', err);
             Alert.alert('Error', 'No se pudo abrir el enlace. Intente más tarde.');
         });
+    };
+
+    // Función para extraer el ID del video de YouTube
+    const extractVideoId = (url: string): string => {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return match && match[2].length === 11 ? match[2] : '';
     };
 
     if (loading) {
@@ -254,14 +309,40 @@ export default function AccountScreen() {
                     ))}
                 </ScrollView>
 
-                {/* Guías y Tutoriales */}
+                {/*Videos */}
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    Guías y Tutoriales
+                    Videos
                 </Text>
                 <View style={styles.guidesContainer}>
                     {guides.map((guide) => (
-                        <TouchableOpacity key={guide.id} style={styles.guideCard}>
-                            <Image source={guide.image} style={styles.guideImage} />
+                        <TouchableOpacity
+                            key={guide.id}
+                            style={styles.guideCard}
+                            onPress={() => {
+                                Linking.openURL(guide.videoUrl).catch((err) => {
+                                    console.error('Error al abrir YouTube:', err);
+                                    Alert.alert(
+                                        'Error',
+                                        'No se pudo abrir el video. Por favor, copia y pega el enlace en tu navegador.',
+                                        [{ text: 'Copiar enlace', onPress: () => Clipboard.setString(guide.videoUrl) }]
+                                    );
+                                });
+                            }}
+                        >
+                            {/* Miniatura de YouTube */}
+                            <View style={styles.guideImage}>
+                                <Image
+                                    source={{ uri: `https://img.youtube.com/vi/${extractVideoId(guide.videoUrl)}/mqdefault.jpg` }}
+                                    style={styles.youtubeThumbnail}
+                                />
+                                {/* Icono de play */}
+                                <View style={styles.playOverlay}>
+                                    <Ionicons name="play-circle" size={48} color="#FFF" />
+                                </View>
+                            </View>
+                            <Text style={[styles.guideTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                {guide.title}
+                            </Text>
                         </TouchableOpacity>
                     ))}
                 </View>
@@ -692,14 +773,37 @@ const styles = StyleSheet.create({
     },
     guideCard: {
         width: (width - 48) / 2,
-        height: 120,
-        borderRadius: 8,
-        overflow: 'hidden',
+        marginBottom: 16,
+        alignItems: 'center',
     },
     guideImage: {
         width: '100%',
+        aspectRatio: 16 / 9,
+        backgroundColor: '#000',
+        borderRadius: 8,
+        overflow: 'hidden',
+        position: 'relative',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    youtubeThumbnail: {
+        width: '100%',
         height: '100%',
         resizeMode: 'cover',
+    },
+    playOverlay: {
+        position: 'absolute',
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 50,
+        padding: 8,
+    },
+    guideTitle: {
+        marginTop: 8,
+        fontSize: 14,
+        fontWeight: '500',
+        textAlign: 'center',
     },
     quickLinksContainer: {
         marginHorizontal: 16,
