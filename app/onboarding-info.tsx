@@ -7,9 +7,9 @@ import { Alert, Clipboard, Image, Linking, Modal, ScrollView, StyleSheet, Text, 
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { useTheme } from './providers/ThemeProvider';
 
-// 👇 Ocultar completamente el header
+// 👇 Ocultar solo el título, mantener la flecha de retroceso
 export const screenOptions = {
-    headerShown: false,
+    headerTitle: '',
 };
 
 export default function OnboardingInfo() {
@@ -92,7 +92,7 @@ export default function OnboardingInfo() {
                 <TouchableOpacity
                     style={[styles.videoButton, { backgroundColor: '#FF0000', marginTop: 16 }]}
                     onPress={() => {
-                        const youtubeUrl = 'https://youtu.be/RPHdeC-QQOM?si=S3YlBo9IUsnLQr5w'; 
+                        const youtubeUrl = 'https://youtu.be/RPHdeC-QQOM?si=S3YlBo9IUsnLQr5w  ';
                         Linking.openURL(youtubeUrl).catch((err) => {
                             console.error('Error al abrir YouTube:', err);
                             Alert.alert(
@@ -142,9 +142,6 @@ export default function OnboardingInfo() {
                 style={[styles.backButton, { borderColor: isDark ? '#AAA' : '#666' }]}
                 onPress={() => router.back()}
             >
-                <Text style={[styles.backButtonText, { color: isDark ? '#AAA' : '#666' }]}>
-                    Volver a mi cuenta
-                </Text>
             </TouchableOpacity>
 
             {/* Modal para ver imagen con zoom */}
