@@ -1,4 +1,5 @@
 // app/postulacion-paso2.tsx
+import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -8,28 +9,52 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-    TextInput,
     TouchableOpacity,
     View,
 } from 'react-native';
 import { useTheme } from '../app/providers/ThemeProvider';
+import * as DocumentPicker from 'expo-document-picker';
 
 const { width } = Dimensions.get('window');
 
 export default function PostulacionPaso2Screen() {
     const router = useRouter();
+    const { user } = useAuth();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
 
-    const [carta, setCarta] = useState('');
-    const [cv, setCv] = useState('');
+    const [carta, setCarta] = useState<any>(null);
+    const [cv, setCv] = useState<any>(null);
 
-    const handleSubirCarta = () => {
-        Alert.alert('Subir carta', 'Funcionalidad de subida de carta no implementada aún.');
+    const pickFile = async (type: 'carta' | 'cv') => {
+        try {
+            const result = await DocumentPicker.getDocumentAsync({
+                type: ['application/pdf', 'image/*', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+                copyToCacheDirectory: true,
+            });
+
+            if (result.canceled) return;
+
+            const file = result.assets[0];
+            if (type === 'carta') {
+                setCarta(file);
+                Alert.alert('Carta seleccionada', file.name || 'Sin nombre');
+            } else {
+                setCv(file);
+                Alert.alert('CV seleccionado', file.name || 'Sin nombre');
+            }
+        } catch (error) {
+            console.error(`Error al seleccionar ${type}:`, error);
+            Alert.alert('Error', `No se pudo seleccionar el ${type === 'carta' ? 'archivo' : 'CV'}.`);
+        }
     };
 
-    const handleSubirCV = () => {
-        Alert.alert('Subir CV', 'Funcionalidad de subida de CV no implementada aún.');
+    const handleSiguiente = () => {
+        if (!carta || !cv) {
+            Alert.alert('Advertencia', 'Por favor, sube ambos documentos antes de continuar.');
+            return;
+        }
+        router.push('/postulacion-paso3');
     };
 
     return (
@@ -67,10 +92,10 @@ export default function PostulacionPaso2Screen() {
                         </Text>
                         <TouchableOpacity
                             style={[styles.fileInput, { borderColor: isDark ? '#444' : '#CCC' }]}
-                            onPress={handleSubirCarta}
+                            onPress={() => pickFile('carta')}
                         >
-                            <Text style={[styles.fileInputText, { color: isDark ? '#AAA' : '#666' }]}>
-                                Sube tu carta de motivación
+                            <Text style={[styles.fileInputText, { color: carta ? (isDark ? '#FFF' : '#000') : (isDark ? '#AAA' : '#666') }]}>
+                                {carta ? (carta.name || 'Archivo seleccionado') : 'Sube tu carta de motivación'}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -81,17 +106,18 @@ export default function PostulacionPaso2Screen() {
                         </Text>
                         <TouchableOpacity
                             style={[styles.fileInput, { borderColor: isDark ? '#444' : '#CCC' }]}
-                            onPress={handleSubirCV}
+                            onPress={() => pickFile('cv')}
                         >
-                            <Text style={[styles.fileInputText, { color: isDark ? '#AAA' : '#666' }]}>
-                                Sube tu CV
+                            <Text style={[styles.fileInputText, { color: cv ? (isDark ? '#FFF' : '#000') : (isDark ? '#AAA' : '#666') }]}>
+                                {cv ? (cv.name || 'Archivo seleccionado') : 'Sube tu CV'}
                             </Text>
                         </TouchableOpacity>
                     </View>
 
                     <TouchableOpacity
-                        style={[styles.nextButton, { backgroundColor: '#4CAF50' }]}
-                        onPress={() => router.push('/postulacion-paso3')}
+                        style={[styles.nextButton, { backgroundColor: (carta && cv) ? '#4CAF50' : '#B0B0B0' }]}
+                        onPress={handleSiguiente}
+                        disabled={!carta || !cv}
                     >
                         <Text style={styles.nextButtonText}>Siguiente paso</Text>
                     </TouchableOpacity>
@@ -100,6 +126,8 @@ export default function PostulacionPaso2Screen() {
         </SafeAreaView>
     );
 }
+
+
 
 const styles = StyleSheet.create({
     safeArea: { flex: 1 },

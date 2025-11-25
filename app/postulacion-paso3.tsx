@@ -1,15 +1,13 @@
 // app/postulacion-paso3.tsx
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import {
-    Alert,
     Dimensions,
     SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 import { useTheme } from '../app/providers/ThemeProvider';
 
