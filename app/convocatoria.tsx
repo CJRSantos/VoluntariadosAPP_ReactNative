@@ -224,6 +224,12 @@ export default function ConvocatoriaScreen() {
                     >
                       <Text style={styles.buttonText}>Más Info...</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.button, { backgroundColor: '#4CAF50' }]}
+                      onPress={() => router.push('/postulacion-paso1')}
+                    >
+                      <Text style={styles.buttonText}>Postular</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>

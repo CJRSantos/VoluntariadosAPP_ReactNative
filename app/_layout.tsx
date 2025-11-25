@@ -1,7 +1,7 @@
 // app/_layout.tsx
-import { Ionicons } from '@expo/vector-icons'; // 👈 IMPORTANTE
+import { Ionicons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
-import { TouchableOpacity } from 'react-native'; // 👈 IMPORTANTE
+import { TouchableOpacity } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from '../app/providers/ThemeProvider';
 
@@ -21,6 +21,8 @@ export default function RootLayout() {
           <Stack.Screen name="convocatoria" options={{ headerShown: false }} />
           <Stack.Screen name="nosotros" options={{ headerShown: false }} />
           <Stack.Screen name="mas-info" options={{ headerShown: false }} />
+          <Stack.Screen name="presencial-info" options={{ headerTitle: '' }} />
+          <Stack.Screen name="virtual-tutorial" options={{ headerTitle: '' }} />
           <Stack.Screen
             name="onboarding-info"
             options={({ navigation }) => ({

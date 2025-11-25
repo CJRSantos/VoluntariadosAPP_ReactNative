@@ -35,7 +35,7 @@ export default function MasInfoScreen() {
         </Text>
 
         {/* Presencial */}
-        <TouchableOpacity style={styles.optionCard}>
+        <TouchableOpacity style={styles.optionCard} onPress={() => router.push('/presencial-info')}>
           <View style={styles.iconContainer}>
             <Text style={styles.icon}>🏢</Text>
           </View>
@@ -49,7 +49,10 @@ export default function MasInfoScreen() {
         </TouchableOpacity>
 
         {/* Virtual */}
-        <TouchableOpacity style={styles.optionCard}>
+        <TouchableOpacity
+          style={styles.optionCard}
+          onPress={() => router.push('/virtual-tutorial')}
+        >
           <View style={styles.iconContainer}>
             <Text style={styles.icon}>🌐</Text>
           </View>

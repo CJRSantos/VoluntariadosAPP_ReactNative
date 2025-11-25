@@ -1,0 +1,71 @@
+import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+
+export default function VirtualTutorialScreen() {
+    const router = useRouter();
+
+    return (
+        <SafeAreaView style={styles.container}>
+            {/* Header removed to use default navigation header */}
+
+            {/* Video/Animation Content */}
+            <View style={styles.content}>
+                <Text style={styles.description}>
+                    A continuación te mostramos cómo realizar tu postulación de manera virtual a través de nuestra plataforma.
+                </Text>
+
+                <View style={styles.imageContainer}>
+                    <Image
+                        source={require('../assets/images/tutorial.webp')}
+                        style={styles.image}
+                        contentFit="contain"
+                    // WebP animation plays automatically by default in expo-image
+                    />
+                </View>
+
+                <Text style={styles.note}>
+                    * El video se reproduce automáticamente.
+                </Text>
+            </View>
+        </SafeAreaView>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    content: {
+        flex: 1,
+        padding: 20,
+        alignItems: 'center',
+    },
+    description: {
+        fontSize: 16,
+        color: '#333',
+        textAlign: 'center',
+        marginBottom: 20,
+        lineHeight: 22,
+    },
+    imageContainer: {
+        width: '100%',
+        height: 500, // Adjust height as needed
+        backgroundColor: '#f0f0f0',
+        borderRadius: 12,
+        overflow: 'hidden',
+        marginBottom: 20,
+        borderWidth: 1,
+        borderColor: '#ddd',
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+    },
+    note: {
+        fontSize: 14,
+        color: '#666',
+        fontStyle: 'italic',
+    },
+});
