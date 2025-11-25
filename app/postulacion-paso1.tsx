@@ -1,4 +1,5 @@
 // app/postulacion-paso1.tsx
+import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -12,16 +13,44 @@ import {
     View,
 } from 'react-native';
 import { useTheme } from '../app/providers/ThemeProvider';
+import * as DocumentPicker from 'expo-document-picker';
 
 const { width } = Dimensions.get('window');
 
 export default function PostulacionPaso1Screen() {
     const router = useRouter();
+    const { user } = useAuth();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
 
-    const handleSubirArchivo = () => {
-        Alert.alert('Subir archivo', 'Funcionalidad de subida de archivo no implementada aún.');
+    const [selectedFile, setSelectedFile] = useState<any>(null);
+    const [uploading, setUploading] = useState(false);
+
+    const handleSubirArchivo = async () => {
+        try {
+            const result = await DocumentPicker.getDocumentAsync({
+                type: ['application/pdf', 'image/*'],
+                copyToCacheDirectory: true,
+            });
+
+            if (result.canceled) return;
+
+            const file = result.assets[0];
+            setSelectedFile(file);
+            Alert.alert('Archivo seleccionado', file.name || 'Sin nombre');
+        } catch (error) {
+            console.error('Error al seleccionar archivo:', error);
+            Alert.alert('Error', 'No se pudo seleccionar el archivo.');
+        }
+    };
+
+    const handleSiguiente = () => {
+        if (!selectedFile) {
+            Alert.alert('Advertencia', 'Por favor, sube un archivo antes de continuar.');
+            return;
+        }
+        // ✅ Aquí podrías guardar temporalmente en contexto o AsyncStorage
+        router.push('/postulacion-paso2');
     };
 
     return (
@@ -56,15 +85,23 @@ export default function PostulacionPaso1Screen() {
                     <TouchableOpacity
                         style={[styles.uploadButton, { backgroundColor: isDark ? '#2A2A2A' : '#E8F5E8' }]}
                         onPress={handleSubirArchivo}
+                        disabled={uploading}
                     >
                         <Text style={[styles.uploadButtonText, { color: isDark ? '#FFF' : '#333' }]}>
-                            Subir archivo
+                            {uploading ? 'Subiendo...' : 'Subir archivo'}
                         </Text>
                     </TouchableOpacity>
 
+                    {selectedFile && (
+                        <Text style={{ color: isDark ? '#AAA' : '#666', marginTop: 8 }}>
+                            Archivo: {selectedFile.name || 'Sin nombre'}
+                        </Text>
+                    )}
+
                     <TouchableOpacity
-                        style={[styles.nextButton, { backgroundColor: '#4CAF50' }]}
-                        onPress={() => router.push('/postulacion-paso2')}
+                        style={[styles.nextButton, { backgroundColor: selectedFile ? '#4CAF50' : '#B0B0B0' }]}
+                        onPress={handleSiguiente}
+                        disabled={!selectedFile}
                     >
                         <Text style={styles.nextButtonText}>Siguiente paso</Text>
                     </TouchableOpacity>
@@ -73,6 +110,7 @@ export default function PostulacionPaso1Screen() {
         </SafeAreaView>
     );
 }
+
 
 const styles = StyleSheet.create({
     safeArea: { flex: 1 },

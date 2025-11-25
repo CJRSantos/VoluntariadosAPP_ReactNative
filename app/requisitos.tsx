@@ -23,7 +23,7 @@ export default function RequisitosScreen() {
 }
 
 function RequisitosContent() {
-  const router = useRouter(); // ✅ Ahora se usa aquí, no como prop
+  const router = useRouter(); 
 
   const requisitos = {
     title: 'Realizar investigaciones - Bosques',
