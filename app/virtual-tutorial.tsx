@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         width: '100%',
-        height: 500, // Adjust height as needed
+        aspectRatio: 9 / 16, // Enforce mobile aspect ratio
         backgroundColor: '#f0f0f0',
         borderRadius: 12,
         overflow: 'hidden',

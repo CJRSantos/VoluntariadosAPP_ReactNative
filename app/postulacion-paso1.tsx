@@ -1,5 +1,6 @@
 // app/postulacion-paso1.tsx
 import { useAuth } from '@/hooks/useAuth';
+import * as DocumentPicker from 'expo-document-picker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -13,7 +14,6 @@ import {
     View,
 } from 'react-native';
 import { useTheme } from '../app/providers/ThemeProvider';
-import * as DocumentPicker from 'expo-document-picker';
 
 const { width } = Dimensions.get('window');
 
