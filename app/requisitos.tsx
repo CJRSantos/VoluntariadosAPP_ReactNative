@@ -3,6 +3,7 @@ import * as Print from 'expo-print';
 import { Stack, useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Alert,
   SafeAreaView,
@@ -23,69 +24,48 @@ export default function RequisitosScreen() {
 }
 
 function RequisitosContent() {
-  const router = useRouter(); 
+  const router = useRouter();
+  const { t } = useTranslation();
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   const requisitos = {
-    title: 'Realizar investigaciones - Bosques',
+    title: t('requisitos.title'),
     vacantes: '5',
-    formacion:
-      'Egresado(a) Universitario de Archivística y Gestión Documental, Administración, Ingeniería Industrial, Ingeniería de Sistemas',
-    experiencia:
-      'General: 2 años\n\nEspecífica: 1 año en la función o materia, 1 año a nivel de practicante, 1 año en el sector público',
-    cursos:
-      'Gestión de archivos, gestión documental, sistema de gestión documental, trámite documentario o gobierno digital, con duración mínima de 60 horas acumulables',
+    formacion: t('requisitos.educationText'),
+    experiencia: t('requisitos.experienceText'),
+    cursos: t('requisitos.coursesText'),
   };
 
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? null : section);
   };
 
   const handleGeneratePDF = async () => {
+    const html = `
+      <html>
+        <body>
+          <h1>${requisitos.title}</h1>
+          <p><strong>${t('requisitos.vacanciesTitle')}:</strong> ${requisitos.vacantes}</p>
+          <h2>${t('requisitos.educationTitle')}</h2>
+          <p>${requisitos.formacion}</p>
+          <h2>${t('requisitos.experienceTitle')}</h2>
+          <p>${requisitos.experiencia}</p>
+          <h2>${t('requisitos.coursesTitle')}</h2>
+          <p>${requisitos.cursos}</p>
+        </body>
+      </html>
+    `;
+
     try {
-      const htmlContent = `
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <style>
-              body { font-family: Arial, sans-serif; padding: 20px; }
-              h1 { color: #333; font-size: 24px; margin-bottom: 16px; }
-              h3 { color: #444; margin-top: 20px; margin-bottom: 8px; font-size: 18px; }
-              p { line-height: 1.6; color: #333; font-size: 14px; }
-            </style>
-          </head>
-          <body>
-            <h1>${requisitos.title}</h1>
-            <h3>Vacantes: ${requisitos.vacantes}</h3>
-            <h3>Formación académica</h3>
-            <p>${requisitos.formacion}</p>
-            <h3>Experiencia</h3>
-            <p>${requisitos.experiencia.replace(/\n/g, '<br>')}</p>
-            <h3>Cursos y programas de especialización</h3>
-            <p>${requisitos.cursos}</p>
-          </body>
-        </html>
-      `;
-
-      const { uri } = await Print.printToFileAsync({ html: htmlContent });
-
-      if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(uri, {
-          mimeType: 'application/pdf',
-          dialogTitle: 'Guardar o compartir PDF',
-        });
-      } else {
-        Alert.alert('PDF generado', `URI: ${uri}`);
-      }
-    } catch (error) {
-      console.error('Error al generar PDF:', error);
-      Alert.alert('Error', 'No se pudo generar el PDF');
+      const { uri } = await Print.printToFileAsync({ html });
+      await Sharing.shareAsync(uri);
+    } catch (error: any) {
+      Alert.alert(t('requisitos.pdfError'), error.message);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Encabezado */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Text style={styles.backArrow}>←</Text>
@@ -96,7 +76,7 @@ function RequisitosContent() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Vacantes */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Vacantes</Text>
+          <Text style={styles.sectionTitle}>{t('requisitos.vacanciesTitle')}</Text>
           <Text style={styles.vacantesNumber}>{requisitos.vacantes}</Text>
         </View>
 
@@ -105,7 +85,7 @@ function RequisitosContent() {
           style={styles.sectionHeader}
           onPress={() => toggleSection('formacion')}
         >
-          <Text style={styles.sectionTitle}>Formación académica</Text>
+          <Text style={styles.sectionTitle}>{t('requisitos.educationTitle')}</Text>
           <Text style={styles.arrow}>
             {expandedSection === 'formacion' ? '∨' : '>'}
           </Text>
@@ -119,7 +99,7 @@ function RequisitosContent() {
           style={styles.sectionHeader}
           onPress={() => toggleSection('experiencia')}
         >
-          <Text style={styles.sectionTitle}>Experiencia</Text>
+          <Text style={styles.sectionTitle}>{t('requisitos.experienceTitle')}</Text>
           <Text style={styles.arrow}>
             {expandedSection === 'experiencia' ? '∨' : '>'}
           </Text>
@@ -134,7 +114,7 @@ function RequisitosContent() {
           onPress={() => toggleSection('cursos')}
         >
           <Text style={styles.sectionTitle}>
-            Cursos y programas de especialización
+            {t('requisitos.coursesTitle')}
           </Text>
           <Text style={styles.arrow}>
             {expandedSection === 'cursos' ? '∨' : '>'}
@@ -148,20 +128,19 @@ function RequisitosContent() {
       {/* Botones inferiores */}
       <View style={styles.footer}>
         <TouchableOpacity style={styles.pdfButton} onPress={handleGeneratePDF}>
-          <Text style={styles.buttonText}>Guardar PDF</Text>
+          <Text style={styles.buttonText}>{t('requisitos.savePdfButton')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.postularButton}
           onPress={() => router.push('/postulacion-paso1')}
         >
-          <Text style={styles.buttonText}>Postular</Text>
+          <Text style={styles.buttonText}>{t('requisitos.applyButton')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
 
-// 🎨 Estilos (sin cambios)
 const styles = StyleSheet.create({
   container: {
     flex: 1,

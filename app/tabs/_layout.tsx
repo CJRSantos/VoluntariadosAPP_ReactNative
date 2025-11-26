@@ -1,5 +1,6 @@
 // app/(tabs)/_layout.tsx
 import { Tabs } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { Image } from 'react-native';
 
 // Tipamos las props del ícono
@@ -21,6 +22,7 @@ const TabIcon = ({ source, color, size }: TabIconProps) => (
 );
 
 export default function TabLayout() {
+    const { t } = useTranslation();
     return (
         <Tabs
             screenOptions={{
@@ -40,7 +42,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="index"
                 options={{
-                    title: 'Inicio',
+                    title: t('nosotros.nav.home'),
                     tabBarIcon: ({ color, size }) => (
                         <TabIcon
                             source="https://via.placeholder.com/24x24?text=🏠"
@@ -53,7 +55,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="areas"
                 options={{
-                    title: 'Áreas',
+                    title: t('nosotros.nav.areas'),
                     tabBarIcon: ({ color, size }) => (
                         <TabIcon
                             source="https://via.placeholder.com/24x24?text=📊"
@@ -66,7 +68,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="convocatory"
                 options={{
-                    title: 'Convocatory',
+                    title: t('nosotros.nav.convocatory'),
                     tabBarIcon: ({ color, size }) => (
                         <TabIcon
                             source="https://via.placeholder.com/24x24?text=📣"
@@ -79,7 +81,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="nosotros"
                 options={{
-                    title: 'Nosotros',
+                    title: t('nosotros.nav.about'),
                     tabBarIcon: ({ color, size }) => (
                         <TabIcon
                             source="https://via.placeholder.com/24x24?text=👥"

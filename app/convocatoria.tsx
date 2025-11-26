@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, usePathname, useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Dimensions,
@@ -27,6 +28,7 @@ export default function ConvocatoriaScreen() {
   const router = useRouter();
   const pathname = usePathname();
   const { theme } = useTheme(); // 👈 Usado
+  const { t } = useTranslation();
   const isDark = theme === 'dark';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -36,29 +38,29 @@ export default function ConvocatoriaScreen() {
     {
       id: 1,
       image: require('../assets/images/tutorial1.jpg'),
-      title: 'Ayuda a realizar investigaciones - Bosques',
-      location: 'Iquitos, Perú',
-      participants: '20 participantes',
-      startDate: '31 de setiembre, 2025',
-      endDate: '15 de octubre, 2025',
+      title: t('convocatoria.items.1.title'),
+      location: t('convocatoria.items.1.location'),
+      participants: t('convocatoria.items.1.participants'),
+      startDate: t('convocatoria.items.1.startDate'),
+      endDate: t('convocatoria.items.1.endDate'),
     },
     {
       id: 2,
       image: require('../assets/images/bosques2.png'),
-      title: 'Ayuda a realizar investigaciones - Bosques',
-      location: 'Iquitos, Perú',
-      participants: '20 participantes',
-      startDate: '31 de setiembre, 2025',
-      endDate: '15 de octubre, 2025',
+      title: t('convocatoria.items.2.title'),
+      location: t('convocatoria.items.2.location'),
+      participants: t('convocatoria.items.2.participants'),
+      startDate: t('convocatoria.items.2.startDate'),
+      endDate: t('convocatoria.items.2.endDate'),
     },
     {
       id: 3,
       image: require('../assets/images/bosques3.png'),
-      title: 'Voluntariado en un refugio de animales',
-      location: 'Arequipa, Perú',
-      participants: '10 participantes',
-      startDate: '31 de setiembre, 2025',
-      endDate: '15 de octubre, 2025',
+      title: t('convocatoria.items.3.title'),
+      location: t('convocatoria.items.3.location'),
+      participants: t('convocatoria.items.3.participants'),
+      startDate: t('convocatoria.items.3.startDate'),
+      endDate: t('convocatoria.items.3.endDate'),
     },
   ];
 
@@ -66,7 +68,7 @@ export default function ConvocatoriaScreen() {
     return (
       <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
         <View style={styles.loading}>
-          <Text style={{ color: isDark ? '#FFF' : '#333' }}>Cargando...</Text>
+          <Text style={{ color: isDark ? '#FFF' : '#333' }}>{t('convocatoria.loading')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -88,7 +90,7 @@ export default function ConvocatoriaScreen() {
           ]}
         >
           <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>
-            volunteer account
+            {t('convocatoria.headerTitle')}
           </Text>
           <View style={styles.headerRight}>
             <Image
@@ -134,7 +136,7 @@ export default function ConvocatoriaScreen() {
                 >
                   <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
                   <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                    Profile
+                    {t('convocatoria.menu.profile')}
                   </Text>
                 </TouchableOpacity>
 
@@ -147,19 +149,19 @@ export default function ConvocatoriaScreen() {
                 >
                   <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
                   <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                    Settings
+                    {t('convocatoria.menu.settings')}
                   </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                   onPress={() => {
-                    Alert.alert('Próximamente', 'Ayuda estará disponible pronto');
+                    Alert.alert(t('convocatoria.menu.soon'), t('convocatoria.menu.helpSoon'));
                     setIsMenuOpen(false);
                   }}
                 >
                   <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
-                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>Help</Text>
+                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('convocatoria.menu.help')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -171,7 +173,7 @@ export default function ConvocatoriaScreen() {
                 >
                   <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
                   <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                    Log-out
+                    {t('convocatoria.menu.logout')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -206,29 +208,29 @@ export default function ConvocatoriaScreen() {
                     {convocatoria.location} · {convocatoria.participants}
                   </Text>
                   <Text style={[styles.cardDate, { color: isDark ? '#AAA' : '#666' }]}>
-                    Inicio: {convocatoria.startDate}
+                    {t('convocatoria.card.start')}: {convocatoria.startDate}
                   </Text>
                   <Text style={[styles.cardDate, { color: isDark ? '#AAA' : '#666' }]}>
-                    Final: {convocatoria.endDate}
+                    {t('convocatoria.card.end')}: {convocatoria.endDate}
                   </Text>
                   <View style={styles.buttonGroup}>
                     <TouchableOpacity
                       style={styles.button}
                       onPress={() => router.push('/requisitos')}
                     >
-                      <Text style={styles.buttonText}>Requisitos</Text>
+                      <Text style={styles.buttonText}>{t('convocatoria.card.requirements')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.button}
                       onPress={() => router.push('/mas-info')}
                     >
-                      <Text style={styles.buttonText}>Más Info...</Text>
+                      <Text style={styles.buttonText}>{t('convocatoria.card.moreInfo')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={[styles.button, { backgroundColor: '#4CAF50' }]}
                       onPress={() => router.push('/postulacion-paso1')}
                     >
-                      <Text style={styles.buttonText}>Postular</Text>
+                      <Text style={styles.buttonText}>{t('convocatoria.card.apply')}</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -270,7 +272,7 @@ export default function ConvocatoriaScreen() {
                 { color: isDark ? '#AAA' : '#333' },
               ]}
             >
-              Inicio
+              {t('convocatoria.nav.home')}
             </Text>
           </TouchableOpacity>
 
@@ -297,7 +299,7 @@ export default function ConvocatoriaScreen() {
                 { color: isDark ? '#AAA' : '#333' },
               ]}
             >
-              Áreas
+              {t('convocatoria.nav.areas')}
             </Text>
           </TouchableOpacity>
 
@@ -324,7 +326,7 @@ export default function ConvocatoriaScreen() {
                 { color: isDark ? '#4CAF50' : '#4CAF50' },
               ]}
             >
-              Convocatoria
+              {t('convocatoria.nav.convocatory')}
             </Text>
           </TouchableOpacity>
 
@@ -351,7 +353,7 @@ export default function ConvocatoriaScreen() {
                 { color: isDark ? '#AAA' : '#333' },
               ]}
             >
-              Nosotros
+              {t('convocatoria.nav.about')}
             </Text>
           </TouchableOpacity>
         </View>

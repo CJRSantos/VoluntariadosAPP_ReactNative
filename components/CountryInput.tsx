@@ -1,25 +1,28 @@
 // src/components/CountryInput.tsx
 import { useTheme } from '@/app/providers/ThemeProvider';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import countries from '../src/constants/countries.json'; // Ruta correcta según tu estructura
 
 type CountryInputProps = {
     value: string;
-    onChangeText: (text: string) => void;
+    onValueChange: (text: string) => void;
     placeholder?: string;
 };
 
-const CountryInput = ({ value, onChangeText, placeholder = "Buscar país..." }: CountryInputProps) => {
+const CountryInput = ({ value, onValueChange, placeholder }: CountryInputProps) => {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
+    const { t } = useTranslation();
+    const actualPlaceholder = placeholder || t('common.searchCountry');
 
     const [query, setQuery] = useState(value);
     const [filtered, setFiltered] = useState<string[]>([]);
 
     const handleChange = (text: string) => {
         setQuery(text);
-        onChangeText(text);
+        onValueChange(text);
 
         if (text.trim()) {
             const matches = countries
@@ -33,7 +36,7 @@ const CountryInput = ({ value, onChangeText, placeholder = "Buscar país..." }: 
 
     const selectCountry = (country: string) => {
         setQuery(country);
-        onChangeText(country);
+        onValueChange(country);
         setFiltered([]);
     };
 
@@ -47,7 +50,7 @@ const CountryInput = ({ value, onChangeText, placeholder = "Buscar país..." }: 
                 }]}
                 value={query}
                 onChangeText={handleChange}
-                placeholder={placeholder}
+                placeholder={actualPlaceholder}
                 placeholderTextColor={isDark ? '#999' : '#777'}
                 autoCapitalize="words"
                 autoCorrect={false}
@@ -55,8 +58,6 @@ const CountryInput = ({ value, onChangeText, placeholder = "Buscar país..." }: 
             {filtered.length > 0 && (
                 <View style={styles.list}>
                     {filtered.map((item, index) => (
-                        // ✅ Cambiamos FlatList por View con .map()
-                        // ✅ Usamos una clave única: `${item}-${index}`
                         <TouchableOpacity
                             key={`${item}-${index}`}
                             style={[styles.item, { backgroundColor: isDark ? '#222' : '#fff' }]}
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 8,
         borderBottomRightRadius: 8,
         marginTop: -8,
-        backgroundColor: 'white', // 👈 Añadido para evitar fondo transparente
+        backgroundColor: 'white',
     },
     item: {
         padding: 12,

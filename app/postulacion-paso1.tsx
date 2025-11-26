@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import * as DocumentPicker from 'expo-document-picker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Alert,
     Dimensions,
@@ -21,6 +22,7 @@ export default function PostulacionPaso1Screen() {
     const router = useRouter();
     const { user } = useAuth();
     const { theme } = useTheme();
+    const { t } = useTranslation();
     const isDark = theme === 'dark';
 
     const [selectedFile, setSelectedFile] = useState<any>(null);
@@ -37,16 +39,16 @@ export default function PostulacionPaso1Screen() {
 
             const file = result.assets[0];
             setSelectedFile(file);
-            Alert.alert('Archivo seleccionado', file.name || 'Sin nombre');
+            Alert.alert(t('postulacion.step1.fileSelected'), file.name || t('postulacion.step1.noName'));
         } catch (error) {
             console.error('Error al seleccionar archivo:', error);
-            Alert.alert('Error', 'No se pudo seleccionar el archivo.');
+            Alert.alert(t('login.errorTitle'), t('postulacion.step1.errorSelection'));
         }
     };
 
     const handleSiguiente = () => {
         if (!selectedFile) {
-            Alert.alert('Advertencia', 'Por favor, sube un archivo antes de continuar.');
+            Alert.alert(t('postulacion.step1.warning'), t('postulacion.step1.warningMessage'));
             return;
         }
         // ✅ Aquí podrías guardar temporalmente en contexto o AsyncStorage
@@ -59,10 +61,10 @@ export default function PostulacionPaso1Screen() {
                 {/* Header */}
                 <View style={styles.header}>
                     <Text style={[styles.title, { color: isDark ? '#FFF' : '#000' }]}>
-                        Inicia tu Proceso de Postulación
+                        {t('postulacion.step1.title')}
                     </Text>
                     <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                        Programa de Voluntariado Ambiental 2025
+                        {t('postulacion.step1.subtitle')}
                     </Text>
                     <View style={styles.stepIndicator}>
                         <View style={[styles.dot, styles.activeDot]} />
@@ -79,7 +81,7 @@ export default function PostulacionPaso1Screen() {
                 {/* Step Content */}
                 <View style={styles.stepContent}>
                     <Text style={[styles.stepTitle, { color: isDark ? '#FFF' : '#000' }]}>
-                        Paso 1: Subida de Documentos | Otros requisitos
+                        {t('postulacion.step1.stepTitle')}
                     </Text>
 
                     <TouchableOpacity
@@ -88,13 +90,13 @@ export default function PostulacionPaso1Screen() {
                         disabled={uploading}
                     >
                         <Text style={[styles.uploadButtonText, { color: isDark ? '#FFF' : '#333' }]}>
-                            {uploading ? 'Subiendo...' : 'Subir archivo'}
+                            {uploading ? t('postulacion.step1.uploading') : t('postulacion.step1.uploadButton')}
                         </Text>
                     </TouchableOpacity>
 
                     {selectedFile && (
                         <Text style={{ color: isDark ? '#AAA' : '#666', marginTop: 8 }}>
-                            Archivo: {selectedFile.name || 'Sin nombre'}
+                            {t('postulacion.step1.fileLabel')} {selectedFile.name || t('postulacion.step1.noName')}
                         </Text>
                     )}
 
@@ -103,14 +105,13 @@ export default function PostulacionPaso1Screen() {
                         onPress={handleSiguiente}
                         disabled={!selectedFile}
                     >
-                        <Text style={styles.nextButtonText}>Siguiente paso</Text>
+                        <Text style={styles.nextButtonText}>{t('postulacion.step1.nextButton')}</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
         </SafeAreaView>
     );
 }
-
 
 const styles = StyleSheet.create({
     safeArea: { flex: 1 },

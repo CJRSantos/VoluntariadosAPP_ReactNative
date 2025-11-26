@@ -1,11 +1,14 @@
-// app/_layout.tsx
 import { Ionicons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { TouchableOpacity } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from '../app/providers/ThemeProvider';
+import '../src/i18n/i18n';
 
 export default function RootLayout() {
+  const { t } = useTranslation();
+
   return (
     <SafeAreaProvider>
       <ThemeProvider>

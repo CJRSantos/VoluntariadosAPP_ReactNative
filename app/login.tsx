@@ -2,6 +2,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Image,
@@ -20,12 +21,13 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const { t } = useTranslation();
 
   const router = useRouter();
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Por favor completa todos los campos');
+      Alert.alert(t('login.errorTitle'), t('login.errorMissingFields'));
       return;
     }
 
@@ -42,7 +44,7 @@ export default function LoginScreen() {
 
       router.replace('/account');
     } catch (error) {
-      Alert.alert('Error', 'No se pudo iniciar sesión');
+      Alert.alert(t('login.errorTitle'), t('login.errorLoginFailed'));
     }
   };
 
@@ -56,28 +58,28 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.content}>
-          <Text style={styles.title}>Volunteer Intranet</Text>
+          <Text style={styles.title}>{t('login.title')}</Text>
 
           <Image
             source={require('../assets/images/Volunteer_Intranet.png')}
             style={styles.headerImage}
           />
 
-          <Text style={styles.label}>Email</Text>
+          <Text style={styles.label}>{t('login.emailLabel')}</Text>
           <TextInput
             style={styles.input}
-            placeholder="Enter your email"
+            placeholder={t('login.emailPlaceholder')}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
           />
 
-          <Text style={styles.label}>Password</Text>
+          <Text style={styles.label}>{t('login.passwordLabel')}</Text>
           <View style={styles.passwordContainer}>
             <TextInput
               style={[styles.input, styles.passwordInput]}
-              placeholder="Enter your password"
+              placeholder={t('login.passwordPlaceholder')}
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -91,11 +93,11 @@ export default function LoginScreen() {
           </View>
 
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>Iniciar sesión</Text>
+            <Text style={styles.loginButtonText}>{t('login.loginButton')}</Text>
           </TouchableOpacity>
 
           <Link href="/register">
-            <Text style={styles.createAccount}>Crear una cuenta</Text>
+            <Text style={styles.createAccount}>{t('login.createAccount')}</Text>
           </Link>
         </View>
       </ScrollView>

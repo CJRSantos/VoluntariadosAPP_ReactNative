@@ -1,0 +1,447 @@
+{
+    "login": {
+        "title": "Intranet de Voluntarios",
+        "emailLabel": "Correo electrónico",
+        "emailPlaceholder": "Ingresa tu correo",
+        "passwordLabel": "Contraseña",
+        "passwordPlaceholder": "Ingresa tu contraseña",
+        "loginButton": "Iniciar sesión",
+        "createAccount": "Crear una cuenta",
+        "errorTitle": "Error",
+        "errorMissingFields": "Por favor completa todos los campos",
+        "errorLoginFailed": "No se pudo iniciar sesión"
+    },
+    "register": {
+        "title": "Cuenta de Voluntario",
+        "emailLabel": "Correo electrónico",
+        "emailPlaceholder": "Ingresa tu correo",
+        "passwordLabel": "Contraseña",
+        "passwordPlaceholder": "Ingresa tu contraseña",
+        "confirmPasswordLabel": "Confirmar contraseña",
+        "appearance": {
+            "title": "Apariencia",
+            "dark": "Modo oscuro",
+            "light": "Modo claro",
+            "enableDark": "Activar modo oscuro",
+            "disableDark": "Desactivar modo oscuro"
+        },
+        "language": {
+            "title": "Idioma",
+            "subtitle": "Selecciona el idioma de la aplicación",
+            "modalTitle": "Seleccionar Idioma"
+        },
+        "notifications": {
+            "title": "Notificaciones",
+            "subtitle": "Personaliza tus alertas"
+        },
+        "privacy": {
+            "title": "Privacidad",
+            "subtitle": "Ajusta preferencias"
+        },
+        "storage": {
+            "title": "Almacenamiento",
+            "subtitle": "Gestiona datos y espacio",
+            "modalTitle": "Opciones de Almacenamiento",
+            "viewSize": "Ver tamaño de almacenamiento",
+            "clearCache": "Limpar caché de imágenes",
+            "deleteAll": "Eliminar todos los datos",
+            "export": "Exportar mis datos",
+            "close": "Cerrar"
+        }
+    },
+    "nosotros": {
+        "title": "Nosotros",
+        "headerTitle": "Cuenta de Voluntario",
+        "whyJoin": "¿Por qué unirte a nosotros?",
+        "joinDescription": "Únete a nuestra institución y sé parte de un equipo que impulsa innovación, sostenibilidad e impacto positivo.",
+        "ourHistory": "Nuestra historia",
+        "historyDescription": "Desde nuestros inicios, hemos trabajado en fortalecer la educación, la investigación y los proyectos sociales.",
+        "ourMission": "Nuestra misión",
+        "missionDescription": "Impulsionar iniciativas que transformen vidas a través de la educación y la acción social.",
+        "difference": "Lo que nos diferencia",
+        "differenceDescription": "Nos distingue nuestro enfoque integral, combinando conocimiento e innovación.",
+        "stats": {
+            "publications": "publicaciones científicas internacionales",
+            "projects": "proyectos en desarrollo actualmente",
+            "beneficiaries": "beneficiarios directos en programas sociales",
+            "alliances": "alianzas estratégicas con instituciones nacionales e internacionales"
+        },
+        "menu": {
+            "profile": "Perfil",
+            "settings": "Configuración",
+            "help": "Ayuda",
+            "logout": "Cerrar sesión",
+            "soon": "Próximamente",
+            "helpSoon": "Ayuda estará disponible pronto"
+        },
+        "nav": {
+            "home": "Inicio",
+            "areas": "Áreas",
+            "convocatory": "Convocatoria",
+            "about": "Nosotros"
+        }
+    },
+    "account": {
+        "headerTitle": "Cuenta de Voluntario",
+        "banner": {
+            "title": "Aquí comienza tu espacio exclusivo de usuario",
+            "subtitle": "Bienvenido usuario se parte de este nuevo...",
+            "button": "Conocer más"
+        },
+        "news": {
+            "sectionTitle": "Últimas noticias",
+            "status": {
+                "open": "Abierto",
+                "closed": "Cerrado"
+            },
+            "apply": "Postular",
+            "details": "Detalles",
+            "items": {
+                "1": {
+                    "title": "Monitoreo de carbono en bosques amazónicos",
+                    "details": "Líneas temáticas: Monitoreo de carbono, Servicios ecosistémicos, Cambio climático"
+                }
+            }
+        },
+        "tutorials": {
+            "title": "Guías y Tutoriales"
+        },
+        "videos": {
+            "sectionTitle": "Videos",
+            "errorTitle": "Error",
+            "errorMessage": "No se pudo abrir el video. Por favor, copia y pega el enlace en tu navegador.",
+            "copyLink": "Copiar enlace"
+        },
+        "quickLinks": {
+            "sectionTitle": "Enlaces Rápidos"
+        },
+        "social": {
+            "web": "Sitio Web"
+        },
+        "loading": "Cargando...",
+        "nav": {
+            "home": "Inicio",
+            "areas": "Áreas",
+            "convocatory": "Convocatoria",
+            "about": "Nosotros"
+        },
+        "menu": {
+            "profile": "Perfil",
+            "settings": "Configuración",
+            "help": "Ayuda",
+            "logout": "Cerrar sesión",
+            "soon": "Próximamente",
+            "helpSoon": "Ayuda estará disponible pronto"
+        }
+    },
+    "common": {
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "warning": "Advertencia",
+        "searchCountry": "Buscar país...",
+        "searchInstitution": "Buscar institución..."
+    },
+    "profile": {
+        "currently": "Actualmente",
+        "statusLabel": "Estado",
+        "currentlyInRole": "En curso",
+        "finished": "Finalizado",
+        "editorialLabel": "Editorial",
+        "authorLabel": "Autor",
+        "guestUser": "Usuario Invitado",
+        "volunteerRole": "Voluntario",
+        "personalInfo": "Información Personal",
+        "education": "Formación",
+        "experience": "Experiencia",
+        "additional": "Adicional",
+        "addAcademic": "Agregar Formación Académica",
+        "addTechnical": "Agregar Formación Técnica",
+        "addComplementary": "Agregar Formación Complementaria",
+        "addExperience": "Agregar Experiencia Laboral",
+        "addVolunteer": "Agregar Voluntariado",
+        "addPublication": "Agregar Publicación",
+        "addLanguage": "Agregar Idioma",
+        "viewImage": "Ver foto",
+        "chooseFromGallery": "Elegir de la galería",
+        "takePhoto": "Tomar foto",
+        "editPersonalInfo": "Editar Información Personal",
+        "nameLabel": "Nombre Completo",
+        "namePlaceholder": "Ingresa tu nombre",
+        "birthDateLabel": "Fecha de Nacimiento",
+        "selectDate": "Seleccionar fecha",
+        "phoneLabel": "Teléfono",
+        "phonePlaceholder": "Ingresa tu teléfono",
+        "documentTypeLabel": "Tipo de Documento",
+        "select": "Seleccionar",
+        "documentNumberLabel": "Número de Documento",
+        "documentNumberPlaceholder": "Ingresa tu número de documento",
+        "genderLabel": "Género",
+        "male": "Masculino",
+        "female": "Femenino",
+        "other": "Otro",
+        "editAcademic": "Editar Formación Académica",
+        "degreeLabel": "Grado/Título",
+        "degreePlaceholder": "Ej: Bachiller en Biología",
+        "institutionLabel": "Institución",
+        "countryLabel": "País",
+        "startDateLabel": "Fecha de Inicio",
+        "endDateLabel": "Fecha de Fin",
+        "graduated": "Graduado",
+        "titled": "Titulado",
+        "truncated": "Trunco",
+        "editTechnical": "Editar Formación Técnica",
+        "courseLabel": "Curso/Programa",
+        "coursePlaceholder": "Ej: Desarrollo Web",
+        "platformLabel": "Plataforma/Institución",
+        "platformPlaceholder": "Ej: Coursera",
+        "durationLabel": "Duración",
+        "durationPlaceholder": "Ej: 40 horas",
+        "editComplementary": "Editar Formación Complementaria",
+        "activityLabel": "Actividad",
+        "activityPlaceholder": "Ej: Taller de Liderazgo",
+        "descriptionLabel": "Descripción",
+        "descriptionPlaceholder": "Breve descripción...",
+        "dateLabel": "Fecha",
+        "editExperience": "Editar Experiencia Laboral",
+        "positionLabel": "Cargo",
+        "positionPlaceholder": "Ej: Analista Junior",
+        "areaLabel": "Área",
+        "areaPlaceholder": "Ej: Recursos Humanos",
+        "editVolunteer": "Editar Voluntariado",
+        "organizationLabel": "Organización",
+        "organizationPlaceholder": "Nombre de la organización",
+        "roleLabel": "Rol",
+        "rolePlaceholder": "Ej: Voluntario de campo",
+        "causeLabel": "Causa",
+        "causePlaceholder": "Ej: Medio ambiente",
+        "editPublication": "Editar Publicación",
+        "titleLabel": "Título",
+        "titlePlaceholder": "Título de la publicación",
+        "editorialPlaceholder": "Nombre de la editorial",
+        "authorPlaceholder": "Nombre del autor",
+        "urlLabel": "URL",
+        "urlPlaceholder": "Enlace a la publicación",
+        "abstractLabel": "Resumen",
+        "abstractPlaceholder": "Breve resumen...",
+        "editLanguage": "Editar Idioma",
+        "languageLabel": "Idioma",
+        "languagePlaceholder": "Ej: Inglés",
+        "proficiencyLabel": "Nivel",
+        "basic": "Básico",
+        "intermediate": "Intermedio",
+        "advanced": "Avanzado",
+        "native": "Nativo"
+    },
+    "areas": {
+        "title": "Áreas",
+        "headerTitle": "Cuenta de Voluntario",
+        "sectionTitle": "Nuestras Áreas y Unidades",
+        "locationPermissionDenied": "Permiso de ubicación denegado",
+        "unknownLocation": "Ubicación desconocida",
+        "locationError": "No se pudo obtener la ubicación",
+        "noLocation": "Sin ubicación",
+        "gettingLocation": "Obteniendo ubicación...",
+        "loading": "Cargando...",
+        "items": {
+            "1": {
+                "direction": "Dirección de Investigación en Ecosistemas y Cambio Climático",
+                "title": "Área de Recursos Forestales y Cambio Climático",
+                "description": "Área encargada de estudios ecológicos, monitoreo ambiental y estrategias de conservación en la Amazonía peruana."
+            },
+            "2": {
+                "direction": "Dirección de Investigaciones Ambientales",
+                "title": "Área de Ecología y Conservación",
+                "description": "Área encargada de estudios ecológicos, monitoreo ambiental y estrategias de conservación en la Amazonía peruana."
+            }
+        },
+        "menu": {
+            "profile": "Perfil",
+            "settings": "Configuración",
+            "help": "Ayuda",
+            "logout": "Cerrar sesión",
+            "soon": "Próximamente",
+            "helpSoon": "Ayuda estará disponible pronto"
+        },
+        "nav": {
+            "home": "Inicio",
+            "areas": "Áreas",
+            "convocatory": "Convocatoria",
+            "about": "Nosotros"
+        }
+    },
+    "convocatoria": {
+        "title": "Convocatoria",
+        "headerTitle": "Cuenta de Voluntario",
+        "loading": "Cargando...",
+        "items": {
+            "1": {
+                "title": "Ayuda a realizar investigaciones - Bosques",
+                "location": "Iquitos, Perú",
+                "participants": "20 participantes",
+                "startDate": "31 de setiembre, 2025",
+                "endDate": "15 de octubre, 2025"
+            },
+            "2": {
+                "title": "Ayuda a realizar investigaciones - Bosques",
+                "location": "Iquitos, Perú",
+                "participants": "20 participantes",
+                "startDate": "31 de setiembre, 2025",
+                "endDate": "15 de octubre, 2025"
+            },
+            "3": {
+                "title": "Voluntariado en un refugio de animales",
+                "location": "Arequipa, Perú",
+                "participants": "10 participantes",
+                "startDate": "31 de setiembre, 2025",
+                "endDate": "15 de octubre, 2025"
+            }
+        },
+        "card": {
+            "start": "Inicio",
+            "end": "Final",
+            "requirements": "Requisitos",
+            "moreInfo": "Más Info...",
+            "apply": "Postular"
+        },
+        "menu": {
+            "profile": "Perfil",
+            "settings": "Configuración",
+            "help": "Ayuda",
+            "logout": "Cerrar sesión",
+            "soon": "Próximamente",
+            "helpSoon": "Ayuda estará disponible pronto"
+        },
+        "nav": {
+            "home": "Inicio",
+            "areas": "Áreas",
+            "convocatory": "Convocatoria",
+            "about": "Nosotros"
+        }
+    },
+    "onboarding": {
+        "title": "¡Bienvenido a Voluntariados IIAP!",
+        "subtitle": "Tu puerta de entrada para contribuir con la ciencia y conservación amazónica.",
+        "section1": {
+            "title": "¿Qué es Voluntariados IIAP?",
+            "text": "Es una plataforma digital que conecta a personas comprometidas con la investigación científica y la conservación ambiental en la Amazonía peruana, con proyectos reales del Instituto de Investigaciones de la Amazonía Peruana (IIAP)."
+        },
+        "section2": {
+            "title": "¿Qué es el IIAP?",
+            "text": "Mira este video para entender que es el IIAP",
+            "button": "Ver tutorial en YouTube"
+        },
+        "section3": {
+            "title": "Beneficios de ser voluntario",
+            "text": "• Experiencia práctica en campo y laboratorio.\n• Certificación de participación emitida por el IIAP.\n• Acceso a redes de científicos y profesionales.\n• Contribución directa a la conservación de la Amazonía."
+        },
+        "ctaButton": "Explorar Convocatorias"
+    },
+    "masInfo": {
+        "title": "Información adicional",
+        "deadlineTitle": "Plazo de postulación",
+        "deadlineDate": "Hasta el 15 de Noviembre de 2025",
+        "howToApplyTitle": "CÓMO POSTULAR",
+        "howToApplyText": "Para postular a una vacante de voluntario en BOSQUES, puedes elegir entre dos modalidades de presentación: presencial o virtual.",
+        "presencialTitle": "Presencial",
+        "presencialText": "Presenta tus documentos en la mesa de partes del IIAP.",
+        "virtualTitle": "Virtual",
+        "virtualText": "Envía tus documentos a través de la vista de postulación.",
+        "noteTitle": "Nota importante",
+        "noteText": "Asegúrate de que tu archivo PDF no exceda los 10 MB y que todos los documentos estén correctamente ordenados y legibles."
+    },
+    "requisitos": {
+        "title": "Realizar investigaciones - Bosques",
+        "vacanciesTitle": "Vacantes",
+        "educationTitle": "Formación académica",
+        "educationText": "Egresado(a) Universitario de Archivística y Gestión Documental, Administración, Ingeniería Industrial, Ingeniería de Sistemas",
+        "experienceTitle": "Experiencia",
+        "experienceText": "General: 2 años\n\nEspecífica: 1 año en la función o materia, 1 año a nivel de practicante, 1 año en el sector público",
+        "coursesTitle": "Cursos y programas de especialización",
+        "coursesText": "Gestión de archivos, gestión documental, sistema de gestión documental, trámite documentario o gobierno digital, con duración mínima de 60 horas acumulables",
+        "savePdfButton": "Guardar PDF",
+        "applyButton": "Postular",
+        "pdfDialogTitle": "Guardar o compartir PDF",
+        "pdfGeneratedTitle": "PDF generado",
+        "pdfError": "No se pudo generar el PDF"
+    },
+    "postulacion": {
+        "step1": {
+            "title": "Inicia tu Proceso de Postulación",
+            "subtitle": "Programa de Voluntariado Ambiental 2025",
+            "stepTitle": "Paso 1: Envío de documentos | Otros requisitos",
+            "uploadButton": "Subir Archivo",
+            "uploading": "Subiendo...",
+            "fileSelected": "Archivo Seleccionado",
+            "noName": "Sin Nombre",
+            "errorSelection": "No se pudo seleccionar el archivo.",
+            "warning": "Aviso",
+            "warningMessage": "Por favor, sube un archivo antes de continuar.",
+            "nextButton": "Siguiente Paso",
+            "fileLabel": "Archivo:"
+        },
+        "step2": {
+            "title": "Aplica a la oportunidad",
+            "subtitle": "Completa los siguientes pasos para aplicar a la oportunidad",
+            "stepTitle": "Paso 2 de 3",
+            "coverLetterLabel": "Carta de presentación",
+            "uploadCoverLetter": "Sube tu carta de motivación",
+            "cvLabel": "CV",
+            "uploadCv": "Sube tu CV",
+            "nextButton": "Siguiente paso",
+            "fileSelected": "Archivo seleccionado",
+            "noName": "Sin nombre",
+            "alertTitle": "Carta seleccionada",
+            "alertCvTitle": "CV seleccionado",
+            "errorTitle": "Error",
+            "errorSelection": "No se pudo seleccionar el",
+            "warningTitle": "Advertencia",
+            "warningMessage": "Por favor, sube ambos documentos antes de continuar."
+        },
+        "step3": {
+            "title": "Postulación",
+            "stepTitle": "Paso 3 de 3",
+            "personalData": "Registro de Datos Personales",
+            "completed": "Completado",
+            "documents": "Subida de Documentos | Otros requisitos",
+            "confirmation": "Confirmation y Envío",
+            "currentStep": "Paso actual",
+            "submitButton": "Enviar postulación"
+        },
+        "confirmation": {
+            "title": "¡Postulación confirmada!",
+            "message": "Tu postulación ha sido recibida con éxito. Te mantendremos informado sobre los próximos pasos.",
+            "backButton": "Volver al inicio"
+        }
+    },
+    "presencialInfo": {
+        "title": "Requisitos y Pasos",
+        "description": "Para postular de forma presencial, debes acercarte a la sede del IIAP y presentar tus documentos en Mesa de Partes.",
+        "step1": {
+            "title": "1. Prepara tus documentos",
+            "text": "Asegúrate de tener tu CV documentado y la ficha de inscripción llenada correctamente. Todo debe estar en un sobre manila cerrado."
+        },
+        "step2": {
+            "title": "2. Acércate al IIAP",
+            "text": "Dirígete a la oficina de Mesa de Partes en el horario de atención (Lunes a Viernes de 8:00 am a 4:00 pm)."
+        },
+        "step3": {
+            "title": "3. Entrega tu expediente",
+            "text": "Entrega tu sobre y solicita tu cargo de recepción. Conserva este cargo para cualquier consulta posterior."
+        },
+        "note": {
+            "title": "Nota Importante",
+            "text": "Recuerda que la postulación presencial es válida solo si se realiza dentro del plazo establecido en la convocatoria."
+        }
+    },
+    "help": {
+        "title": "Ayuda",
+        "content": "Contenido de ayuda aquí..."
+    },
+    "modal": {
+        "title": "Esto es un modal",
+        "link": "Ir a la pantalla de inicio"
+    },
+    "splash": {
+        "welcome": "BIENVENIDO VOLUNTARIO"
+    }
+}

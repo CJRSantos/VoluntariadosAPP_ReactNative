@@ -1,8 +1,10 @@
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function MasInfoScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -13,7 +15,7 @@ export default function MasInfoScreen() {
         </TouchableOpacity>
 
         {/* Título */}
-        <Text style={styles.title}>Información adicional</Text>
+        <Text style={styles.title}>{t('masInfo.title')}</Text>
 
         {/* Imagen */}
         <View style={styles.imageContainer}>
@@ -23,15 +25,15 @@ export default function MasInfoScreen() {
             resizeMode="cover"
           />
           <View style={styles.overlay}>
-            <Text style={styles.overlayTitle}>Plazo de postulación</Text>
-            <Text style={styles.overlaySubtitle}>Hasta el 15 de Noviembre de 2025</Text>
+            <Text style={styles.overlayTitle}>{t('masInfo.deadlineTitle')}</Text>
+            <Text style={styles.overlaySubtitle}>{t('masInfo.deadlineDate')}</Text>
           </View>
         </View>
 
         {/* CÓMO POSTULAR */}
-        <Text style={styles.sectionTitle}>CÓMO POSTULAR</Text>
+        <Text style={styles.sectionTitle}>{t('masInfo.howToApplyTitle')}</Text>
         <Text style={styles.sectionText}>
-          Para postular a una vacante de voluntario en BOSQUES, puedes elegir entre dos modalidades de presentación: presencial o virtual.
+          {t('masInfo.howToApplyText')}
         </Text>
 
         {/* Presencial */}
@@ -40,9 +42,9 @@ export default function MasInfoScreen() {
             <Text style={styles.icon}>🏢</Text>
           </View>
           <View style={styles.optionContent}>
-            <Text style={styles.optionTitle}>Presencial</Text>
+            <Text style={styles.optionTitle}>{t('masInfo.presencialTitle')}</Text>
             <Text style={styles.optionDescription}>
-              Presenta tus documentos en la mesa de partes del IIAP.
+              {t('masInfo.presencialText')}
             </Text>
           </View>
           <Text style={styles.arrow}>→</Text>
@@ -57,18 +59,18 @@ export default function MasInfoScreen() {
             <Text style={styles.icon}>🌐</Text>
           </View>
           <View style={styles.optionContent}>
-            <Text style={styles.optionTitle}>Virtual</Text>
+            <Text style={styles.optionTitle}>{t('masInfo.virtualTitle')}</Text>
             <Text style={styles.optionDescription}>
-              Envía tus documentos a través de la vista de postulación.
+              {t('masInfo.virtualText')}
             </Text>
           </View>
           <Text style={styles.arrow}>→</Text>
         </TouchableOpacity>
 
         {/* Nota importante */}
-        <Text style={styles.noteTitle}>Nota importante</Text>
+        <Text style={styles.noteTitle}>{t('masInfo.noteTitle')}</Text>
         <Text style={styles.noteText}>
-          Asegúrate de que tu archivo PDF no exceda los 10 MB y que todos los documentos estén correctamente ordenados y legibles.
+          {t('masInfo.noteText')}
         </Text>
       </ScrollView>
     </SafeAreaView>

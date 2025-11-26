@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { usePathname, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Dimensions,
@@ -15,7 +16,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../app/providers/ThemeProvider'; 
+import { useTheme } from '../app/providers/ThemeProvider';
 const { width } = Dimensions.get('window');
 
 export default function AreasScreen() {
@@ -23,7 +24,8 @@ export default function AreasScreen() {
   const router = useRouter();
   const pathname = usePathname();
   const { theme } = useTheme();
-  const isDark = theme === 'dark'; 
+  const { t } = useTranslation();
+  const isDark = theme === 'dark';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -41,7 +43,7 @@ export default function AreasScreen() {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-          setErrorMsg('Permiso de ubicación denegado');
+          setErrorMsg(t('areas.locationPermissionDenied'));
           return;
         }
 
@@ -56,12 +58,12 @@ export default function AreasScreen() {
             reverseGeocode.city ||
             reverseGeocode.region ||
             reverseGeocode.country ||
-            'Ubicación desconocida';
+            t('areas.unknownLocation');
           setAddress(cityName);
         }
       } catch (error) {
         console.log('Error obteniendo ubicación:', error);
-        setErrorMsg('No se pudo obtener la ubicación');
+        setErrorMsg(t('areas.locationError'));
       }
     })();
   }, []);
@@ -69,17 +71,15 @@ export default function AreasScreen() {
   const areas = [
     {
       id: 1,
-      direction: 'Dirección de Investigación en Ecosistemas y Cambio Climático',
-      title: 'Área de Recursos Forestales y Cambio Climático',
-      description:
-        'Área encargada de estudios ecológicos, monitoreo ambiental y estrategias de conservación en la Amazonía peruana.',
+      direction: t('areas.items.1.direction'),
+      title: t('areas.items.1.title'),
+      description: t('areas.items.1.description'),
     },
     {
       id: 2,
-      direction: 'Dirección de Investigaciones Ambientales',
-      title: 'Área de Ecología y Conservación',
-      description:
-        'Área encargada de estudios ecológicos, monitoreo ambiental y estrategias de conservación en la Amazonía peruana.',
+      direction: t('areas.items.2.direction'),
+      title: t('areas.items.2.title'),
+      description: t('areas.items.2.description'),
     },
   ];
 
@@ -87,7 +87,7 @@ export default function AreasScreen() {
     return (
       <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#E0E0E0' }]}>
         <View style={styles.loading}>
-          <Text style={{ color: isDark ? '#FFF' : '#333' }}>Cargando...</Text>
+          <Text style={{ color: isDark ? '#FFF' : '#333' }}>{t('areas.loading')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -107,7 +107,7 @@ export default function AreasScreen() {
           ]}
         >
           <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>
-            volunteer account
+            {t('areas.headerTitle')}
           </Text>
           <View style={styles.headerRight}>
             <Image
@@ -143,7 +143,7 @@ export default function AreasScreen() {
                 >
                   <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
                   <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                    Profile
+                    {t('areas.menu.profile')}
                   </Text>
                 </TouchableOpacity>
 
@@ -156,19 +156,19 @@ export default function AreasScreen() {
                 >
                   <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
                   <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                    Settings
+                    {t('areas.menu.settings')}
                   </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                   onPress={() => {
-                    Alert.alert('Próximamente', 'Ayuda estará disponible pronto');
+                    Alert.alert(t('areas.menu.soon'), t('areas.menu.helpSoon'));
                     setIsMenuOpen(false);
                   }}
                 >
                   <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
-                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>Help</Text>
+                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('areas.menu.help')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -180,7 +180,7 @@ export default function AreasScreen() {
                 >
                   <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
                   <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                    Log-out
+                    {t('areas.menu.logout')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -191,7 +191,7 @@ export default function AreasScreen() {
         {/* Contenido principal */}
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-            Nuestras Áreas y Unidades
+            {t('areas.sectionTitle')}
           </Text>
 
           {areas.map((area) => (
@@ -209,7 +209,7 @@ export default function AreasScreen() {
                 <View style={styles.locationBadge}>
                   <Ionicons name="location" size={16} color="#fff" />
                   <Text style={styles.locationText}>
-                    {errorMsg ? 'Sin ubicación' : address || 'Obteniendo ubicación...'}
+                    {errorMsg ? t('areas.noLocation') : address || t('areas.gettingLocation')}
                   </Text>
                 </View>
               </View>
@@ -233,7 +233,7 @@ export default function AreasScreen() {
             onPress={() => router.push('/account')}
           >
             <Image source={require('../assets/images/home-icon.png')} style={[styles.navIcon, pathname === '/account' && styles.navIconActive]} />
-            <Text style={[styles.navLabel, pathname === '/account' && styles.navLabelActive]}>Inicio</Text>
+            <Text style={[styles.navLabel, pathname === '/account' && styles.navLabelActive]}>{t('areas.nav.home')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -241,7 +241,7 @@ export default function AreasScreen() {
             onPress={() => router.push('/areas')}
           >
             <Image source={require('../assets/images/areas-icon.png')} style={[styles.navIcon, pathname === '/areas' && styles.navIconActive]} />
-            <Text style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive]}>Áreas</Text>
+            <Text style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive]}>{t('areas.nav.areas')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -249,7 +249,7 @@ export default function AreasScreen() {
             onPress={() => router.push('/convocatoria')}
           >
             <Image source={require('../assets/images/convocatory-icon.png')} style={[styles.navIcon, pathname === '/convocatoria' && styles.navIconActive]} />
-            <Text style={[styles.navLabel, pathname === '/convocatoria' && styles.navLabelActive]}>Convocatory</Text>
+            <Text style={[styles.navLabel, pathname === '/convocatoria' && styles.navLabelActive]}>{t('areas.nav.convocatory')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -257,7 +257,7 @@ export default function AreasScreen() {
             onPress={() => router.push('/nosotros')}
           >
             <Image source={require('../assets/images/nosotros-icon.png')} style={[styles.navIcon, pathname === '/nosotros' && styles.navIconActive]} />
-            <Text style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive]}>Nosotros</Text>
+            <Text style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive]}>{t('areas.nav.about')}</Text>
           </TouchableOpacity>
         </View>
       </View>

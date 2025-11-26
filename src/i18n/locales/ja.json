@@ -1,0 +1,88 @@
+{
+    "login": {
+        "title": "ボランティアイントラネット",
+        "emailLabel": "メールアドレス",
+        "emailPlaceholder": "メールアドレスを入力",
+        "passwordLabel": "パスワード",
+        "passwordPlaceholder": "パスワードを入力",
+        "loginButton": "ログイン",
+        "createAccount": "アカウントを作成",
+        "errorTitle": "エラー",
+        "errorMissingFields": "すべてのフィールドに入力してください",
+        "errorLoginFailed": "ログインできませんでした"
+    },
+    "register": {
+        "title": "ボランティアアカウント",
+        "emailLabel": "メールアドレス",
+        "emailPlaceholder": "メールアドレスを入力",
+        "passwordLabel": "パスワード",
+        "passwordPlaceholder": "パスワードを入力",
+        "confirmPasswordLabel": "パスワード（確認）",
+        "appearance": {
+            "title": "外観",
+            "dark": "ダークモード",
+            "light": "ライトモード",
+            "enableDark": "ダークモードを有効にする",
+            "disableDark": "ダークモードを無効にする"
+        },
+        "language": {
+            "title": "言語",
+            "subtitle": "アプリの言語を選択",
+            "modalTitle": "言語を選択"
+        },
+        "notifications": {
+            "title": "通知",
+            "subtitle": "アラートをカスタマイズ"
+        },
+        "privacy": {
+            "title": "プライバシー",
+            "subtitle": "設定を調整"
+        },
+        "storage": {
+            "title": "ストレージ",
+            "subtitle": "データと空き容量を管理",
+            "modalTitle": "ストレージオプション",
+            "viewSize": "ストレージサイズを表示",
+            "clearCache": "画像キャッシュをクリア",
+            "deleteAll": "すべてのデータを削除",
+            "export": "データをエクスポート",
+            "close": "閉じる"
+        }
+    },
+    "postulacion": {
+        "step1": {
+            "title": "応募プロセスを開始",
+            "subtitle": "環境ボランティアプログラム 2025",
+            "stepTitle": "ステップ1：書類の送信 | その他の要件",
+            "uploadButton": "ファイルをアップロード",
+            "uploading": "アップロード中...",
+            "fileSelected": "ファイルが選択されました",
+            "noName": "名称未設定",
+            "errorSelection": "ファイルを選択できませんでした。",
+            "warning": "警告",
+            "warningMessage": "続行する前にファイルをアップロードしてください。",
+            "nextButton": "次のステップ",
+            "fileLabel": "ファイル："
+        }
+    },
+    "presencialInfo": {
+        "title": "要件と手順",
+        "description": "直接応募するには、IIAP本部に行き、文書受付で書類を提出する必要があります。",
+        "step1": {
+            "title": "1. 書類を準備する",
+            "text": "履歴書と記入済みの登録フォームがあることを確認してください。すべて封印された茶封筒に入っている必要があります。"
+        },
+        "step2": {
+            "title": "2. IIAPに行く",
+            "text": "受付時間内（月曜日から金曜日の午前8時から午後4時まで）に文書受付オフィスに行ってください。"
+        },
+        "step3": {
+            "title": "3. 書類を提出する",
+            "text": "封筒を提出し、受領証を請求してください。この受領証は将来の問い合わせのために保管してください。"
+        },
+        "note": {
+            "title": "重要な注意",
+            "text": "直接の応募は、募集要項で定められた期間内に行われた場合のみ有効であることを忘れないでください。"
+        }
+    }
+}

@@ -1,0 +1,88 @@
+{
+    "login": {
+        "title": "Volunteer Intranet",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Enter your email",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "Enter your password",
+        "loginButton": "Log In",
+        "createAccount": "Create an account",
+        "errorTitle": "Error",
+        "errorMissingFields": "Please complete all fields",
+        "errorLoginFailed": "Could not log in"
+    },
+    "register": {
+        "title": "Volunteer Account",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Enter your email",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "Enter your password",
+        "confirmPasswordLabel": "Confirm Password",
+        "appearance": {
+            "title": "Appearance",
+            "dark": "Dark mode",
+            "light": "Light mode",
+            "enableDark": "Enable dark mode",
+            "disableDark": "Disable dark mode"
+        },
+        "language": {
+            "title": "Language",
+            "subtitle": "Select app language",
+            "modalTitle": "Select Language"
+        },
+        "notifications": {
+            "title": "Notifications",
+            "subtitle": "Customize your alerts"
+        },
+        "privacy": {
+            "title": "Privacy",
+            "subtitle": "Adjust preferences"
+        },
+        "storage": {
+            "title": "Storage",
+            "subtitle": "Manage data and space",
+            "modalTitle": "Storage Options",
+            "viewSize": "View storage size",
+            "clearCache": "Clear image cache",
+            "deleteAll": "Delete all data",
+            "export": "Export my data",
+            "close": "Close"
+        }
+    },
+    "postulacion": {
+        "step1": {
+            "title": "Start your Application Process",
+            "subtitle": "Environmental Volunteer Program 2025",
+            "stepTitle": "Step 1: Document Submission | Other Requirements",
+            "uploadButton": "Upload File",
+            "uploading": "Uploading...",
+            "fileSelected": "File Selected",
+            "noName": "No Name",
+            "errorSelection": "Could not select the file.",
+            "warning": "Warning",
+            "warningMessage": "Please upload a file before continuing.",
+            "nextButton": "Next Step",
+            "fileLabel": "File:"
+        }
+    },
+    "presencialInfo": {
+        "title": "Requirements and Steps",
+        "description": "To apply in person, you must go to the IIAP headquarters and present your documents at the Reception Desk.",
+        "step1": {
+            "title": "1. Prepare your documents",
+            "text": "Make sure you have your documented CV and the registration form filled out correctly. Everything must be in a sealed manila envelope."
+        },
+        "step2": {
+            "title": "2. Go to the IIAP",
+            "text": "Go to the Reception Desk office during business hours (Monday to Friday from 8:00 am to 4:00 pm)."
+        },
+        "step3": {
+            "title": "3. Submit your file",
+            "text": "Submit your envelope and request your receipt. Keep this receipt for any future inquiries."
+        },
+        "note": {
+            "title": "Important Note",
+            "text": "Remember that in-person application is only valid if done within the deadline established in the call."
+        }
+    }
+}

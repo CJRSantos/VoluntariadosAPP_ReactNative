@@ -1,0 +1,88 @@
+{
+    "login": {
+        "title": "Intranet des Bénévoles",
+        "emailLabel": "E-mail",
+        "emailPlaceholder": "Entrez votre e-mail",
+        "passwordLabel": "Mot de passe",
+        "passwordPlaceholder": "Entrez votre mot de passe",
+        "loginButton": "Se connecter",
+        "createAccount": "Créer un compte",
+        "errorTitle": "Erreur",
+        "errorMissingFields": "Veuillez remplir tous les champs",
+        "errorLoginFailed": "Impossible de se connecter"
+    },
+    "register": {
+        "title": "Compte Bénévole",
+        "emailLabel": "E-mail",
+        "emailPlaceholder": "Entrez votre e-mail",
+        "passwordLabel": "Mot de passe",
+        "passwordPlaceholder": "Entrez votre mot de passe",
+        "confirmPasswordLabel": "Confirmer le mot de passe",
+        "appearance": {
+            "title": "Apparence",
+            "dark": "Mode sombre",
+            "light": "Mode clair",
+            "enableDark": "Activer le mode sombre",
+            "disableDark": "Désactiver le mode sombre"
+        },
+        "language": {
+            "title": "Langue",
+            "subtitle": "Sélectionner la langue de l'application",
+            "modalTitle": "Choisir la langue"
+        },
+        "notifications": {
+            "title": "Notifications",
+            "subtitle": "Personnaliser vos alertes"
+        },
+        "privacy": {
+            "title": "Confidentialité",
+            "subtitle": "Ajuster les préférences"
+        },
+        "storage": {
+            "title": "Stockage",
+            "subtitle": "Gérer les données et l'espace",
+            "modalTitle": "Options de stockage",
+            "viewSize": "Voir la taille du stockage",
+            "clearCache": "Vider le cache des images",
+            "deleteAll": "Supprimer toutes les données",
+            "export": "Exporter mes données",
+            "close": "Fermer"
+        }
+    },
+    "postulacion": {
+        "step1": {
+            "title": "Commencez votre processus de candidature",
+            "subtitle": "Programme de Bénévolat Environnemental 2025",
+            "stepTitle": "Étape 1 : Envoi de documents | Autres exigences",
+            "uploadButton": "Envoyer le fichier",
+            "uploading": "Envoi en cours...",
+            "fileSelected": "Fichier sélectionné",
+            "noName": "Sans nom",
+            "errorSelection": "Impossible de sélectionner le fichier.",
+            "warning": "Avertissement",
+            "warningMessage": "Veuillez envoyer un fichier avant de continuer.",
+            "nextButton": "Étape suivante",
+            "fileLabel": "Fichier :"
+        }
+    },
+    "presencialInfo": {
+        "title": "Exigences et Étapes",
+        "description": "Pour postuler en personne, vous devez vous rendre au siège de l'IIAP et présenter vos documents au Bureau des Parties.",
+        "step1": {
+            "title": "1. Préparez vos documents",
+            "text": "Assurez-vous d'avoir votre CV documenté et le formulaire d'inscription correctement rempli. Tout doit être dans une enveloppe manille fermée."
+        },
+        "step2": {
+            "title": "2. Rendez-vous à l'IIAP",
+            "text": "Rendez-vous au bureau du Bureau des Parties pendant les heures d'ouverture (du lundi au vendredi de 8h00 à 16h00)."
+        },
+        "step3": {
+            "title": "3. Remettez votre dossier",
+            "text": "Remettez votre enveloppe et demandez votre accusé de réception. Conservez cet accusé pour toute consultation ultérieure."
+        },
+        "note": {
+            "title": "Note Importante",
+            "text": "N'oubliez pas que la candidature en personne n'est valable que si elle est effectuée dans le délai établi dans l'appel à candidatures."
+        }
+    }
+}

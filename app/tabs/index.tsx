@@ -1,5 +1,6 @@
 // app/(tabs)/index.tsx
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Image,
     ScrollView,
@@ -10,6 +11,7 @@ import {
 } from 'react-native';
 
 export default function HomeScreen() {
+    const { t } = useTranslation();
     return (
         <ScrollView style={styles.container}>
             {/* Banner superior */}
@@ -19,14 +21,14 @@ export default function HomeScreen() {
                     style={styles.bannerImage}
                     resizeMode="cover"
                 />
-                <Text style={styles.bannerTitle}>volunteer account</Text>
+                <Text style={styles.bannerTitle}>{t('account.headerTitle')}</Text>
                 <TouchableOpacity style={styles.bannerButton}>
-                    <Text style={styles.bannerButtonText}>Conocer más</Text>
+                    <Text style={styles.bannerButtonText}>{t('account.banner.button')}</Text>
                 </TouchableOpacity>
             </View>
 
             {/* Últimas noticias */}
-            <Text style={styles.sectionTitle}>Últimas noticias</Text>
+            <Text style={styles.sectionTitle}>{t('account.news.sectionTitle')}</Text>
             <View style={styles.newsContainer}>
                 <View style={styles.newsCard}>
                     <Image
@@ -34,14 +36,14 @@ export default function HomeScreen() {
                         style={styles.newsImage}
                     />
                     <Text style={styles.newsDate}>12/10/2025, Hr: 00:00</Text>
-                    <Text style={styles.newsTitle}>Monitoreo de carbono en bosques amazónicos</Text>
-                    <Text style={styles.newsDetails}>Líneas temáticas: Monitoreo de carbono, Servicios ecosistémicos, Cambio climático</Text>
+                    <Text style={styles.newsTitle}>{t('account.news.items.1.title')}</Text>
+                    <Text style={styles.newsDetails}>{t('account.news.items.1.details')}</Text>
                     <View style={styles.newsButtons}>
                         <TouchableOpacity style={styles.newsButtonOpen}>
-                            <Text style={styles.newsButtonOpenText}>Abierto</Text>
+                            <Text style={styles.newsButtonOpenText}>{t('account.news.status.open')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.newsButtonPostulate}>
-                            <Text style={styles.newsButtonPostulateText}>Postular</Text>
+                            <Text style={styles.newsButtonPostulateText}>{t('account.news.apply')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -52,18 +54,18 @@ export default function HomeScreen() {
                         style={styles.newsImage}
                     />
                     <Text style={styles.newsDate}>12/11/20, Hr: 11:59</Text>
-                    <Text style={styles.newsTitle}>Monitoreo de carbono en bosques amazónicos</Text>
-                    <Text style={styles.newsDetails}>Líneas temáticas: Monitoreo de carbono, Servicios ecosistémicos, Cambio climático</Text>
+                    <Text style={styles.newsTitle}>{t('account.news.items.1.title')}</Text>
+                    <Text style={styles.newsDetails}>{t('account.news.items.1.details')}</Text>
                     <View style={styles.newsButtons}>
                         <TouchableOpacity style={styles.newsButtonClosed}>
-                            <Text style={styles.newsButtonClosedText}>Cerrado</Text>
+                            <Text style={styles.newsButtonClosedText}>{t('account.news.status.closed')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
 
             {/* Guías y Tutoriales */}
-            <Text style={styles.sectionTitle}>Guías y Tutoriales</Text>
+            <Text style={styles.sectionTitle}>{t('account.tutorials.title')}</Text>
             <View style={styles.tutorialsContainer}>
                 <Image
                     source={{ uri: 'https://via.placeholder.com/150x100?text=Guía+1' }}

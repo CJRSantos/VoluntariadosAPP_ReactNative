@@ -1,25 +1,28 @@
 // src/components/InstitutionsInput.tsx
 import { useTheme } from '@/app/providers/ThemeProvider';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import institutions from '../src/constants/Institutions.json'; // Asegura la ruta correcta
 
 type InstitutionsInputProps = {
     value: string;
-    onChangeText: (text: string) => void;
+    onValueChange: (text: string) => void;
     placeholder?: string;
 };
 
-const InstitutionsInput = ({ value, onChangeText, placeholder = "Buscar institución..." }: InstitutionsInputProps) => {
+const InstitutionsInput = ({ value, onValueChange, placeholder }: InstitutionsInputProps) => {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
+    const { t } = useTranslation();
+    const actualPlaceholder = placeholder || t('common.searchInstitution');
 
     const [query, setQuery] = useState(value);
     const [filtered, setFiltered] = useState<string[]>([]);
 
     const handleChange = (text: string) => {
         setQuery(text);
-        onChangeText(text);
+        onValueChange(text);
 
         if (text.trim()) {
             const matches = institutions
@@ -33,7 +36,7 @@ const InstitutionsInput = ({ value, onChangeText, placeholder = "Buscar instituc
 
     const selectInstitution = (institution: string) => {
         setQuery(institution);
-        onChangeText(institution);
+        onValueChange(institution);
         setFiltered([]);
     };
 
@@ -47,7 +50,7 @@ const InstitutionsInput = ({ value, onChangeText, placeholder = "Buscar instituc
                 }]}
                 value={query}
                 onChangeText={handleChange}
-                placeholder={placeholder}
+                placeholder={actualPlaceholder}
                 placeholderTextColor={isDark ? '#999' : '#777'}
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -57,7 +60,7 @@ const InstitutionsInput = ({ value, onChangeText, placeholder = "Buscar instituc
                 <View style={styles.list}>
                     {filtered.map((item, index) => (
                         <TouchableOpacity
-                            key={`${item}-${index}`} // 👈 Clave única
+                            key={`${item}-${index}`}
                             style={[styles.item, { backgroundColor: isDark ? '#222' : '#fff' }]}
                             onPress={() => selectInstitution(item)}
                         >
@@ -85,7 +88,7 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 8,
         borderBottomRightRadius: 8,
         marginTop: -8,
-        backgroundColor: 'white', // 👈 Añadido para evitar fondo transparente
+        backgroundColor: 'white',
     },
     item: {
         padding: 12,

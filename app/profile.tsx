@@ -1,4 +1,3 @@
-// app/profile.tsx
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -6,6 +5,7 @@ import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Alert,
     Image,
@@ -13,37 +13,39 @@ import {
     Modal,
     Platform,
     ScrollView,
-    SectionList, // 👈 Importado
+    SectionList,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
     View,
 } from 'react-native';
-import ImageViewer from 'react-native-image-zoom-viewer'; // 👈 Importado
+import ImageViewer from 'react-native-image-zoom-viewer';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
-import CountryInput from '../components/CountryInput'; // ✅ Ruta correcta
-import InstitutionsInput from '../components/InstitutionsInput'; // ✅ Agrega esta línea
-// --- Nuevo: Definir la interfaz para las secciones ---
+import CountryInput from '../components/CountryInput';
+import InstitutionsInput from '../components/InstitutionsInput';
+
 interface Section {
     title: string;
     data: any[];
     key: string;
-    // La propiedad 'component' es opcional, ya que solo la usamos en ciertas secciones.
-    component?: (item: any) => React.ReactNode;
+    component: (item: any) => React.ReactElement | null;
 }
+
 export default function ProfileScreen() {
     const router = useRouter();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
+    const { t } = useTranslation();
+
     // Imágenes
     const [bannerImage, setBannerImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
-    // Estados para los modales de zoom
     const [isBannerZoomVisible, setIsBannerZoomVisible] = useState(false);
     const [isProfileZoomVisible, setIsProfileZoomVisible] = useState(false);
-    // Estados para los modales
+
+    // Modales
     const [showPersonalInfoForm, setShowPersonalInfoForm] = useState(false);
     const [showAcademicModal, setShowAcademicModal] = useState(false);
     const [showTechnicalModal, setShowTechnicalModal] = useState(false);
@@ -53,47 +55,32 @@ export default function ProfileScreen() {
     const [showPublicationModal, setShowPublicationModal] = useState(false);
     const [showLanguageModal, setShowLanguageModal] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
-    // Estado para el picker de idiomas
     const [showLanguagePicker, setShowLanguagePicker] = useState(false);
-    // Estados para los formularios
-    const [documentType, setDocumentType] = useState('');
-    const [gender, setGender] = useState('');
-    const [languageProficiency, setLanguageProficiency] = useState('');
-    const [currentlyInRole, setCurrentlyInRole] = useState(false);
-    const [academicStatus, setAcademicStatus] = useState<string>('Actualmente');
-    // Pestañas
-    const [activeTab, setActiveTab] = useState<'info' | 'formacion' | 'experiencia' | 'adicional'>('info');
-    // Menús
-    const [bannerMenuVisible, setBannerMenuVisible] = useState(false);
-    const [profileMenuVisible, setProfileMenuVisible] = useState(false);
-    // === Estados para los datos (CRUD) ===
-    const [personalInfo, setPersonalInfo] = useState<any>(null);
-    const [academicRecords, setAcademicRecords] = useState<any[]>([]);
-    const [technicalRecords, setTechnicalRecords] = useState<any[]>([]);
-    const [complementaryRecords, setComplementaryRecords] = useState<any[]>([]);
-    const [experienceRecords, setExperienceRecords] = useState<any[]>([]);
-    const [volunteerRecords, setVolunteerRecords] = useState<any[]>([]);
-    const [publicationRecords, setPublicationRecords] = useState<any[]>([]);
-    const [languageRecords, setLanguageRecords] = useState<any[]>([]);
-    // === Estados de edición ===
-    const [editingPersonal, setEditingPersonal] = useState<any>(null);
-    const [editingAcademic, setEditingAcademic] = useState<any>(null);
-    const [editingTechnical, setEditingTechnical] = useState<any>(null);
-    const [editingComplementary, setEditingComplementary] = useState<any>(null);
-    const [editingExperience, setEditingExperience] = useState<any>(null);
-    const [editingVolunteer, setEditingVolunteer] = useState<any>(null);
-    const [editingPublication, setEditingPublication] = useState<any>(null);
-    const [editingLanguage, setEditingLanguage] = useState<any>(null);
-    // === Estados de los inputs ===
+
+    // Date Pickers
+    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+    const [showPubDatePicker, setShowPubDatePicker] = useState(false);
+    const [showAcademicStartDatePicker, setShowAcademicStartDatePicker] = useState(false);
+    const [showAcademicEndDatePicker, setShowAcademicEndDatePicker] = useState(false);
+    const [showTechnicalEndDatePicker, setShowTechnicalEndDatePicker] = useState(false);
+    const [showComplementaryDatePicker, setShowComplementaryDatePicker] = useState(false);
+    const [showExperienceStartDatePicker, setShowExperienceStartDatePicker] = useState(false);
+    const [showExperienceEndDatePicker, setShowExperienceEndDatePicker] = useState(false);
+
+    // Inputs
     const [nameInput, setNameInput] = useState('');
     const [birthDateInput, setBirthDateInput] = useState('');
     const [phoneInput, setPhoneInput] = useState('');
+    const [documentType, setDocumentType] = useState('');
     const [documentNumberInput, setDocumentNumberInput] = useState('');
+    const [gender, setGender] = useState('');
     const [degreeInput, setDegreeInput] = useState('');
     const [institutionInput, setInstitutionInput] = useState('');
-    const [countryInput, setCountryInput] = useState(''); // Este estado se usa para todos los campos de país
+    const [countryInput, setCountryInput] = useState('');
     const [startDateInput, setStartDateInput] = useState('');
     const [endDateInput, setEndDateInput] = useState('');
+    const [academicStatus, setAcademicStatus] = useState<string>('Actualmente');
     const [courseInput, setCourseInput] = useState('');
     const [platformInput, setPlatformInput] = useState('');
     const [durationInput, setDurationInput] = useState('');
@@ -105,6 +92,7 @@ export default function ProfileScreen() {
     const [orgInput, setOrgInput] = useState('');
     const [roleInput, setRoleInput] = useState('');
     const [causeInput, setCauseInput] = useState('');
+    const [currentlyInRole, setCurrentlyInRole] = useState(false);
     const [pubTitleInput, setPubTitleInput] = useState('');
     const [pubEditorialInput, setPubEditorialInput] = useState('');
     const [pubAuthorInput, setPubAuthorInput] = useState('');
@@ -112,17 +100,34 @@ export default function ProfileScreen() {
     const [pubUrlInput, setPubUrlInput] = useState('');
     const [pubAbstractInput, setPubAbstractInput] = useState('');
     const [languageInput, setLanguageInput] = useState('');
-    // === Estados para los date pickers ===
-    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-    const [showPubDatePicker, setShowPubDatePicker] = useState(false);
-    const [showAcademicStartDatePicker, setShowAcademicStartDatePicker] = useState(false);
-    const [showAcademicEndDatePicker, setShowAcademicEndDatePicker] = useState(false);
-    const [showTechnicalEndDatePicker, setShowTechnicalEndDatePicker] = useState(false);
-    const [showComplementaryDatePicker, setShowComplementaryDatePicker] = useState(false);
-    const [showExperienceStartDatePicker, setShowExperienceStartDatePicker] = useState(false);
-    const [showExperienceEndDatePicker, setShowExperienceEndDatePicker] = useState(false);
-    // Cargar datos guardados
+    const [languageProficiency, setLanguageProficiency] = useState('');
+
+    // Tabs & Menus
+    const [activeTab, setActiveTab] = useState<'info' | 'formacion' | 'experiencia' | 'adicional'>('info');
+    const [bannerMenuVisible, setBannerMenuVisible] = useState(false);
+    const [profileMenuVisible, setProfileMenuVisible] = useState(false);
+
+    // Data
+    const [personalInfo, setPersonalInfo] = useState<any>(null);
+    const [academicRecords, setAcademicRecords] = useState<any[]>([]);
+    const [technicalRecords, setTechnicalRecords] = useState<any[]>([]);
+    const [complementaryRecords, setComplementaryRecords] = useState<any[]>([]);
+    const [experienceRecords, setExperienceRecords] = useState<any[]>([]);
+    const [volunteerRecords, setVolunteerRecords] = useState<any[]>([]);
+    const [publicationRecords, setPublicationRecords] = useState<any[]>([]);
+    const [languageRecords, setLanguageRecords] = useState<any[]>([]);
+    const [sectionsData, setSectionsData] = useState<any[]>([]);
+
+    // Editing
+    const [editingPersonal, setEditingPersonal] = useState<any>(null);
+    const [editingAcademic, setEditingAcademic] = useState<any>(null);
+    const [editingTechnical, setEditingTechnical] = useState<any>(null);
+    const [editingComplementary, setEditingComplementary] = useState<any>(null);
+    const [editingExperience, setEditingExperience] = useState<any>(null);
+    const [editingVolunteer, setEditingVolunteer] = useState<any>(null);
+    const [editingPublication, setEditingPublication] = useState<any>(null);
+    const [editingLanguage, setEditingLanguage] = useState<any>(null);
+
     useEffect(() => {
         const loadAllData = async () => {
             try {
@@ -152,10 +157,11 @@ export default function ProfileScreen() {
         };
         loadAllData();
     }, []);
+
     const handleSettings = () => {
         router.push('/settings');
     };
-    // === Funciones CRUD genéricas ===
+
     const saveToStorage = async (key: string, data: any) => {
         try {
             await AsyncStorage.setItem(key, JSON.stringify(data));
@@ -163,22 +169,25 @@ export default function ProfileScreen() {
             console.log('Error guardando', key, e);
         }
     };
+
     const addRecord = (records: any[], setRecords: any, newRecord: any, key: string) => {
         const updated = [...records, { ...newRecord, id: Date.now().toString() }];
         setRecords(updated);
         saveToStorage(key, updated);
     };
+
     const updateRecord = (records: any[], setRecords: any, updatedRecord: any, key: string) => {
         const updated = records.map(r => r.id === updatedRecord.id ? updatedRecord : r);
         setRecords(updated);
         saveToStorage(key, updated);
     };
+
     const deleteRecord = (records: any[], setRecords: any, id: string, key: string) => {
         const updated = records.filter(r => r.id !== id);
         setRecords(updated);
         saveToStorage(key, updated);
     };
-    // === Funciones para imágenes ===
+
     const pickImage = async (type: 'banner' | 'profile') => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -197,6 +206,7 @@ export default function ProfileScreen() {
             }
         }
     };
+
     const takePhoto = async (type: 'banner' | 'profile') => {
         let result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -215,7 +225,7 @@ export default function ProfileScreen() {
             }
         }
     };
-    // === Funciones para la portada ===
+
     const showBannerMenu = () => setBannerMenuVisible(true);
     const closeBannerMenu = () => setBannerMenuVisible(false);
     const viewBannerImage = () => {
@@ -232,7 +242,7 @@ export default function ProfileScreen() {
         takePhoto('banner');
         closeBannerMenu();
     };
-    // === Funciones para el perfil ===
+
     const showProfileMenu = () => setProfileMenuVisible(true);
     const closeProfileMenu = () => setProfileMenuVisible(false);
     const viewProfileImage = () => {
@@ -249,7 +259,7 @@ export default function ProfileScreen() {
         takePhoto('profile');
         closeProfileMenu();
     };
-    // === Manejo de modales ===
+
     const openPersonalModal = () => {
         if (personalInfo) {
             setNameInput(personalInfo.name || '');
@@ -269,11 +279,12 @@ export default function ProfileScreen() {
         setEditingPersonal(personalInfo);
         setShowPersonalInfoForm(true);
     };
+
     const openAcademicModal = (record: any = null) => {
         if (record) {
             setDegreeInput(record.degree || '');
             setInstitutionInput(record.institution || '');
-            setCountryInput(record.country || ''); // Usamos el estado común para país
+            setCountryInput(record.country || '');
             setStartDateInput(record.startDate || '');
             setEndDateInput(record.endDate || '');
             setAcademicStatus(record.status || 'Actualmente');
@@ -289,6 +300,7 @@ export default function ProfileScreen() {
         }
         setShowAcademicModal(true);
     };
+
     const openTechnicalModal = (record: any = null) => {
         if (record) {
             setCourseInput(record.course || '');
@@ -305,6 +317,7 @@ export default function ProfileScreen() {
         }
         setShowTechnicalModal(true);
     };
+
     const openComplementaryModal = (record: any = null) => {
         if (record) {
             setActivityInput(record.activity || '');
@@ -319,12 +332,13 @@ export default function ProfileScreen() {
         }
         setShowComplementaryModal(true);
     };
+
     const openExperienceModal = (record: any = null) => {
         if (record) {
             setPositionInput(record.position || '');
             setInstitutionInput(record.institution || '');
             setAreaInput(record.area || '');
-            setCountryInput(record.country || ''); // Usamos el estado común para país
+            setCountryInput(record.country || '');
             setStartDateInput(record.startDate || '');
             setEndDateInput(record.endDate || '');
             setEditingExperience(record);
@@ -339,6 +353,7 @@ export default function ProfileScreen() {
         }
         setShowExperienceModal(true);
     };
+
     const openVolunteerModal = (record: any = null) => {
         if (record) {
             setOrgInput(record.organization || '');
@@ -361,6 +376,7 @@ export default function ProfileScreen() {
         }
         setShowVolunteerModal(true);
     };
+
     const openPublicationModal = (record: any = null) => {
         if (record) {
             setPubTitleInput(record.title || '');
@@ -381,6 +397,7 @@ export default function ProfileScreen() {
         }
         setShowPublicationModal(true);
     };
+
     const openLanguageModal = (record: any = null) => {
         if (record) {
             setLanguageInput(record.language || '');
@@ -393,411 +410,181 @@ export default function ProfileScreen() {
         }
         setShowLanguageModal(true);
     };
-    // === Validación de campos ===
+
     const validatePersonalFields = () => {
-        if (!nameInput.trim()) return 'Nombre y Apellido';
-        if (!birthDateInput.trim()) return 'Fecha de Nacimiento';
-        if (!phoneInput.trim()) return 'Celular N°';
-        if (!documentType) return 'Tipo de documento';
-        if (!documentNumberInput.trim()) return 'Número de Documento';
-        if (!gender) return 'Género';
+        if (!nameInput.trim()) return t('profile.nameLabel');
+        if (!birthDateInput.trim()) return t('profile.birthDateLabel');
+        if (!phoneInput.trim()) return t('profile.phoneLabel');
+        if (!documentType) return t('profile.documentTypeLabel');
+        if (!documentNumberInput.trim()) return t('profile.documentNumberLabel');
+        if (!gender) return t('profile.genderLabel');
         return null;
     };
+
     const validateAcademicFields = () => {
-        if (!degreeInput.trim()) return 'Grado';
-        if (!institutionInput.trim()) return 'Institución';
-        if (!countryInput.trim()) return 'País'; // Validamos el estado común
-        if (!startDateInput.trim()) return 'Año de inicio';
-        if (!endDateInput.trim()) return 'Año de fin';
-        if (!academicStatus) return 'Estado';
+        if (!degreeInput.trim()) return t('profile.degreeLabel');
+        if (!institutionInput.trim()) return t('profile.institutionLabel');
+        if (!countryInput.trim()) return t('profile.countryLabel');
+        if (!startDateInput.trim()) return t('profile.startDateLabel');
+        if (!endDateInput.trim()) return t('profile.endDateLabel');
+        if (!academicStatus) return t('profile.statusLabel');
         return null;
     };
+
     const validateTechnicalFields = () => {
-        if (!courseInput.trim()) return 'Curso';
-        if (!platformInput.trim()) return 'Plataforma';
-        if (!durationInput.trim()) return 'Duración';
-        if (!endDateInput.trim()) return 'Año de finalización';
+        if (!courseInput.trim()) return t('profile.courseLabel');
+        if (!platformInput.trim()) return t('profile.platformLabel');
+        if (!durationInput.trim()) return t('profile.durationLabel');
+        if (!endDateInput.trim()) return t('profile.endDateLabel');
         return null;
     };
+
     const validateComplementaryFields = () => {
-        if (!activityInput.trim()) return 'Actividad';
-        if (!descriptionInput.trim()) return 'Descripción';
-        if (!dateInput.trim()) return 'Fecha';
+        if (!activityInput.trim()) return t('profile.activityLabel');
+        if (!descriptionInput.trim()) return t('profile.descriptionLabel');
+        if (!dateInput.trim()) return t('profile.dateLabel');
         return null;
     };
+
     const validateExperienceFields = () => {
-        if (!positionInput.trim()) return 'Cargo';
-        if (!institutionInput.trim()) return 'Institución';
-        if (!areaInput.trim()) return 'Área';
-        if (!countryInput.trim()) return 'País'; // Validamos el estado común
-        if (!startDateInput.trim()) return 'Año de inicio';
-        if (!endDateInput.trim()) return 'Año de fin';
+        if (!positionInput.trim()) return t('profile.positionLabel');
+        if (!institutionInput.trim()) return t('profile.institutionLabel');
+        if (!areaInput.trim()) return t('profile.areaLabel');
+        if (!countryInput.trim()) return t('profile.countryLabel');
+        if (!startDateInput.trim()) return t('profile.startDateLabel');
+        if (!endDateInput.trim()) return t('profile.endDateLabel');
         return null;
     };
+
     const validateVolunteerFields = () => {
-        if (!orgInput.trim()) return 'Organización';
-        if (!roleInput.trim()) return 'Rol';
-        if (!causeInput.trim()) return 'Causa';
-        if (!startDateInput.trim()) return 'Año de inicio';
-        if (!endDateInput.trim()) return 'Año de fin';
+        if (!orgInput.trim()) return t('profile.organizationLabel');
+        if (!roleInput.trim()) return t('profile.roleLabel');
+        if (!causeInput.trim()) return t('profile.causeLabel');
+        if (!startDateInput.trim()) return t('profile.startDateLabel');
+        if (!endDateInput.trim()) return t('profile.endDateLabel');
         return null;
     };
+
     const validatePublicationFields = () => {
-        if (!pubTitleInput.trim()) return 'Título';
-        if (!pubEditorialInput.trim()) return 'Editorial';
-        if (!pubAuthorInput.trim()) return 'Autor(es)';
-        if (!pubDateInput.trim()) return 'Fecha';
+        if (!pubTitleInput.trim()) return t('profile.titleLabel');
+        if (!pubEditorialInput.trim()) return t('profile.editorialLabel');
+        if (!pubAuthorInput.trim()) return t('profile.authorLabel');
+        if (!pubDateInput.trim()) return t('profile.dateLabel');
         return null;
     };
+
     const validateLanguageFields = () => {
-        if (!languageInput.trim()) return 'Idioma';
-        if (!languageProficiency) return 'Nivel de dominio';
+        if (!languageInput.trim()) return t('profile.languageLabel');
+        if (!languageProficiency) return t('profile.proficiencyLabel');
         return null;
     };
+
     const showAlertIfMissingFields = (missingField: string | null) => {
         if (missingField) {
-            Alert.alert('Campos incompletos', `Por favor, complete el campo: ${missingField}`);
+            Alert.alert(t('profile.incompleteFieldsTitle'), `${t('profile.incompleteFieldsMessage')}: ${missingField}`);
             return true;
         }
         return false;
     };
-    // --- Nuevo: Función para renderizar items específicos ---
-    const renderSpecificItem = ({ section, item }: { section: any, item: any }) => {
-        if (section.key === 'info') {
-            return (
-                <View style={[styles.recordItem, { backgroundColor: isDark ? '#222' : '#f9f9f9' }]}>
-                    <Text style={{ color: isDark ? '#FFF' : '#333' }}>{item.name}</Text>
-                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>F.n: {item.birthDate}</Text>
-                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>Celular: {item.phone}</Text>
-                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>
-                        {item.documentType === 'dni'
-                            ? `DNI: ${item.documentNumber}`
-                            : item.documentType === 'carnet de extranjeria'
-                                ? `Carnet de Extranjería: ${item.documentNumber}`
-                                : 'Tipo de documento no especificado'}
-                    </Text>
-                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>Género: {item.gender}</Text>
-                    <View style={styles.editDeleteContainer}>
-                        <TouchableOpacity
-                            style={styles.editButton}
-                            onPress={() => openPersonalModal()}
-                        >
-                            <Ionicons name="pencil" size={20} color="#10b981" />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.deleteButton}
-                            onPress={() => {
-                                Alert.alert('Confirmar', '¿Eliminar información personal?', [
-                                    { text: 'Cancelar', style: 'cancel' },
-                                    {
-                                        text: 'Eliminar', style: 'destructive', onPress: () => {
-                                            setPersonalInfo(null);
-                                            AsyncStorage.removeItem('personalInfo');
-                                        }
-                                    }
-                                ]);
-                            }}
-                        >
-                            <Ionicons name="trash" size={20} color="#e74c3c" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            );
+
+    const renderSpecificItem = ({ section, item }: { section: Section; item: any }): React.ReactElement | null => {
+        // Asegúrate de que section.component exista y sea una función.
+        if (section.component && typeof section.component === 'function') {
+            const rendered = section.component(item);
+            // Siempre devuelve un elemento válido o null.
+            return rendered as React.ReactElement | null;
         }
-        // Para otras secciones, el item ya es un record individual
-        return section.component(item);
+        // Si no hay componente, devuelve null para cumplir con el tipo esperado.
+        return null;
     };
-    // --- Fin Nuevo ---
-    // --- Nuevo: Datos para SectionList ---
-    const [sectionsData, setSectionsData] = useState<any[]>([]);
-    // --- Nuevo: Definir la interfaz para las secciones ---
-    interface Section {
-        title: string;
-        data: any[];
-        key: string;
-        // La propiedad 'component' es opcional, ya que solo la usamos en ciertas secciones.
-        component?: (item: any) => React.ReactNode;
-    }
-    // --- Fin Nuevo ---
-    // ... (resto del código)
-    // --- Corrección en el useEffect ---
+
     useEffect(() => {
-        let sections: Section[] = []; // 👈 Aquí se define el tipo explícito
+        let sections: Section[] = [];
         if (activeTab === 'info') {
             sections = [
                 {
-                    title: 'Información Personal',
-                    data: personalInfo ? [personalInfo] : [], // Sección con un solo ítem o vacía
+                    title: t('profile.personalInfo'),
+                    data: personalInfo ? [personalInfo] : [],
                     key: 'info',
                     component: (item: any) => (
-                        <View style={styles.section}>
-                            <View style={styles.sectionHeader}>
-                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Información Personal</Text>
-                                <TouchableOpacity style={styles.addIconContainer} onPress={openPersonalModal}>
-                                    <Ionicons name="add" size={24} color="#10b981" />
-                                </TouchableOpacity>
-                            </View>
-                            {item ? (
-                                <View style={[styles.recordItem, { backgroundColor: isDark ? '#222' : '#f9f9f9' }]}>
-                                    <Text style={{ color: isDark ? '#FFF' : '#333' }}>{item.name}</Text>
-                                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>F.n: {item.birthDate}</Text>
-                                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>Celular: {item.phone}</Text>
-                                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>
-                                        {item.documentType === 'dni'
-                                            ? `DNI: ${item.documentNumber}`
-                                            : item.documentType === 'carnet de extranjeria'
-                                                ? `Carnet de Extranjería: ${item.documentNumber}`
-                                                : 'Tipo de documento no especificado'}
-                                    </Text>
-                                    <Text style={{ color: isDark ? '#AAA' : '#666' }}>Género: {item.gender}</Text>
-                                    <View style={styles.editDeleteContainer}>
-                                        <TouchableOpacity
-                                            style={styles.editButton}
-                                            onPress={() => openPersonalModal()}
-                                        >
-                                            <Ionicons name="pencil" size={20} color="#10b981" />
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={styles.deleteButton}
-                                            onPress={() => {
-                                                Alert.alert('Confirmar', '¿Eliminar información personal?', [
-                                                    { text: 'Cancelar', style: 'cancel' },
-                                                    {
-                                                        text: 'Eliminar', style: 'destructive', onPress: () => {
-                                                            setPersonalInfo(null);
-                                                            AsyncStorage.removeItem('personalInfo');
-                                                        }
-                                                    }
-                                                ]);
-                                            }}
-                                        >
-                                            <Ionicons name="trash" size={20} color="#e74c3c" />
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            ) : (
-                                <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
-                            )}
+                        <View style={styles.userInfo}>
+                            <Text style={[styles.userName, { color: isDark ? '#FFF' : '#333' }]}>{item.name}</Text>
+                            <Text style={[styles.userEmail, { color: isDark ? '#AAA' : '#666' }]}>{item.phone}</Text>
+                            <TouchableOpacity style={styles.editButtonCircle} onPress={openPersonalModal}>
+                                <Ionicons name="pencil" size={18} color="#10b981" />
+                            </TouchableOpacity>
                         </View>
-                    )
-                }
+                    ),
+                },
             ];
         } else if (activeTab === 'formacion') {
             sections = [
                 {
-                    title: 'Información académica',
+                    title: t('profile.academicInfo'),
                     data: academicRecords,
                     key: 'academic',
-                    component: (record: any) => (
-                        <View key={record.id} style={[styles.academicCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                            <View style={styles.iconContainer}>
-                                <Ionicons name="school" size={24} color="#10b981" />
-                            </View>
-                            <View style={styles.cardContent}>
-                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.degree}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Institución: {record.institution}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Carrera: {record.institution}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Tiempo: {record.startDate} - {record.endDate || 'Actualmente'}</Text>
-                                <View style={styles.statusContainer}>
-                                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>Estado:</Text>
-                                    <View style={[styles.statusBadge, { backgroundColor: record.status === 'Graduado' ? '#10b981' : record.status === 'Titulado' ? '#3b82f6' : '#f59e0b' }]}>
-                                        <Text style={styles.statusBadgeText}>{record.status}</Text>
-                                    </View>
-                                </View>
-                            </View>
-                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openAcademicModal(record)}>
-                                <Ionicons name="pencil" size={18} color="#10b981" />
-                            </TouchableOpacity>
-                        </View>
-                    )
+                    component: renderAcademicItem,
                 },
                 {
-                    title: 'Formación técnica / especializada',
+                    title: t('profile.technicalInfo'),
                     data: technicalRecords,
                     key: 'technical',
-                    component: (record: any) => (
-                        <View key={record.id} style={[styles.technicalCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                            <View style={styles.iconContainer}>
-                                <Ionicons name="construct" size={24} color="#10b981" />
-                            </View>
-                            <View style={styles.cardContent}>
-                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.course}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Plataforma: {record.platform}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Duración: {record.duration}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Finalizado: {record.endDate}</Text>
-                            </View>
-                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openTechnicalModal(record)}>
-                                <Ionicons name="pencil" size={18} color="#10b981" />
-                            </TouchableOpacity>
-                        </View>
-                    )
+                    component: renderTechnicalItem,
                 },
                 {
-                    title: 'Formación Complementaria',
+                    title: t('profile.complementaryInfo'),
                     data: complementaryRecords,
                     key: 'complementary',
-                    component: (record: any) => (
-                        <View key={record.id} style={[styles.complementaryCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                            <View style={styles.iconContainer}>
-                                <Ionicons name="newspaper" size={24} color="#10b981" />
-                            </View>
-                            <View style={styles.cardContent}>
-                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.activity}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Descripción: {record.description}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Fecha: {record.date}</Text>
-                            </View>
-                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openComplementaryModal(record)}>
-                                <Ionicons name="pencil" size={18} color="#10b981" />
-                            </TouchableOpacity>
-                        </View>
-                    )
-                }
+                    component: renderComplementaryItem,
+                },
             ];
         } else if (activeTab === 'experiencia') {
             sections = [
                 {
-                    title: 'Experiencia Laboral',
+                    title: t('profile.experienceInfo'),
                     data: experienceRecords,
                     key: 'experience',
-                    component: (record: any) => (
-                        <View key={record.id} style={[styles.experienceCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                            <View style={styles.iconContainer}>
-                                <Ionicons name="briefcase" size={24} color="#10b981" />
-                            </View>
-                            <View style={styles.cardContent}>
-                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.position} - {record.institution}</Text>
-                                <View style={styles.experienceDetails}>
-                                    <View style={styles.detailRow}>
-                                        <View style={styles.detailRow}>
-                                            <Ionicons name="person" size={18} color="#10b981" />
-                                            <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Puesto:</Text>
-                                        </View>
-                                        <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>{record.area || 'No especificado'}</Text>
-                                        <View style={styles.detailRow}>
-                                            <Ionicons name="list" size={18} color="#10b981" />
-                                            <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Funciones:</Text>
-                                        </View>
-                                        <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>
-                                            {record.description || 'No especificadas'}
-                                        </Text>
-                                        <View style={styles.dateRow}>
-                                            <View style={styles.dateContainer}>
-                                                <Ionicons name="play-circle" size={16} color="#10b981" />
-                                                <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Inicio:</Text>
-                                                <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
-                                                    {record.startDate}
-                                                </Text>
-                                            </View>
-                                            <View style={styles.dateContainer}>
-                                                <Ionicons name="stop-circle" size={16} color="#3b82f6" />
-                                                <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Final:</Text>
-                                                <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
-                                                    {record.endDate || 'Actualmente'}
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openExperienceModal(record)}>
-                                <Ionicons name="pencil" size={18} color="#10b981" />
-                            </TouchableOpacity>
-                        </View>
-                    )
-                }
+                    component: renderExperienceItem,
+                },
+                {
+                    title: t('profile.volunteerInfo'),
+                    data: volunteerRecords,
+                    key: 'volunteer',
+                    component: renderVolunteerItem,
+                },
+                {
+                    title: t('profile.publicationsInfo'),
+                    data: publicationRecords,
+                    key: 'publication',
+                    component: renderPublicationItem,
+                },
             ];
         } else if (activeTab === 'adicional') {
             sections = [
                 {
-                    title: 'Voluntariados',
-                    data: volunteerRecords,
-                    key: 'volunteer',
-                    component: (record: any) => (
-                        <View key={record.id} style={[styles.volunteerCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                            <View style={styles.iconContainer}>
-                                <Ionicons name="people" size={24} color="#10b981" />
-                            </View>
-                            <View style={styles.cardContent}>
-                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.organization}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                                    {record.role} • {record.cause}
-                                </Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                                    {record.country} - {record.startDate} - {record.endDate || 'Actualmente'}
-                                </Text>
-                                <View style={styles.statusContainer}>
-                                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>Estado:</Text>
-                                    <View style={[styles.statusBadge, { backgroundColor: record.currentlyInRole ? '#3b82f6' : '#e74c3c' }]}>
-                                        <Text style={styles.statusBadgeText}>{record.currentlyInRole ? 'En curso' : 'Finalizado'}</Text>
-                                    </View>
-                                </View>
-                            </View>
-                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openVolunteerModal(record)}>
-                                <Ionicons name="pencil" size={18} color="#10b981" />
-                            </TouchableOpacity>
-                        </View>
-                    )
-                },
-                {
-                    title: 'Publicaciones',
-                    data: publicationRecords,
-                    key: 'publication',
-                    component: (record: any) => (
-                        <View key={record.id} style={[styles.publicationCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                            <View style={styles.iconContainer}>
-                                <Ionicons name="book" size={24} color="#10b981" />
-                            </View>
-                            <View style={styles.cardContent}>
-                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.title}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Revista: {record.editorial}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Autores: {record.author}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                                    {record.country} - {record.date}
-                                </Text>
-                                {record.url && (
-                                    <Text style={[styles.cardLink, { color: '#10b981' }]}>
-                                        {record.url}
-                                    </Text>
-                                )}
-                                {record.abstract && (
-                                    <Text style={[styles.cardAbstract, { color: isDark ? '#AAA' : '#666' }]}>
-                                        "{record.abstract}"
-                                    </Text>
-                                )}
-                            </View>
-                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openPublicationModal(record)}>
-                                <Ionicons name="pencil" size={18} color="#10b981" />
-                            </TouchableOpacity>
-                        </View>
-                    )
-                },
-                {
-                    title: 'Idiomas',
+                    title: t('profile.languagesInfo'),
                     data: languageRecords,
                     key: 'language',
-                    component: (record: any) => (
-                        <View key={record.id} style={[styles.languageCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-                            <View style={styles.iconContainer}>
-                                <Ionicons name="globe" size={24} color="#10b981" />
-                            </View>
-                            <View style={styles.cardContent}>
-                                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.language}</Text>
-                                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                                    {record.proficiency}
-                                </Text>
-                            </View>
-                            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openLanguageModal(record)}>
-                                <Ionicons name="pencil" size={18} color="#10b981" />
-                            </TouchableOpacity>
-                        </View>
-                    )
-                }
+                    component: renderLanguageItem,
+                },
             ];
         }
-        setSectionsData(sections); // 👈 Ya no debería dar error aquí
-    }, [activeTab, personalInfo, academicRecords, technicalRecords, complementaryRecords, experienceRecords, volunteerRecords, publicationRecords, languageRecords, isDark]);
-    // --- Fin Nuevo ---
-    // --- Nuevo: Componentes de secciones ---
+        setSectionsData(sections);
+    }, [
+        activeTab,
+        personalInfo,
+        academicRecords,
+        technicalRecords,
+        complementaryRecords,
+        experienceRecords,
+        volunteerRecords,
+        publicationRecords,
+        languageRecords,
+        isDark,
+        t
+    ]);
+
+    // Render functions for items
     const renderAcademicItem = (record: any) => (
         <View key={record.id} style={[styles.academicCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
@@ -805,11 +592,10 @@ export default function ProfileScreen() {
             </View>
             <View style={styles.cardContent}>
                 <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.degree}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Institución: {record.institution}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Carrera: {record.institution}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Tiempo: {record.startDate} - {record.endDate || 'Actualmente'}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.institutionLabel')}: {record.institution}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.timeLabel')}: {record.startDate} - {record.endDate || t('profile.currently')}</Text>
                 <View style={styles.statusContainer}>
-                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>Estado:</Text>
+                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.statusLabel')}:</Text>
                     <View style={[styles.statusBadge, { backgroundColor: record.status === 'Graduado' ? '#10b981' : record.status === 'Titulado' ? '#3b82f6' : '#f59e0b' }]}>
                         <Text style={styles.statusBadgeText}>{record.status}</Text>
                     </View>
@@ -820,6 +606,7 @@ export default function ProfileScreen() {
             </TouchableOpacity>
         </View>
     );
+
     const renderTechnicalItem = (record: any) => (
         <View key={record.id} style={[styles.technicalCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
@@ -827,15 +614,16 @@ export default function ProfileScreen() {
             </View>
             <View style={styles.cardContent}>
                 <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.course}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Plataforma: {record.platform}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Duración: {record.duration}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Finalizado: {record.endDate}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.platformLabel')}: {record.platform}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.durationLabel')}: {record.duration}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.finished')}: {record.endDate}</Text>
             </View>
             <TouchableOpacity style={styles.editButtonCircle} onPress={() => openTechnicalModal(record)}>
                 <Ionicons name="pencil" size={18} color="#10b981" />
             </TouchableOpacity>
         </View>
     );
+
     const renderComplementaryItem = (record: any) => (
         <View key={record.id} style={[styles.complementaryCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
@@ -843,84 +631,49 @@ export default function ProfileScreen() {
             </View>
             <View style={styles.cardContent}>
                 <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.activity}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Descripción: {record.description}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Fecha: {record.date}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.descriptionLabel')}: {record.description}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.dateLabel')}: {record.date}</Text>
             </View>
             <TouchableOpacity style={styles.editButtonCircle} onPress={() => openComplementaryModal(record)}>
                 <Ionicons name="pencil" size={18} color="#10b981" />
             </TouchableOpacity>
         </View>
     );
+
     const renderExperienceItem = (record: any) => (
         <View key={record.id} style={[styles.experienceCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
                 <Ionicons name="briefcase" size={24} color="#10b981" />
             </View>
             <View style={styles.cardContent}>
-                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.position} - {record.institution}</Text>
-                <View style={styles.experienceDetails}>
-                    <View style={styles.detailRow}>
-                        <View style={styles.detailRow}>
-                            <Ionicons name="person" size={18} color="#10b981" />
-                            <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Puesto:</Text>
-                        </View>
-                        <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>{record.area || 'No especificado'}</Text>
-                        <View style={styles.detailRow}>
-                            <Ionicons name="list" size={18} color="#10b981" />
-                            <Text style={[styles.detailLabel, { color: isDark ? '#FFF' : '#333' }]}>Funciones:</Text>
-                        </View>
-                        <Text style={[styles.detailValue, { color: isDark ? '#AAA' : '#666' }]}>
-                            {record.description || 'No especificadas'}
-                        </Text>
-                        <View style={styles.dateRow}>
-                            <View style={styles.dateContainer}>
-                                <Ionicons name="play-circle" size={16} color="#10b981" />
-                                <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Inicio:</Text>
-                                <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
-                                    {record.startDate}
-                                </Text>
-                            </View>
-                            <View style={styles.dateContainer}>
-                                <Ionicons name="stop-circle" size={16} color="#3b82f6" />
-                                <Text style={[styles.dateLabel, { color: isDark ? '#FFF' : '#333' }]}>Final:</Text>
-                                <Text style={[styles.dateValue, { color: isDark ? '#AAA' : '#666' }]}>
-                                    {record.endDate || 'Actualmente'}
-                                </Text>
-                            </View>
-                        </View>
-                    </View>
-                </View>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.position}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.institutionLabel')}: {record.institution}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.areaLabel')}: {record.area}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.timeLabel')}: {record.startDate} - {record.endDate || t('profile.currently')}</Text>
             </View>
             <TouchableOpacity style={styles.editButtonCircle} onPress={() => openExperienceModal(record)}>
                 <Ionicons name="pencil" size={18} color="#10b981" />
             </TouchableOpacity>
         </View>
     );
+
     const renderVolunteerItem = (record: any) => (
         <View key={record.id} style={[styles.volunteerCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
                 <Ionicons name="people" size={24} color="#10b981" />
             </View>
             <View style={styles.cardContent}>
-                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.organization}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                    {record.role} • {record.cause}
-                </Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                    {record.country} - {record.startDate} - {record.endDate || 'Actualmente'}
-                </Text>
-                <View style={styles.statusContainer}>
-                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>Estado:</Text>
-                    <View style={[styles.statusBadge, { backgroundColor: record.currentlyInRole ? '#3b82f6' : '#e74c3c' }]}>
-                        <Text style={styles.statusBadgeText}>{record.currentlyInRole ? 'En curso' : 'Finalizado'}</Text>
-                    </View>
-                </View>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.role}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.organizationLabel')}: {record.organization}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.causeLabel')}: {record.cause}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.timeLabel')}: {record.startDate} - {record.endDate || (record.currentlyInRole ? t('profile.currently') : '')}</Text>
             </View>
             <TouchableOpacity style={styles.editButtonCircle} onPress={() => openVolunteerModal(record)}>
                 <Ionicons name="pencil" size={18} color="#10b981" />
             </TouchableOpacity>
         </View>
     );
+
     const renderPublicationItem = (record: any) => (
         <View key={record.id} style={[styles.publicationCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
@@ -928,1413 +681,642 @@ export default function ProfileScreen() {
             </View>
             <View style={styles.cardContent}>
                 <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.title}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Revista: {record.editorial}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>Autores: {record.author}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                    {record.country} - {record.date}
-                </Text>
-                {record.url && (
-                    <Text style={[styles.cardLink, { color: '#10b981' }]}>
-                        {record.url}
-                    </Text>
-                )}
-                {record.abstract && (
-                    <Text style={[styles.cardAbstract, { color: isDark ? '#AAA' : '#666' }]}>
-                        "{record.abstract}"
-                    </Text>
-                )}
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.authorLabel')}: {record.author}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.editorialLabel')}: {record.editorial}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.dateLabel')}: {record.date}</Text>
+                {record.url ? <Text style={[styles.cardLink, { color: isDark ? '#4fc3f7' : '#1976d2' }]}>{record.url}</Text> : null}
+                {record.abstract ? <Text style={[styles.cardAbstract, { color: isDark ? '#AAA' : '#666' }]}>{record.abstract}</Text> : null}
             </View>
             <TouchableOpacity style={styles.editButtonCircle} onPress={() => openPublicationModal(record)}>
                 <Ionicons name="pencil" size={18} color="#10b981" />
             </TouchableOpacity>
         </View>
     );
+
     const renderLanguageItem = (record: any) => (
         <View key={record.id} style={[styles.languageCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
-                <Ionicons name="globe" size={24} color="#10b981" />
+                <Ionicons name="language" size={24} color="#10b981" />
             </View>
             <View style={styles.cardContent}>
                 <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.language}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                    {record.proficiency}
-                </Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.proficiencyLabel')}: {record.proficiency}</Text>
             </View>
             <TouchableOpacity style={styles.editButtonCircle} onPress={() => openLanguageModal(record)}>
                 <Ionicons name="pencil" size={18} color="#10b981" />
             </TouchableOpacity>
         </View>
     );
-    // --- Fin Nuevo ---
+
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-            {/* Header */}
-            <View
-                style={[
-                    styles.header,
-                    { backgroundColor: isDark ? '#111' : '#fff', borderBottomColor: isDark ? '#333' : '#ddd' },
-                ]}
-            >
-                <TouchableOpacity onPress={() => router.back()}>
-                    <Ionicons name="arrow-back" size={24} color={isDark ? '#FFF' : '#333'} />
-                </TouchableOpacity>
-                <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>Perfil</Text>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.header}>
+                <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.title')}</Text>
                 <TouchableOpacity onPress={handleSettings}>
                     <Ionicons name="settings" size={24} color={isDark ? '#FFF' : '#333'} />
                 </TouchableOpacity>
             </View>
-            {/* Banner con foto */}
-            <View style={styles.bannerContainer}>
-                <TouchableOpacity onPress={showBannerMenu}>
-                    {bannerImage ? (
-                        <Image source={{ uri: bannerImage }} style={styles.bannerImage} resizeMode="cover" />
-                    ) : (
-                        <View style={[styles.bannerImage, styles.bannerPlaceholder, { backgroundColor: isDark ? '#111' : '#f0f0f0' }]}>
-                            <Text style={[styles.placeholderText, { color: isDark ? '#AAA' : '#666' }]}>📷 Foto de portada</Text>
+
+            <SectionList
+                sections={sectionsData}
+                keyExtractor={(item) => item.id || Math.random().toString()}
+                renderItem={renderSpecificItem}
+                renderSectionHeader={({ section: { title } }) => (
+                    <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333', marginTop: 16, marginBottom: 8 }]}>
+                        {title}
+                    </Text>
+                )}
+                ListHeaderComponent={
+                    <>
+                        <View style={styles.headerContainer}>
+                            <TouchableOpacity onPress={showBannerMenu} style={styles.bannerContainer}>
+                                <Image
+                                    source={bannerImage ? { uri: bannerImage } : require('../assets/images/banner-volunteer.png')}
+                                    style={styles.bannerImage}
+                                />
+                                <View style={styles.editBannerButton}>
+                                    <Ionicons name="camera" size={20} color="#FFF" />
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={showProfileMenu} style={styles.profileImageContainer}>
+                                <Image
+                                    source={profileImage ? { uri: profileImage } : require('../assets/images/avatar-default.png')}
+                                    style={styles.profileImage}
+                                />
+                                <View style={styles.editProfileButton}>
+                                    <Ionicons name="camera" size={16} color="#FFF" />
+                                </View>
+                            </TouchableOpacity>
                         </View>
-                    )}
+                        <View style={styles.nameContainer}>
+                            <Text style={[styles.fullName, { color: isDark ? '#FFF' : '#333' }]}>
+                                {personalInfo?.name || t('profile.guestUser')}
+                            </Text>
+                            <Text style={[styles.roleText, { color: isDark ? '#AAA' : '#666' }]}>
+                                {personalInfo?.role || t('profile.volunteerRole')}
+                            </Text>
+                        </View>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsContainer}>
+                            <TouchableOpacity onPress={() => setActiveTab('info')} style={[styles.tabButton, activeTab === 'info' && styles.activeTabButton]}>
+                                <Text style={[styles.tabText, activeTab === 'info' && styles.activeTabText]}>{t('profile.personalInfo')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setActiveTab('formacion')} style={[styles.tabButton, activeTab === 'formacion' && styles.activeTabButton]}>
+                                <Text style={[styles.tabText, activeTab === 'formacion' && styles.activeTabText]}>{t('profile.education')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setActiveTab('experiencia')} style={[styles.tabButton, activeTab === 'experiencia' && styles.activeTabButton]}>
+                                <Text style={[styles.tabText, activeTab === 'experiencia' && styles.activeTabText]}>{t('profile.experience')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setActiveTab('adicional')} style={[styles.tabButton, activeTab === 'adicional' && styles.activeTabButton]}>
+                                <Text style={[styles.tabText, activeTab === 'adicional' && styles.activeTabText]}>{t('profile.additional')}</Text>
+                            </TouchableOpacity>
+                        </ScrollView>
+                        <View style={styles.actionButtonsContainer}>
+                            {activeTab === 'formacion' && (
+                                <>
+                                    <TouchableOpacity style={styles.addButton} onPress={() => openAcademicModal()}>
+                                        <Ionicons name="add-circle" size={20} color="#FFF" />
+                                        <Text style={styles.addButtonText}>{t('profile.addAcademic')}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.addButton} onPress={() => openTechnicalModal()}>
+                                        <Ionicons name="add-circle" size={20} color="#FFF" />
+                                        <Text style={styles.addButtonText}>{t('profile.addTechnical')}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.addButton} onPress={() => openComplementaryModal()}>
+                                        <Ionicons name="add-circle" size={20} color="#FFF" />
+                                        <Text style={styles.addButtonText}>{t('profile.addComplementary')}</Text>
+                                    </TouchableOpacity>
+                                </>
+                            )}
+                            {activeTab === 'experiencia' && (
+                                <>
+                                    <TouchableOpacity style={styles.addButton} onPress={() => openExperienceModal()}>
+                                        <Ionicons name="add-circle" size={20} color="#FFF" />
+                                        <Text style={styles.addButtonText}>{t('profile.addExperience')}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.addButton} onPress={() => openVolunteerModal()}>
+                                        <Ionicons name="add-circle" size={20} color="#FFF" />
+                                        <Text style={styles.addButtonText}>{t('profile.addVolunteer')}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.addButton} onPress={() => openPublicationModal()}>
+                                        <Ionicons name="add-circle" size={20} color="#FFF" />
+                                        <Text style={styles.addButtonText}>{t('profile.addPublication')}</Text>
+                                    </TouchableOpacity>
+                                </>
+                            )}
+                            {activeTab === 'adicional' && (
+                                <TouchableOpacity style={styles.addButton} onPress={() => openLanguageModal()}>
+                                    <Ionicons name="add-circle" size={20} color="#FFF" />
+                                    <Text style={styles.addButtonText}>{t('profile.addLanguage')}</Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    </>
+                }
+            />
+
+            {/* Banner Menu Modal */}
+            <Modal visible={bannerMenuVisible} transparent={true} animationType="fade" onRequestClose={closeBannerMenu}>
+                <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={closeBannerMenu}>
+                    <View style={[styles.menuContainer, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <TouchableOpacity style={styles.menuItem} onPress={viewBannerImage}>
+                            <Ionicons name="eye" size={20} color={isDark ? '#FFF' : '#333'} />
+                            <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.viewImage')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menuItem} onPress={changeBannerFromGallery}>
+                            <Ionicons name="images" size={20} color={isDark ? '#FFF' : '#333'} />
+                            <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.chooseFromGallery')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menuItem} onPress={takeNewBannerPhoto}>
+                            <Ionicons name="camera" size={20} color={isDark ? '#FFF' : '#333'} />
+                            <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.takePhoto')}</Text>
+                        </TouchableOpacity>
+                    </View>
                 </TouchableOpacity>
-                <View style={styles.profilePhotoContainer}>
-                    <TouchableOpacity onPress={showProfileMenu}>
-                        {profileImage ? (
-                            <Image source={{ uri: profileImage }} style={styles.profilePhoto} resizeMode="cover" />
-                        ) : (
-                            <View style={[styles.profilePhoto, styles.profilePlaceholder, { backgroundColor: isDark ? '#111' : '#f0f0f0' }]}>
-                                <Text style={[styles.placeholderText, { color: isDark ? '#AAA' : '#666' }]}>👤</Text>
+            </Modal>
+
+            {/* Profile Menu Modal */}
+            <Modal visible={profileMenuVisible} transparent={true} animationType="fade" onRequestClose={closeProfileMenu}>
+                <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={closeProfileMenu}>
+                    <View style={[styles.menuContainer, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <TouchableOpacity style={styles.menuItem} onPress={viewProfileImage}>
+                            <Ionicons name="eye" size={20} color={isDark ? '#FFF' : '#333'} />
+                            <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.viewImage')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menuItem} onPress={changeProfileFromGallery}>
+                            <Ionicons name="images" size={20} color={isDark ? '#FFF' : '#333'} />
+                            <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.chooseFromGallery')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menuItem} onPress={takeNewProfilePhoto}>
+                            <Ionicons name="camera" size={20} color={isDark ? '#FFF' : '#333'} />
+                            <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.takePhoto')}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+
+            {/* All Modals */}
+            {/* Personal Info Modal */}
+            <Modal visible={showPersonalInfoForm} animationType="slide" transparent={true} onRequestClose={() => setShowPersonalInfoForm(false)}>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.editPersonalInfo')}</Text>
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.nameLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={nameInput} onChangeText={setNameInput} placeholder={t('profile.namePlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.birthDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{birthDateInput || t('profile.selectDate')}</Text>
+                            </TouchableOpacity>
+                            {showDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowDatePicker(false);
+                                        if (selectedDate) {
+                                            setBirthDateInput(selectedDate.toISOString().split('T')[0]);
+                                        }
+                                    }}
+                                />
+                            )}
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.phoneLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={phoneInput} onChangeText={setPhoneInput} placeholder={t('profile.phonePlaceholder')} keyboardType="phone-pad" placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.documentTypeLabel')}</Text>
+                            <View style={[styles.pickerContainer, { borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Picker selectedValue={documentType} onValueChange={(itemValue) => setDocumentType(itemValue)} style={{ color: isDark ? '#FFF' : '#333' }}>
+                                    <Picker.Item label={t('profile.select')} value="" />
+                                    <Picker.Item label="DNI" value="DNI" />
+                                    <Picker.Item label="Pasaporte" value="Pasaporte" />
+                                    <Picker.Item label="CE" value="CE" />
+                                </Picker>
                             </View>
-                        )}
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.cameraIcon} onPress={showProfileMenu}>
-                        <Ionicons name="camera" size={18} color="#fff" />
-                    </TouchableOpacity>
-                </View>
-            </View>
-            {/* Información del usuario */}
-            <View style={styles.userInfo}>
-                <Text style={[styles.userName, { color: isDark ? '#FFF' : '#333' }]}>Ethan Carter Murayari</Text>
-                <Text style={[styles.userEmail, { color: isDark ? '#AAA' : '#666' }]}>etcar@gmail.com</Text>
-            </View>
-            {/* Pestañas */}
-            <View style={styles.tabs}>
-                <TouchableOpacity
-                    style={[styles.tab, activeTab === 'info' && styles.activeTab]}
-                    onPress={() => setActiveTab('info')}
-                >
-                    <Text style={[
-                        styles.tabText,
-                        {
-                            color: activeTab === 'info'
-                                ? (isDark ? '#FFF' : '#10b981')
-                                : (isDark ? '#AAA' : '#666')
-                        },
-                        activeTab === 'info' && { fontWeight: '600' }
-                    ]}>
-                        Info
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.tab, activeTab === 'formacion' && styles.activeTab]}
-                    onPress={() => setActiveTab('formacion')}
-                >
-                    <Text style={[
-                        styles.tabText,
-                        {
-                            color: activeTab === 'formacion'
-                                ? (isDark ? '#FFF' : '#10b981')
-                                : (isDark ? '#AAA' : '#666')
-                        },
-                        activeTab === 'formacion' && { fontWeight: '600' }
-                    ]}>
-                        Formación
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.tab, activeTab === 'experiencia' && styles.activeTab]}
-                    onPress={() => setActiveTab('experiencia')}
-                >
-                    <Text style={[
-                        styles.tabText,
-                        {
-                            color: activeTab === 'experiencia'
-                                ? (isDark ? '#FFF' : '#10b981')
-                                : (isDark ? '#AAA' : '#666')
-                        },
-                        activeTab === 'experiencia' && { fontWeight: '600' }
-                    ]}>
-                        Experiencia
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.tab, activeTab === 'adicional' && styles.activeTab]}
-                    onPress={() => setActiveTab('adicional')}
-                >
-                    <Text style={[
-                        styles.tabText,
-                        {
-                            color: activeTab === 'adicional'
-                                ? (isDark ? '#FFF' : '#10b981')
-                                : (isDark ? '#AAA' : '#666')
-                        },
-                        activeTab === 'adicional' && { fontWeight: '600' }
-                    ]}>
-                        Adicional
-                    </Text>
-                </TouchableOpacity>
-            </View>
-            {/* Contenido con KeyboardAvoidingView y SectionList */}
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={styles.keyboardAvoidingContainer}
-            >
-                {/* ✅ CORREGIDO: Reemplazamos ScrollView por SectionList */}
-                <SectionList
-                    style={styles.content}
-                    sections={sectionsData}
-                    keyExtractor={(item, index) => item.id || `item-${index}`} // Asegura una key única
-                    renderItem={({ section, item }) => {
-                        // Usamos la nueva función para renderizar el item específico
-                        return renderSpecificItem({ section, item });
-                    }}
-                    renderSectionHeader={({ section: { title, key } }) => {
-                        // Renderizamos el header de cada sección
-                        // Solo mostramos el header si no es la sección de 'info' que tiene su propio header
-                        if (key === 'info') {
-                            // Para la sección 'info', renderizamos el encabezado aquí, incluyendo el botón "+".
-                            return (
-                                <View style={styles.section}>
-                                    <View style={styles.sectionHeader}>
-                                        <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>Información Personal</Text>
-                                        <TouchableOpacity style={styles.addIconContainer} onPress={openPersonalModal}>
-                                            <Ionicons name="add" size={24} color="#10b981" />
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            );
-                        }
-                        // Para otras secciones, mostramos el header
-                        return (
-                            <View style={styles.section}>
-                                <View style={styles.sectionHeader}>
-                                    <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>{title}</Text>
-                                    {/* Agregar botón de "Agregar" si corresponde */}
-                                    {/* Botón para Académica */}
-                                    {key === 'academic' && (
-                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openAcademicModal()}>
-                                            <Ionicons name="add" size={24} color="#10b981" />
-                                        </TouchableOpacity>
-                                    )}
-                                    {/* Botón para Técnica */}
-                                    {key === 'technical' && (
-                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openTechnicalModal()}>
-                                            <Ionicons name="add" size={24} color="#10b981" />
-                                        </TouchableOpacity>
-                                    )}
-                                    {/* Botón para Complementaria */}
-                                    {key === 'complementary' && (
-                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openComplementaryModal()}>
-                                            <Ionicons name="add" size={24} color="#10b981" />
-                                        </TouchableOpacity>
-                                    )}
-                                    {/* Botón para Experiencia */}
-                                    {key === 'experience' && (
-                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openExperienceModal()}>
-                                            <Ionicons name="add" size={24} color="#10b981" />
-                                        </TouchableOpacity>
-                                    )}
-                                    {/* Botón para Voluntariado */}
-                                    {key === 'volunteer' && (
-                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openVolunteerModal()}>
-                                            <Ionicons name="add" size={24} color="#10b981" />
-                                        </TouchableOpacity>
-                                    )}
-                                    {/* Botón para Publicación */}
-                                    {key === 'publication' && (
-                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openPublicationModal()}>
-                                            <Ionicons name="add" size={24} color="#10b981" />
-                                        </TouchableOpacity>
-                                    )}
-                                    {/* Botón para Idiomas */}
-                                    {key === 'language' && (
-                                        <TouchableOpacity style={styles.addIconContainer} onPress={() => openLanguageModal()}>
-                                            <Ionicons name="add" size={24} color="#10b981" />
-                                        </TouchableOpacity>
-                                    )}
-                                </View>
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.documentNumberLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={documentNumberInput} onChangeText={setDocumentNumberInput} placeholder={t('profile.documentNumberPlaceholder')} keyboardType="numeric" placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.genderLabel')}</Text>
+                            <View style={[styles.pickerContainer, { borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Picker selectedValue={gender} onValueChange={(itemValue) => setGender(itemValue)} style={{ color: isDark ? '#FFF' : '#333' }}>
+                                    <Picker.Item label={t('profile.select')} value="" />
+                                    <Picker.Item label={t('profile.male')} value="Masculino" />
+                                    <Picker.Item label={t('profile.female')} value="Femenino" />
+                                    <Picker.Item label={t('profile.other')} value="Otro" />
+                                </Picker>
                             </View>
-                        );
-                    }}
-                    renderSectionFooter={({ section }) => {
-                        // Opcional: Agregar un footer a cada sección
-                        if (section.data.length === 0 && section.key !== 'info') { // No mostrar para info si está vacía, ya tiene su propio mensaje
-                            return (
-                                <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>
-                            );
-                        }
-                        return null; // No footer si hay datos
-                    }}
-                    showsVerticalScrollIndicator={false}
-                    ListEmptyComponent={
-                        <Text style={[styles.noDataText, { color: isDark ? '#AAA' : '#666' }]}>No hay secciones para mostrar.</Text>
-                    }
-                />
-            </KeyboardAvoidingView>
-            {/* Modales de zoom para imágenes */}
-            {/* Modal para ver la portada con zoom */}
-            {isBannerZoomVisible && (
-                <Modal
-                    visible={isBannerZoomVisible}
-                    transparent={true}
-                    animationType="fade"
-                    onRequestClose={() => setIsBannerZoomVisible(false)}
-                >
-                    <ImageViewer
-                        imageUrls={[
-                            {
-                                url: bannerImage || 'https://via.placeholder.com/400x200?text=Banner+Default',
-                            },
-                        ]}
-                        enableSwipeDown={true}
-                        onSwipeDown={() => setIsBannerZoomVisible(false)}
-                        saveToLocalByLongPress={false}
-                        backgroundColor="rgba(0,0,0,0.8)"
-                        loadingRender={() => <Text style={{ color: '#FFF' }}>Cargando...</Text>}
-                        onClick={() => setIsBannerZoomVisible(false)} // 👈 Cierra al tocar
-                    />
-                </Modal>
-            )}
-            {/* Modal para ver la foto de perfil con zoom */}
-            {isProfileZoomVisible && (
-                <Modal
-                    visible={isProfileZoomVisible}
-                    transparent={true}
-                    animationType="fade"
-                    onRequestClose={() => setIsProfileZoomVisible(false)}
-                >
-                    <ImageViewer
-                        imageUrls={[
-                            {
-                                url: profileImage || 'https://via.placeholder.com/400x400?text=Profile+Default',
-                            },
-                        ]}
-                        enableSwipeDown={true}
-                        onSwipeDown={() => setIsProfileZoomVisible(false)}
-                        saveToLocalByLongPress={false}
-                        backgroundColor="rgba(0,0,0,0.8)"
-                        loadingRender={() => <Text style={{ color: '#FFF' }}>Cargando...</Text>}
-                        onClick={() => setIsProfileZoomVisible(false)} // 👈 Cierra al tocar
-                    />
-                </Modal>
-            )}
-            {/* Menús */}
-            {bannerMenuVisible && (
-                <View style={styles.bannerMenuOverlay}>
-                    <View style={[styles.bannerMenuContent, { backgroundColor: isDark ? '#222' : '#fff' }]}>
-                        <Text style={[styles.bannerMenuTitle, { color: isDark ? '#FFF' : '#333' }]}>Opciones de portada</Text>
-                        <TouchableOpacity style={styles.bannerMenuItem} onPress={viewBannerImage}>
-                            <Ionicons name="eye" size={20} color="#10b981" />
-                            <Text style={[styles.bannerMenuText, { color: isDark ? '#FFF' : '#333' }]}>Ver foto</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.bannerMenuItem} onPress={changeBannerFromGallery}>
-                            <Ionicons name="images" size={20} color="#10b981" />
-                            <Text style={[styles.bannerMenuText, { color: isDark ? '#FFF' : '#333' }]}>Cambiar desde galería</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.bannerMenuItem} onPress={takeNewBannerPhoto}>
-                            <Ionicons name="camera" size={20} color="#10b981" />
-                            <Text style={[styles.bannerMenuText, { color: isDark ? '#FFF' : '#333' }]}>Tomar nueva foto</Text>
-                        </TouchableOpacity>
-                        <View style={styles.bannerMenuDivider} />
-                        <TouchableOpacity style={styles.bannerMenuItemCancel} onPress={closeBannerMenu}>
-                            <Text style={[styles.bannerMenuCancelText, { color: isDark ? '#ff6b6b' : '#e74c3c' }]}>Cancelar</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            )}
-            {profileMenuVisible && (
-                <View style={styles.bannerMenuOverlay}>
-                    <View style={[styles.bannerMenuContent, { backgroundColor: isDark ? '#222' : '#fff' }]}>
-                        <Text style={[styles.bannerMenuTitle, { color: isDark ? '#FFF' : '#333' }]}>Opciones de foto de perfil</Text>
-                        <TouchableOpacity style={styles.bannerMenuItem} onPress={viewProfileImage}>
-                            <Ionicons name="eye" size={20} color="#10b981" />
-                            <Text style={[styles.bannerMenuText, { color: isDark ? '#FFF' : '#333' }]}>Ver foto</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.bannerMenuItem} onPress={changeProfileFromGallery}>
-                            <Ionicons name="images" size={20} color="#10b981" />
-                            <Text style={[styles.bannerMenuText, { color: isDark ? '#FFF' : '#333' }]}>Cambiar desde galería</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.bannerMenuItem} onPress={takeNewProfilePhoto}>
-                            <Ionicons name="camera" size={20} color="#10b981" />
-                            <Text style={[styles.bannerMenuText, { color: isDark ? '#FFF' : '#333' }]}>Tomar nueva foto</Text>
-                        </TouchableOpacity>
-                        <View style={styles.bannerMenuDivider} />
-                        <TouchableOpacity style={styles.bannerMenuItemCancel} onPress={closeProfileMenu}>
-                            <Text style={[styles.bannerMenuCancelText, { color: isDark ? '#ff6b6b' : '#e74c3c' }]}>Cancelar</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            )}
-            {/* Modales de formularios — MODIFICADOS (excepto idiomas) */}
-            {/* Modal de Información Personal */}
-            {showPersonalInfoForm && (
-                <Modal
-                    visible={showPersonalInfoForm}
-                    transparent={true}
-                    animationType="slide"
-                    onRequestClose={() => setShowPersonalInfoForm(false)}
-                >
-                    <View style={styles.modalOverlay}>
-                        <KeyboardAvoidingView
-                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                            style={{ width: '90%', maxWidth: 400 }}
-                        >
-                            <ScrollView
-                                keyboardShouldPersistTaps="handled"
-                                showsVerticalScrollIndicator={false}
-                            >
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    onPress={(e) => e.stopPropagation()}
-                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
-                                >
-                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Información Personal</Text>
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Nombre y Apellido</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Introduzca su nombre completo"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={nameInput}
-                                        onChangeText={setNameInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha de Nacimiento</Text>
-                                    <TouchableOpacity
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                        onPress={() => setShowDatePicker(true)}
-                                    >
-                                        <Text style={{ color: birthDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                            {birthDateInput || 'Seleccionar fecha'}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {showDatePicker && (
-                                        <DateTimePicker
-                                            value={birthDateInput ? new Date(birthDateInput.split('/').reverse().join('-')) : new Date()}
-                                            mode="date"
-                                            display="default"
-                                            onChange={(event, selectedDate) => {
-                                                setShowDatePicker(false);
-                                                if (selectedDate) {
-                                                    const d = selectedDate;
-                                                    const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-                                                    setBirthDateInput(formatted);
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Celular N°</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Introducir número de celular"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={phoneInput}
-                                        onChangeText={setPhoneInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Seleccione su tipo de documento:</Text>
-                                    <View style={styles.row}>
-                                        <View style={[styles.pickerWrapper, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}>
-                                            <Picker
-                                                selectedValue={documentType}
-                                                onValueChange={(itemValue) => setDocumentType(itemValue)}
-                                                style={styles.picker}
-                                                itemStyle={{ textAlign: 'center', fontSize: 16 }}
-                                            >
-                                                <Picker.Item label="Seleccionar" value="" />
-                                                <Picker.Item label="DNI" value="dni" />
-                                                <Picker.Item label="Carnet de Extranjería" value="carnet de extranjeria" />
-                                            </Picker>
-                                        </View>
-                                        <TextInput
-                                            style={[
-                                                styles.input,
-                                                { flex: 1, marginLeft: 10, backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' },
-                                            ]}
-                                            placeholder="N° de Documento"
-                                            placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                            value={documentNumberInput}
-                                            onChangeText={setDocumentNumberInput}
-                                            returnKeyType="next"
-                                            blurOnSubmit={false}
-                                        />
-                                    </View>
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Género</Text>
-                                    <View style={styles.radioGroup}>
-                                        {['Masculino', 'Femenino', 'Otros'].map((option) => (
-                                            <TouchableOpacity key={option} style={styles.radioOption} onPress={() => setGender(option)}>
-                                                <View style={[styles.radioButton, gender === option && styles.radioButtonSelected]} />
-                                                <Text style={[styles.radioLabel, { color: isDark ? '#FFF' : '#333' }]}>{option}</Text>
-                                            </TouchableOpacity>
-                                        ))}
-                                    </View>
-                                    <View style={styles.buttonGroup}>
-                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowPersonalInfoForm(false)}>
-                                            <Text style={styles.buttonText}>Cancelar</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={[styles.button, styles.addButton]}
-                                            onPress={async () => {
-                                                const missingField = validatePersonalFields();
-                                                if (showAlertIfMissingFields(missingField)) return;
-                                                const data = {
-                                                    name: nameInput,
-                                                    birthDate: birthDateInput,
-                                                    phone: phoneInput,
-                                                    documentType,
-                                                    documentNumber: documentNumberInput,
-                                                    gender,
-                                                };
-                                                setPersonalInfo(data);
-                                                await AsyncStorage.setItem('personalInfo', JSON.stringify(data));
-                                                Alert.alert('Éxito', editingPersonal ? 'Información actualizada' : 'Información guardada');
-                                                setShowPersonalInfoForm(false);
-                                            }}
-                                        >
-                                            <Text style={styles.buttonText}>{editingPersonal ? 'Actualizar' : 'Agregar'}</Text>
-                                        </TouchableOpacity>
-                                    </View>
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowPersonalInfoForm(false)}>
+                                    <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
                                 </TouchableOpacity>
-                            </ScrollView>
-                        </KeyboardAvoidingView>
+                                <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={() => {
+                                    const error = validatePersonalFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const newPersonal = { name: nameInput, birthDate: birthDateInput, phone: phoneInput, documentType, documentNumber: documentNumberInput, gender };
+                                    setPersonalInfo(newPersonal);
+                                    saveToStorage('personalInfo', newPersonal);
+                                    setShowPersonalInfoForm(false);
+                                }}>
+                                    <Text style={styles.saveButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
                     </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Academic Modal */}
+            <Modal visible={showAcademicModal} animationType="slide" transparent={true} onRequestClose={() => setShowAcademicModal(false)}>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingAcademic ? t('profile.editAcademic') : t('profile.addAcademic')}</Text>
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.degreeLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={degreeInput} onChangeText={setDegreeInput} placeholder={t('profile.degreePlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.institutionLabel')}</Text>
+                            <InstitutionsInput value={institutionInput} onValueChange={setInstitutionInput} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.countryLabel')}</Text>
+                            <CountryInput value={countryInput} onValueChange={setCountryInput} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.startDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowAcademicStartDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{startDateInput || t('profile.selectDate')}</Text>
+                            </TouchableOpacity>
+                            {showAcademicStartDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowAcademicStartDatePicker(false);
+                                        if (selectedDate) setStartDateInput(selectedDate.toISOString().split('T')[0]);
+                                    }}
+                                />
+                            )}
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.endDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowAcademicEndDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{endDateInput || t('profile.selectDate')}</Text>
+                            </TouchableOpacity>
+                            {showAcademicEndDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowAcademicEndDatePicker(false);
+                                        if (selectedDate) setEndDateInput(selectedDate.toISOString().split('T')[0]);
+                                    }}
+                                />
+                            )}
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.statusLabel')}</Text>
+                            <View style={[styles.pickerContainer, { borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Picker selectedValue={academicStatus} onValueChange={(itemValue) => setAcademicStatus(itemValue)} style={{ color: isDark ? '#FFF' : '#333' }}>
+                                    <Picker.Item label={t('profile.currently')} value="Actualmente" />
+                                    <Picker.Item label={t('profile.graduated')} value="Graduado" />
+                                    <Picker.Item label={t('profile.titled')} value="Titulado" />
+                                    <Picker.Item label={t('profile.truncated')} value="Trunco" />
+                                </Picker>
+                            </View>
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowAcademicModal(false)}>
+                                    <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={() => {
+                                    const error = validateAcademicFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const record = { degree: degreeInput, institution: institutionInput, country: countryInput, startDate: startDateInput, endDate: endDateInput, status: academicStatus };
+                                    if (editingAcademic) updateRecord(academicRecords, setAcademicRecords, { ...editingAcademic, ...record }, 'academicRecords');
+                                    else addRecord(academicRecords, setAcademicRecords, record, 'academicRecords');
+                                    setShowAcademicModal(false);
+                                }}>
+                                    <Text style={styles.saveButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Technical Modal */}
+            <Modal visible={showTechnicalModal} animationType="slide" transparent={true} onRequestClose={() => setShowTechnicalModal(false)}>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingTechnical ? t('profile.editTechnical') : t('profile.addTechnical')}</Text>
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.courseLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={courseInput} onChangeText={setCourseInput} placeholder={t('profile.coursePlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.platformLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={platformInput} onChangeText={setPlatformInput} placeholder={t('profile.platformPlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.durationLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={durationInput} onChangeText={setDurationInput} placeholder={t('profile.durationPlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.endDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowTechnicalEndDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{endDateInput || t('profile.selectDate')}</Text>
+                            </TouchableOpacity>
+                            {showTechnicalEndDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowTechnicalEndDatePicker(false);
+                                        if (selectedDate) setEndDateInput(selectedDate.toISOString().split('T')[0]);
+                                    }}
+                                />
+                            )}
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowTechnicalModal(false)}>
+                                    <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={() => {
+                                    const error = validateTechnicalFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const record = { course: courseInput, platform: platformInput, duration: durationInput, endDate: endDateInput };
+                                    if (editingTechnical) updateRecord(technicalRecords, setTechnicalRecords, { ...editingTechnical, ...record }, 'technicalRecords');
+                                    else addRecord(technicalRecords, setTechnicalRecords, record, 'technicalRecords');
+                                    setShowTechnicalModal(false);
+                                }}>
+                                    <Text style={styles.saveButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Complementary Modal */}
+            <Modal visible={showComplementaryModal} animationType="slide" transparent={true} onRequestClose={() => setShowComplementaryModal(false)}>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingComplementary ? t('profile.editComplementary') : t('profile.addComplementary')}</Text>
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.activityLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={activityInput} onChangeText={setActivityInput} placeholder={t('profile.activityPlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.descriptionLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd', height: 80 }]} value={descriptionInput} onChangeText={setDescriptionInput} placeholder={t('profile.descriptionPlaceholder')} multiline placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.dateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowComplementaryDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{dateInput || t('profile.selectDate')}</Text>
+                            </TouchableOpacity>
+                            {showComplementaryDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowComplementaryDatePicker(false);
+                                        if (selectedDate) setDateInput(selectedDate.toISOString().split('T')[0]);
+                                    }}
+                                />
+                            )}
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowComplementaryModal(false)}>
+                                    <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={() => {
+                                    const error = validateComplementaryFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const record = { activity: activityInput, description: descriptionInput, date: dateInput };
+                                    if (editingComplementary) updateRecord(complementaryRecords, setComplementaryRecords, { ...editingComplementary, ...record }, 'complementaryRecords');
+                                    else addRecord(complementaryRecords, setComplementaryRecords, record, 'complementaryRecords');
+                                    setShowComplementaryModal(false);
+                                }}>
+                                    <Text style={styles.saveButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Experience Modal */}
+            <Modal visible={showExperienceModal} animationType="slide" transparent={true} onRequestClose={() => setShowExperienceModal(false)}>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingExperience ? t('profile.editExperience') : t('profile.addExperience')}</Text>
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.positionLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={positionInput} onChangeText={setPositionInput} placeholder={t('profile.positionPlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.institutionLabel')}</Text>
+                            <InstitutionsInput value={institutionInput} onValueChange={setInstitutionInput} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.areaLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={areaInput} onChangeText={setAreaInput} placeholder={t('profile.areaPlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.countryLabel')}</Text>
+                            <CountryInput value={countryInput} onValueChange={setCountryInput} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.startDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowExperienceStartDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{startDateInput || t('profile.selectDate')}</Text>
+                            </TouchableOpacity>
+                            {showExperienceStartDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowExperienceStartDatePicker(false);
+                                        if (selectedDate) setStartDateInput(selectedDate.toISOString().split('T')[0]);
+                                    }}
+                                />
+                            )}
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.endDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowExperienceEndDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{endDateInput || t('profile.selectDate')}</Text>
+                            </TouchableOpacity>
+                            {showExperienceEndDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowExperienceEndDatePicker(false);
+                                        if (selectedDate) setEndDateInput(selectedDate.toISOString().split('T')[0]);
+                                    }}
+                                />
+                            )}
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowExperienceModal(false)}>
+                                    <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={() => {
+                                    const error = validateExperienceFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const record = { position: positionInput, institution: institutionInput, area: areaInput, country: countryInput, startDate: startDateInput, endDate: endDateInput };
+                                    if (editingExperience) updateRecord(experienceRecords, setExperienceRecords, { ...editingExperience, ...record }, 'experienceRecords');
+                                    else addRecord(experienceRecords, setExperienceRecords, record, 'experienceRecords');
+                                    setShowExperienceModal(false);
+                                }}>
+                                    <Text style={styles.saveButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Volunteer Modal */}
+            <Modal visible={showVolunteerModal} animationType="slide" transparent={true} onRequestClose={() => setShowVolunteerModal(false)}>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingVolunteer ? t('profile.editVolunteer') : t('profile.addVolunteer')}</Text>
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.organizationLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={orgInput} onChangeText={setOrgInput} placeholder={t('profile.organizationPlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.roleLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={roleInput} onChangeText={setRoleInput} placeholder={t('profile.rolePlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.causeLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={causeInput} onChangeText={setCauseInput} placeholder={t('profile.causePlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.startDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{startDateInput || t('profile.selectDate')}</Text>
+                            </TouchableOpacity>
+                            {showStartDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowStartDatePicker(false);
+                                        if (selectedDate) setStartDateInput(selectedDate.toISOString().split('T')[0]);
+                                    }}
+                                />
+                            )}
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.endDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{endDateInput || t('profile.selectDate')}</Text>
+                            </TouchableOpacity>
+                            {showEndDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowEndDatePicker(false);
+                                        if (selectedDate) setEndDateInput(selectedDate.toISOString().split('T')[0]);
+                                    }}
+                                />
+                            )}
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowVolunteerModal(false)}>
+                                    <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={() => {
+                                    const error = validateVolunteerFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const record = { organization: orgInput, role: roleInput, cause: causeInput, startDate: startDateInput, endDate: endDateInput, currentlyInRole };
+                                    if (editingVolunteer) updateRecord(volunteerRecords, setVolunteerRecords, { ...editingVolunteer, ...record }, 'volunteerRecords');
+                                    else addRecord(volunteerRecords, setVolunteerRecords, record, 'volunteerRecords');
+                                    setShowVolunteerModal(false);
+                                }}>
+                                    <Text style={styles.saveButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Publication Modal */}
+            <Modal visible={showPublicationModal} animationType="slide" transparent={true} onRequestClose={() => setShowPublicationModal(false)}>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingPublication ? t('profile.editPublication') : t('profile.addPublication')}</Text>
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.titleLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={pubTitleInput} onChangeText={setPubTitleInput} placeholder={t('profile.titlePlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.editorialLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={pubEditorialInput} onChangeText={setPubEditorialInput} placeholder={t('profile.editorialPlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.authorLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={pubAuthorInput} onChangeText={setPubAuthorInput} placeholder={t('profile.authorPlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.dateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowPubDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{pubDateInput || t('profile.selectDate')}</Text>
+                            </TouchableOpacity>
+                            {showPubDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowPubDatePicker(false);
+                                        if (selectedDate) setPubDateInput(selectedDate.toISOString().split('T')[0]);
+                                    }}
+                                />
+                            )}
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.urlLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={pubUrlInput} onChangeText={setPubUrlInput} placeholder={t('profile.urlPlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.abstractLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd', height: 80 }]} value={pubAbstractInput} onChangeText={setPubAbstractInput} placeholder={t('profile.abstractPlaceholder')} multiline placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowPublicationModal(false)}>
+                                    <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={() => {
+                                    const error = validatePublicationFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const record = { title: pubTitleInput, editorial: pubEditorialInput, author: pubAuthorInput, date: pubDateInput, url: pubUrlInput, abstract: pubAbstractInput };
+                                    if (editingPublication) updateRecord(publicationRecords, setPublicationRecords, { ...editingPublication, ...record }, 'publicationRecords');
+                                    else addRecord(publicationRecords, setPublicationRecords, record, 'publicationRecords');
+                                    setShowPublicationModal(false);
+                                }}>
+                                    <Text style={styles.saveButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Language Modal */}
+            <Modal visible={showLanguageModal} animationType="slide" transparent={true} onRequestClose={() => setShowLanguageModal(false)}>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingLanguage ? t('profile.editLanguage') : t('profile.addLanguage')}</Text>
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.languageLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#ddd' }]} value={languageInput} onChangeText={setLanguageInput} placeholder={t('profile.languagePlaceholder')} placeholderTextColor={isDark ? '#666' : '#999'} />
+                            <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.proficiencyLabel')}</Text>
+                            <View style={[styles.pickerContainer, { borderColor: isDark ? '#444' : '#ddd' }]}>
+                                <Picker selectedValue={languageProficiency} onValueChange={(itemValue) => setLanguageProficiency(itemValue)} style={{ color: isDark ? '#FFF' : '#333' }}>
+                                    <Picker.Item label={t('profile.select')} value="" />
+                                    <Picker.Item label={t('profile.basic')} value="Básico" />
+                                    <Picker.Item label={t('profile.intermediate')} value="Intermedio" />
+                                    <Picker.Item label={t('profile.advanced')} value="Avanzado" />
+                                    <Picker.Item label={t('profile.native')} value="Nativo" />
+                                </Picker>
+                            </View>
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowLanguageModal(false)}>
+                                    <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={() => {
+                                    const error = validateLanguageFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const record = { language: languageInput, proficiency: languageProficiency };
+                                    if (editingLanguage) updateRecord(languageRecords, setLanguageRecords, { ...editingLanguage, ...record }, 'languageRecords');
+                                    else addRecord(languageRecords, setLanguageRecords, record, 'languageRecords');
+                                    setShowLanguageModal(false);
+                                }}>
+                                    <Text style={styles.saveButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Image Zoom Viewers */}
+            {isBannerZoomVisible && bannerImage && (
+                <Modal visible={true} transparent={true} onRequestClose={() => setIsBannerZoomVisible(false)}>
+                    <ImageViewer imageUrls={[{ url: bannerImage }]} enableSwipeDown onSwipeDown={() => setIsBannerZoomVisible(false)} />
                 </Modal>
             )}
-            {/* Modal de Formación Académica */}
-            {showAcademicModal && (
-                <Modal
-                    visible={showAcademicModal}
-                    transparent={true}
-                    animationType="slide"
-                    onRequestClose={() => setShowAcademicModal(false)}
-                >
-                    <View style={styles.modalOverlay}>
-                        <KeyboardAvoidingView
-                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                            style={{ width: '90%', maxWidth: 400 }}
-                        >
-                            <ScrollView
-                                keyboardShouldPersistTaps="handled"
-                                showsVerticalScrollIndicator={false}
-                            >
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    onPress={(e) => e.stopPropagation()}
-                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
-                                >
-                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Formación Académica</Text>
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Grado</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Ingrese el nombre de su grado"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={degreeInput}
-                                        onChangeText={setDegreeInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Institución</Text>
-                                    <InstitutionsInput value={institutionInput} onChangeText={setInstitutionInput} />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>País</Text>
-                                    {/* Reemplazado el TextInput por CountryInput */}
-                                    <CountryInput value={countryInput} onChangeText={setCountryInput} />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
-                                    <TouchableOpacity
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                        onPress={() => setShowAcademicStartDatePicker(true)}
-                                    >
-                                        <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                            {startDateInput || 'Seleccionar año'}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {showAcademicStartDatePicker && (
-                                        <DateTimePicker
-                                            value={startDateInput ? new Date(`${startDateInput}-01-01`) : new Date()}
-                                            mode="date"
-                                            display="default"
-                                            onChange={(event, selectedDate) => {
-                                                setShowAcademicStartDatePicker(false);
-                                                if (selectedDate) {
-                                                    const d = selectedDate;
-                                                    const formatted = String(d.getFullYear());
-                                                    setStartDateInput(formatted);
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
-                                    <TouchableOpacity
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                        onPress={() => setShowAcademicEndDatePicker(true)}
-                                    >
-                                        <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                            {endDateInput || 'Seleccionar año'}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {showAcademicEndDatePicker && (
-                                        <DateTimePicker
-                                            value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
-                                            mode="date"
-                                            display="default"
-                                            onChange={(event, selectedDate) => {
-                                                setShowAcademicEndDatePicker(false);
-                                                if (selectedDate) {
-                                                    const d = selectedDate;
-                                                    const formatted = String(d.getFullYear());
-                                                    setEndDateInput(formatted);
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Estado</Text>
-                                    <View style={styles.radioGroup}>
-                                        {['Actualmente', 'Graduado', 'Titulado'].map((option) => (
-                                            <TouchableOpacity key={option} style={styles.radioOption} onPress={() => setAcademicStatus(option)}>
-                                                <View style={[styles.radioButton, academicStatus === option && styles.radioButtonSelected]} />
-                                                <Text style={[styles.radioLabel, { color: isDark ? '#FFF' : '#333' }]}>{option}</Text>
-                                            </TouchableOpacity>
-                                        ))}
-                                    </View>
-                                    <View style={styles.buttonGroup}>
-                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowAcademicModal(false)}>
-                                            <Text style={styles.buttonText}>Cancelar</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={[styles.button, styles.addButton]}
-                                            onPress={() => {
-                                                const missingField = validateAcademicFields();
-                                                if (showAlertIfMissingFields(missingField)) return;
-                                                const newRecord = {
-                                                    degree: degreeInput,
-                                                    institution: institutionInput,
-                                                    country: countryInput, // Usamos el valor del estado común
-                                                    startDate: startDateInput,
-                                                    endDate: endDateInput,
-                                                    status: academicStatus,
-                                                };
-                                                if (editingAcademic) {
-                                                    updateRecord(academicRecords, setAcademicRecords, { ...editingAcademic, ...newRecord }, 'academicRecords');
-                                                    Alert.alert('Éxito', 'Registro actualizado');
-                                                } else {
-                                                    addRecord(academicRecords, setAcademicRecords, newRecord, 'academicRecords');
-                                                    Alert.alert('Éxito', 'Registro guardado');
-                                                }
-                                                setShowAcademicModal(false);
-                                            }}
-                                        >
-                                            <Text style={styles.buttonText}>{editingAcademic ? 'Actualizar' : 'Agregar'}</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </TouchableOpacity>
-                            </ScrollView>
-                        </KeyboardAvoidingView>
-                    </View>
-                </Modal>
-            )}
-            {/* Modal de Formación Técnica */}
-            {showTechnicalModal && (
-                <Modal
-                    visible={showTechnicalModal}
-                    transparent={true}
-                    animationType="slide"
-                    onRequestClose={() => setShowTechnicalModal(false)}
-                >
-                    <View style={styles.modalOverlay}>
-                        <KeyboardAvoidingView
-                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                            style={{ width: '90%', maxWidth: 400 }}
-                        >
-                            <ScrollView
-                                keyboardShouldPersistTaps="handled"
-                                showsVerticalScrollIndicator={false}
-                            >
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    onPress={(e) => e.stopPropagation()}
-                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
-                                >
-                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Formación Técnica / Especializada</Text>
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Curso</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Nombre del curso"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={courseInput}
-                                        onChangeText={setCourseInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Plataforma</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Plataforma o institución"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={platformInput}
-                                        onChangeText={setPlatformInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Duración</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Ej. 6 meses"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={durationInput}
-                                        onChangeText={setDurationInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de finalización</Text>
-                                    <TouchableOpacity
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                        onPress={() => setShowTechnicalEndDatePicker(true)}
-                                    >
-                                        <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                            {endDateInput || 'Seleccionar año'}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {showTechnicalEndDatePicker && (
-                                        <DateTimePicker
-                                            value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
-                                            mode="date"
-                                            display="default"
-                                            onChange={(event, selectedDate) => {
-                                                setShowTechnicalEndDatePicker(false);
-                                                if (selectedDate) {
-                                                    const d = selectedDate;
-                                                    const formatted = String(d.getFullYear());
-                                                    setEndDateInput(formatted);
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                    <View style={styles.buttonGroup}>
-                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowTechnicalModal(false)}>
-                                            <Text style={styles.buttonText}>Cancelar</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={[styles.button, styles.addButton]}
-                                            onPress={() => {
-                                                const missingField = validateTechnicalFields();
-                                                if (showAlertIfMissingFields(missingField)) return;
-                                                const newRecord = {
-                                                    course: courseInput,
-                                                    platform: platformInput,
-                                                    duration: durationInput,
-                                                    endDate: endDateInput,
-                                                };
-                                                if (editingTechnical) {
-                                                    updateRecord(technicalRecords, setTechnicalRecords, { ...editingTechnical, ...newRecord }, 'technicalRecords');
-                                                    Alert.alert('Éxito', 'Registro actualizado');
-                                                } else {
-                                                    addRecord(technicalRecords, setTechnicalRecords, newRecord, 'technicalRecords');
-                                                    Alert.alert('Éxito', 'Registro guardado');
-                                                }
-                                                setShowTechnicalModal(false);
-                                            }}
-                                        >
-                                            <Text style={styles.buttonText}>{editingTechnical ? 'Actualizar' : 'Agregar'}</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </TouchableOpacity>
-                            </ScrollView>
-                        </KeyboardAvoidingView>
-                    </View>
-                </Modal>
-            )}
-            {/* Modal de Formación Complementaria */}
-            {showComplementaryModal && (
-                <Modal
-                    visible={showComplementaryModal}
-                    transparent={true}
-                    animationType="slide"
-                    onRequestClose={() => setShowComplementaryModal(false)}
-                >
-                    <View style={styles.modalOverlay}>
-                        <KeyboardAvoidingView
-                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                            style={{ width: '90%', maxWidth: 400 }}
-                        >
-                            <ScrollView
-                                keyboardShouldPersistTaps="handled"
-                                showsVerticalScrollIndicator={false}
-                            >
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    onPress={(e) => e.stopPropagation()}
-                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
-                                >
-                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Formación Complementaria</Text>
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Actividad</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Nombre de la actividad"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={activityInput}
-                                        onChangeText={setActivityInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Descripción</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Breve descripción"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={descriptionInput}
-                                        onChangeText={setDescriptionInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha</Text>
-                                    <TouchableOpacity
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                        onPress={() => setShowComplementaryDatePicker(true)}
-                                    >
-                                        <Text style={{ color: dateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                            {dateInput || 'Seleccionar fecha'}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {showComplementaryDatePicker && (
-                                        <DateTimePicker
-                                            value={dateInput ? new Date(dateInput.split('/').reverse().join('-')) : new Date()}
-                                            mode="date"
-                                            display="default"
-                                            onChange={(event, selectedDate) => {
-                                                setShowComplementaryDatePicker(false);
-                                                if (selectedDate) {
-                                                    const d = selectedDate;
-                                                    const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-                                                    setDateInput(formatted);
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                    <View style={styles.buttonGroup}>
-                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowComplementaryModal(false)}>
-                                            <Text style={styles.buttonText}>Cancelar</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={[styles.button, styles.addButton]}
-                                            onPress={() => {
-                                                const missingField = validateComplementaryFields();
-                                                if (showAlertIfMissingFields(missingField)) return;
-                                                const newRecord = {
-                                                    activity: activityInput,
-                                                    description: descriptionInput,
-                                                    date: dateInput,
-                                                };
-                                                if (editingComplementary) {
-                                                    updateRecord(complementaryRecords, setComplementaryRecords, { ...editingComplementary, ...newRecord }, 'complementaryRecords');
-                                                    Alert.alert('Éxito', 'Registro actualizado');
-                                                } else {
-                                                    addRecord(complementaryRecords, setComplementaryRecords, newRecord, 'complementaryRecords');
-                                                    Alert.alert('Éxito', 'Registro guardado');
-                                                }
-                                                setShowComplementaryModal(false);
-                                            }}
-                                        >
-                                            <Text style={styles.buttonText}>{editingComplementary ? 'Actualizar' : 'Agregar'}</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </TouchableOpacity>
-                            </ScrollView>
-                        </KeyboardAvoidingView>
-                    </View>
-                </Modal>
-            )}
-            {/* Modal de Experiencia Laboral */}
-            {showExperienceModal && (
-                <Modal
-                    visible={showExperienceModal}
-                    transparent={true}
-                    animationType="slide"
-                    onRequestClose={() => setShowExperienceModal(false)}
-                >
-                    <View style={styles.modalOverlay}>
-                        <KeyboardAvoidingView
-                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                            style={{ width: '90%', maxWidth: 400 }}
-                        >
-                            <ScrollView
-                                keyboardShouldPersistTaps="handled"
-                                showsVerticalScrollIndicator={false}
-                            >
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    onPress={(e) => e.stopPropagation()}
-                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
-                                >
-                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Experiencia Laboral</Text>
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Cargo</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Nombre del cargo"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={positionInput}
-                                        onChangeText={setPositionInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Institución</Text>
-                                    <InstitutionsInput value={institutionInput} onChangeText={setInstitutionInput} />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Área</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Área o departamento"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={areaInput}
-                                        onChangeText={setAreaInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>País</Text>
-                                    {/* Reemplazado el TextInput por CountryInput */}
-                                    <CountryInput value={countryInput} onChangeText={setCountryInput} />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
-                                    <TouchableOpacity
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                        onPress={() => setShowExperienceStartDatePicker(true)}
-                                    >
-                                        <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                            {startDateInput || 'Seleccionar año'}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {showExperienceStartDatePicker && (
-                                        <DateTimePicker
-                                            value={startDateInput ? new Date(`${startDateInput}-01-01`) : new Date()}
-                                            mode="date"
-                                            display="default"
-                                            onChange={(event, selectedDate) => {
-                                                setShowExperienceStartDatePicker(false);
-                                                if (selectedDate) {
-                                                    const d = selectedDate;
-                                                    const formatted = String(d.getFullYear());
-                                                    setStartDateInput(formatted);
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
-                                    <TouchableOpacity
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                        onPress={() => setShowExperienceEndDatePicker(true)}
-                                    >
-                                        <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                            {endDateInput || 'Seleccionar año'}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {showExperienceEndDatePicker && (
-                                        <DateTimePicker
-                                            value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
-                                            mode="date"
-                                            display="default"
-                                            onChange={(event, selectedDate) => {
-                                                setShowExperienceEndDatePicker(false);
-                                                if (selectedDate) {
-                                                    const d = selectedDate;
-                                                    const formatted = String(d.getFullYear());
-                                                    setEndDateInput(formatted);
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                    <View style={styles.buttonGroup}>
-                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowExperienceModal(false)}>
-                                            <Text style={styles.buttonText}>Cancelar</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={[styles.button, styles.addButton]}
-                                            onPress={() => {
-                                                const missingField = validateExperienceFields();
-                                                if (showAlertIfMissingFields(missingField)) return;
-                                                const newRecord = {
-                                                    position: positionInput,
-                                                    institution: institutionInput,
-                                                    area: areaInput,
-                                                    country: countryInput, // Usamos el valor del estado común
-                                                    startDate: startDateInput,
-                                                    endDate: endDateInput,
-                                                };
-                                                if (editingExperience) {
-                                                    updateRecord(experienceRecords, setExperienceRecords, { ...editingExperience, ...newRecord }, 'experienceRecords');
-                                                    Alert.alert('Éxito', 'Registro actualizado');
-                                                } else {
-                                                    addRecord(experienceRecords, setExperienceRecords, newRecord, 'experienceRecords');
-                                                    Alert.alert('Éxito', 'Registro guardado');
-                                                }
-                                                setShowExperienceModal(false);
-                                            }}
-                                        >
-                                            <Text style={styles.buttonText}>{editingExperience ? 'Actualizar' : 'Agregar'}</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </TouchableOpacity>
-                            </ScrollView>
-                        </KeyboardAvoidingView>
-                    </View>
-                </Modal>
-            )}
-            {/* Modal de Voluntariado */}
-            {showVolunteerModal && (
-                <Modal
-                    visible={showVolunteerModal}
-                    transparent={true}
-                    animationType="slide"
-                    onRequestClose={() => setShowVolunteerModal(false)}
-                >
-                    <View style={styles.modalOverlay}>
-                        <KeyboardAvoidingView
-                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                            style={{ flex: 1, width: '90%', maxWidth: 400 }}
-                        >
-                            <ScrollView
-                                keyboardShouldPersistTaps="handled"
-                                showsVerticalScrollIndicator={false}
-                                contentContainerStyle={{ paddingBottom: 80 }}
-                            >
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    onPress={(e) => e.stopPropagation()}
-                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
-                                >
-                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Voluntariado</Text>
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Organización</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Nombre de la organización"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={orgInput}
-                                        onChangeText={setOrgInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Rol</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Rol desempeñado"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={roleInput}
-                                        onChangeText={setRoleInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Causa</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Causa o propósito"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={causeInput}
-                                        onChangeText={setCauseInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Descripción</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Breve descripción"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={descriptionInput}
-                                        onChangeText={setDescriptionInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de inicio</Text>
-                                    <TouchableOpacity
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                        onPress={() => setShowStartDatePicker(true)}
-                                    >
-                                        <Text style={{ color: startDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                            {startDateInput || 'Seleccionar año'}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {showStartDatePicker && (
-                                        <DateTimePicker
-                                            value={startDateInput ? new Date(`${startDateInput}-01-01`) : new Date()}
-                                            mode="date"
-                                            display="default"
-                                            onChange={(event, selectedDate) => {
-                                                setShowStartDatePicker(false);
-                                                if (selectedDate) {
-                                                    const d = selectedDate;
-                                                    const formatted = String(d.getFullYear());
-                                                    setStartDateInput(formatted);
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Año de fin</Text>
-                                    <TouchableOpacity
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                        onPress={() => setShowEndDatePicker(true)}
-                                    >
-                                        <Text style={{ color: endDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                            {endDateInput || 'Seleccionar año'}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {showEndDatePicker && (
-                                        <DateTimePicker
-                                            value={endDateInput ? new Date(`${endDateInput}-01-01`) : new Date()}
-                                            mode="date"
-                                            display="default"
-                                            onChange={(event, selectedDate) => {
-                                                setShowEndDatePicker(false);
-                                                if (selectedDate) {
-                                                    const d = selectedDate;
-                                                    const formatted = String(d.getFullYear());
-                                                    setEndDateInput(formatted);
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                    <View style={styles.checkboxContainer}>
-                                        <TouchableOpacity
-                                            style={[styles.checkbox, currentlyInRole && styles.checkboxChecked]}
-                                            onPress={() => {
-                                                setCurrentlyInRole(true);
-                                            }}
-                                        >
-                                            {currentlyInRole && <Ionicons name="checkmark" size={16} color="#fff" />}
-                                        </TouchableOpacity>
-                                        <Text style={[styles.checkboxLabel, { color: isDark ? '#FFF' : '#333' }]}>Actualmente en este rol</Text>
-                                    </View>
-                                    <View style={styles.checkboxContainer}>
-                                        <TouchableOpacity
-                                            style={[styles.checkbox, !currentlyInRole && styles.checkboxChecked]}
-                                            onPress={() => {
-                                                setCurrentlyInRole(false);
-                                            }}
-                                        >
-                                            {!currentlyInRole && <Ionicons name="checkmark" size={16} color="#fff" />}
-                                        </TouchableOpacity>
-                                        <Text style={[styles.checkboxLabel, { color: isDark ? '#FFF' : '#333' }]}>Finalizado</Text>
-                                    </View>
-                                    <View style={styles.buttonGroup}>
-                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowVolunteerModal(false)}>
-                                            <Text style={styles.buttonText}>Cancelar</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={[styles.button, styles.addButton]}
-                                            onPress={() => {
-                                                const missingField = validateVolunteerFields();
-                                                if (showAlertIfMissingFields(missingField)) return;
-                                                const newRecord = {
-                                                    organization: orgInput,
-                                                    role: roleInput,
-                                                    cause: causeInput,
-                                                    description: descriptionInput,
-                                                    startDate: startDateInput,
-                                                    endDate: endDateInput,
-                                                    currentlyInRole,
-                                                };
-                                                if (editingVolunteer) {
-                                                    updateRecord(volunteerRecords, setVolunteerRecords, { ...editingVolunteer, ...newRecord }, 'volunteerRecords');
-                                                    Alert.alert('Éxito', 'Registro actualizado');
-                                                } else {
-                                                    addRecord(volunteerRecords, setVolunteerRecords, newRecord, 'volunteerRecords');
-                                                    Alert.alert('Éxito', 'Registro guardado');
-                                                }
-                                                setShowVolunteerModal(false);
-                                            }}
-                                        >
-                                            <Text style={styles.buttonText}>{editingVolunteer ? 'Actualizar' : 'Agregar'}</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </TouchableOpacity>
-                            </ScrollView>
-                        </KeyboardAvoidingView>
-                    </View>
-                </Modal>
-            )}
-            {/* Modal de Publicación */}
-            {showPublicationModal && (
-                <Modal
-                    visible={showPublicationModal}
-                    transparent={true}
-                    animationType="slide"
-                    onRequestClose={() => setShowPublicationModal(false)}
-                >
-                    <View style={styles.modalOverlay}>
-                        <KeyboardAvoidingView
-                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                            style={{ width: '90%', maxWidth: 400 }}
-                        >
-                            <ScrollView
-                                keyboardShouldPersistTaps="handled"
-                                showsVerticalScrollIndicator={false}
-                            >
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    onPress={(e) => e.stopPropagation()}
-                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
-                                >
-                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Publicación</Text>
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Título</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Título de la publicación"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={pubTitleInput}
-                                        onChangeText={setPubTitleInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Editorial</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Nombre de la editorial"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={pubEditorialInput}
-                                        onChangeText={setPubEditorialInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Autor(es)</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Autores"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={pubAuthorInput}
-                                        onChangeText={setPubAuthorInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Fecha</Text>
-                                    <TouchableOpacity
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', justifyContent: 'center' }]}
-                                        onPress={() => setShowPubDatePicker(true)}
-                                    >
-                                        <Text style={{ color: pubDateInput ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                            {pubDateInput || 'Seleccionar fecha'}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {showPubDatePicker && (
-                                        <DateTimePicker
-                                            value={pubDateInput ? new Date(pubDateInput.split('/').reverse().join('-')) : new Date()}
-                                            mode="date"
-                                            display="default"
-                                            onChange={(event, selectedDate) => {
-                                                setShowPubDatePicker(false);
-                                                if (selectedDate) {
-                                                    const d = selectedDate;
-                                                    const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-                                                    setPubDateInput(formatted);
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>URL (opcional)</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Enlace a la publicación"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={pubUrlInput}
-                                        onChangeText={setPubUrlInput}
-                                        returnKeyType="next"
-                                        blurOnSubmit={false}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Resumen</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Resumen o abstract"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={pubAbstractInput}
-                                        onChangeText={setPubAbstractInput}
-                                        multiline
-                                        numberOfLines={3}
-                                        returnKeyType="done"
-                                        blurOnSubmit={true}
-                                    />
-                                    <View style={styles.buttonGroup}>
-                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowPublicationModal(false)}>
-                                            <Text style={styles.buttonText}>Cancelar</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={[styles.button, styles.addButton]}
-                                            onPress={() => {
-                                                const missingField = validatePublicationFields();
-                                                if (showAlertIfMissingFields(missingField)) return;
-                                                const newRecord = {
-                                                    title: pubTitleInput,
-                                                    editorial: pubEditorialInput,
-                                                    author: pubAuthorInput,
-                                                    date: pubDateInput,
-                                                    url: pubUrlInput,
-                                                    abstract: pubAbstractInput,
-                                                };
-                                                if (editingPublication) {
-                                                    updateRecord(publicationRecords, setPublicationRecords, { ...editingPublication, ...newRecord }, 'publicationRecords');
-                                                    Alert.alert('Éxito', 'Registro actualizado');
-                                                } else {
-                                                    addRecord(publicationRecords, setPublicationRecords, newRecord, 'publicationRecords');
-                                                    Alert.alert('Éxito', 'Registro guardado');
-                                                }
-                                                setShowPublicationModal(false);
-                                            }}
-                                        >
-                                            <Text style={styles.buttonText}>{editingPublication ? 'Actualizar' : 'Agregar'}</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </TouchableOpacity>
-                            </ScrollView>
-                        </KeyboardAvoidingView>
-                    </View>
-                </Modal>
-            )}
-            {/* Modal de Idiomas */}
-            {showLanguageModal && (
-                <Modal
-                    visible={showLanguageModal}
-                    transparent={true}
-                    animationType="slide"
-                    onRequestClose={() => setShowLanguageModal(false)}
-                >
-                    <View style={styles.modalOverlay}>
-                        <KeyboardAvoidingView
-                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                            style={{ width: '90%', maxWidth: 400 }}
-                        >
-                            <ScrollView
-                                keyboardShouldPersistTaps="handled"
-                                showsVerticalScrollIndicator={false}
-                            >
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    onPress={(e) => e.stopPropagation()}
-                                    style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}
-                                >
-                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Idioma</Text>
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Idioma</Text>
-                                    <TextInput
-                                        style={[styles.input, { backgroundColor: isDark ? '#333' : '#f9f9f9', color: isDark ? '#FFF' : '#333' }]}
-                                        placeholder="Ej. Inglés, Francés"
-                                        placeholderTextColor={isDark ? '#AAA' : '#999'}
-                                        value={languageInput}
-                                        onChangeText={setLanguageInput}
-                                    />
-                                    <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>Nivel de dominio</Text>
-                                    <TouchableOpacity
-                                        style={[
-                                            styles.input,
-                                            {
-                                                backgroundColor: isDark ? '#333' : '#f9f9f9',
-                                                flexDirection: 'row',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                            }
-                                        ]}
-                                        onPress={() => setShowLanguagePicker(true)}
-                                    >
-                                        <Text style={{ color: languageProficiency ? (isDark ? '#FFF' : '#333') : (isDark ? '#AAA' : '#999') }}>
-                                            {languageProficiency || 'Seleccionar'}
-                                        </Text>
-                                        <Ionicons name="chevron-down" size={20} color={isDark ? '#AAA' : '#666'} />
-                                    </TouchableOpacity>
-                                    <View style={styles.buttonGroup}>
-                                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowLanguageModal(false)}>
-                                            <Text style={styles.buttonText}>Cancelar</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={[styles.button, styles.addButton]}
-                                            onPress={() => {
-                                                const missingField = validateLanguageFields();
-                                                if (showAlertIfMissingFields(missingField)) return;
-                                                const newRecord = {
-                                                    language: languageInput,
-                                                    proficiency: languageProficiency,
-                                                };
-                                                if (editingLanguage) {
-                                                    updateRecord(languageRecords, setLanguageRecords, { ...editingLanguage, ...newRecord }, 'languageRecords');
-                                                    Alert.alert('Éxito', 'Registro actualizado');
-                                                } else {
-                                                    addRecord(languageRecords, setLanguageRecords, newRecord, 'languageRecords');
-                                                    Alert.alert('Éxito', 'Registro guardado');
-                                                }
-                                                setShowLanguageModal(false);
-                                            }}
-                                        >
-                                            <Text style={styles.buttonText}>{editingLanguage ? 'Actualizar' : 'Agregar'}</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </TouchableOpacity>
-                            </ScrollView>
-                        </KeyboardAvoidingView>
-                    </View>
-                </Modal>
-            )}
-            {/* Modal personalizado para nivel de idioma */}
-            {showLanguagePicker && (
-                <Modal
-                    visible={showLanguagePicker}
-                    transparent={true}
-                    animationType="slide"
-                    onRequestClose={() => setShowLanguagePicker(false)}
-                >
-                    <View style={styles.modalOverlay}>
-                        <KeyboardAvoidingView
-                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                            style={{ width: '90%', maxWidth: 300 }} // Ancho ajustado para el picker
-                        >
-                            <ScrollView
-                                keyboardShouldPersistTaps="handled"
-                                showsVerticalScrollIndicator={false}
-                            >
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    onPress={(e) => e.stopPropagation()}
-                                    style={[styles.languagePickerModal, { backgroundColor: isDark ? '#222' : '#fff' }]}
-                                >
-                                    <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>Nivel de dominio</Text>
-                                    {['Básico', 'Intermedio', 'Avanzado', 'Nativo'].map((level) => (
-                                        <TouchableOpacity
-                                            key={level}
-                                            style={[
-                                                styles.languageOption,
-                                                {
-                                                    backgroundColor: isDark ? '#333' : '#f9f9f9',
-                                                    marginVertical: 4,
-                                                    borderWidth: 1,
-                                                    borderColor: level === languageProficiency ? '#10b981' : 'transparent',
-                                                }
-                                            ]}
-                                            onPress={() => {
-                                                setLanguageProficiency(level);
-                                                setShowLanguagePicker(false);
-                                            }}
-                                        >
-                                            <Text style={{ color: isDark ? '#FFF' : '#333' }}>{level}</Text>
-                                        </TouchableOpacity>
-                                    ))}
-                                    <TouchableOpacity
-                                        style={[
-                                            styles.languageOption,
-                                            { backgroundColor: isDark ? '#333' : '#f9f9f9', marginTop: 10, borderColor: 'transparent' }
-                                        ]}
-                                        onPress={() => {
-                                            setLanguageProficiency('');
-                                            setShowLanguagePicker(false);
-                                        }}
-                                    >
-                                        <Text style={{ color: isDark ? '#AAA' : '#666', fontStyle: 'italic' }}>Limpiar selección</Text>
-                                    </TouchableOpacity>
-                                </TouchableOpacity>
-                            </ScrollView>
-                        </KeyboardAvoidingView>
-                    </View>
+            {isProfileZoomVisible && profileImage && (
+                <Modal visible={true} transparent={true} onRequestClose={() => setIsProfileZoomVisible(false)}>
+                    <ImageViewer imageUrls={[{ url: profileImage }]} enableSwipeDown onSwipeDown={() => setIsProfileZoomVisible(false)} />
                 </Modal>
             )}
         </SafeAreaView>
     );
 }
+
 const styles = StyleSheet.create({
-    container: { flex: 1 },
+    container: { flex: 1, backgroundColor: '#f5f5f5' },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -2344,23 +1326,36 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
     },
     headerTitle: { fontSize: 18, fontWeight: 'bold' },
-    bannerContainer: { height: 200, position: 'relative' },
+    headerContainer: { height: 200, position: 'relative' },
+    bannerContainer: { height: 200 },
     bannerImage: { width: '100%', height: '100%', resizeMode: 'cover' },
-    bannerPlaceholder: { justifyContent: 'center', alignItems: 'center' }, // Removed static color
-    placeholderText: { fontSize: 16 },
-    profilePhotoContainer: {
+    editBannerButton: {
         position: 'absolute',
-        top: 120,
-        left: '50%',
-        transform: [{ translateX: -50 }],
+        bottom: 16,
+        right: 16,
+        backgroundColor: '#10b981',
+        borderRadius: 20,
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
         alignItems: 'center',
     },
-    profilePhoto: { width: 100, height: 100, borderRadius: 50, borderWidth: 3, borderColor: '#fff' },
-    profilePlaceholder: { justifyContent: 'center', alignItems: 'center' }, // Removed static color
-    cameraIcon: {
+    profileImageContainer: {
         position: 'absolute',
-        bottom: 0,
-        right: 0,
+        bottom: -50,
+        left: 16,
+    },
+    profileImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        borderWidth: 4,
+        borderColor: '#fff',
+    },
+    editProfileButton: {
+        position: 'absolute',
+        bottom: 4,
+        right: 4,
         backgroundColor: '#10b981',
         borderRadius: 15,
         width: 30,
@@ -2368,266 +1363,81 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    userInfo: { alignItems: 'center', marginTop: 20, marginBottom: 20 },
-    userName: { fontSize: 18, fontWeight: 'bold' },
-    userEmail: { fontSize: 14 },
-    tabs: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        paddingVertical: 12,
-        borderBottomWidth: 1,
-    },
-    tab: { paddingHorizontal: 12, paddingVertical: 8 },
-    activeTab: { borderBottomWidth: 2, borderBottomColor: '#10b981' },
-    tabText: { fontSize: 14 },
-    keyboardAvoidingContainer: { flex: 1 },
-    content: {
-        flex: 1,
+    nameContainer: {
+        marginTop: 60,
         paddingHorizontal: 16,
-        paddingTop: 20,
-    },
-    section: { marginBottom: 20 },
-    sectionHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 12,
-    },
-    sectionTitle: { fontSize: 18, fontWeight: 'bold' },
-    addIconContainer: {
-        backgroundColor: '#d4f5e0',
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    noDataText: { fontSize: 16, textAlign: 'center', marginTop: 20 },
-    recordItem: {
-        padding: 16,
-        marginBottom: 12,
-        borderRadius: 8,
-        position: 'relative',
-    },
-    modalOverlay: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 30,
-    },
-    modalClose: {
-        position: 'absolute',
-        top: 40,
-        right: 20,
-        zIndex: 1000,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        borderRadius: 20,
-        padding: 8,
-    },
-    modalImage: {
-        width: '90%',
-        height: '80%',
-        resizeMode: 'contain',
-        borderRadius: 12,
-    },
-    bannerMenuOverlay: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        zIndex: 20,
-    },
-    bannerMenuContent: {
-        width: '100%',
-        maxHeight: 300,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        paddingVertical: 20,
-        paddingHorizontal: 24,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: -4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 10,
-        elevation: 10,
-    },
-    bannerMenuTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        textAlign: 'center',
         marginBottom: 16,
     },
-    bannerMenuItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 14,
-        paddingHorizontal: 12,
-        borderRadius: 12,
-        marginBottom: 8,
-    },
-    bannerMenuText: {
-        fontSize: 16,
-        marginLeft: 12,
-    },
-    bannerMenuDivider: {
-        height: 1,
-        backgroundColor: '#eee',
-        marginVertical: 12,
-    },
-    bannerMenuItemCancel: {
-        paddingVertical: 12,
-        alignItems: 'center',
-    },
-    bannerMenuCancelText: {
-        fontSize: 17,
-        fontWeight: '600',
-    },
-    modalContent: {
-        width: '100%',
-        maxWidth: 400,
-        borderRadius: 12,
-        padding: 20,
-        elevation: 5,
-    },
-    modalTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-    label: { fontSize: 14, marginBottom: 5, marginTop: 10 },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 8,
-        padding: 10,
-        marginBottom: 10,
-        fontSize: 16,
-        paddingHorizontal: 12,
-    },
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    pickerWrapper: {
-        flex: 1,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 8,
-    },
-    picker: {
-        height: 50,
-    },
-    radioGroup: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 10,
-    },
-    radioOption: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    radioButton: {
-        width: 20,
-        height: 20,
-        borderRadius: 10,
-        borderWidth: 2,
-        borderColor: '#aaa',
-        marginRight: 8,
-    },
-    radioButtonSelected: {
-        backgroundColor: '#10b981',
-        borderColor: '#10b981',
-    },
-    radioLabel: {
-        fontSize: 14,
-    },
-    buttonGroup: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 20,
-    },
-    button: {
-        flex: 1,
-        paddingVertical: 12,
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-    cancelButton: {
-        backgroundColor: '#aaa',
-        marginRight: 10,
-    },
-    addButton: {
-        backgroundColor: '#10b981',
-        marginLeft: 10,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
+    fullName: {
+        fontSize: 20,
         fontWeight: 'bold',
     },
-    checkboxContainer: {
+    roleText: {
+        fontSize: 16,
+    },
+    tabsContainer: {
+        paddingHorizontal: 16,
+        marginBottom: 16,
+    },
+    tabButton: {
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        marginRight: 8,
+        borderRadius: 20,
+        backgroundColor: '#e0e0e0',
+    },
+    activeTabButton: {
+        backgroundColor: '#10b981',
+    },
+    tabText: {
+        fontSize: 14,
+        color: '#333',
+    },
+    activeTabText: {
+        color: '#fff',
+    },
+    actionButtonsContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        paddingHorizontal: 16,
+        marginBottom: 16,
+    },
+    addButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 10,
-    },
-    checkbox: {
-        width: 20,
-        height: 20,
-        borderWidth: 2,
-        borderColor: '#aaa',
-        marginRight: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    checkboxChecked: {
         backgroundColor: '#10b981',
-        borderColor: '#10b981',
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 20,
+        marginRight: 8,
+        marginBottom: 8,
     },
-    checkboxLabel: {
+    addButtonText: {
+        color: '#fff',
         fontSize: 14,
+        marginLeft: 6,
     },
-    editDeleteContainer: {
-        position: 'absolute',
-        top: 10,
-        right: 10,
+    content: {
+        paddingBottom: 20,
     },
-    editButton: {
-        backgroundColor: '#e8fbe8',
-        width: 34,
-        height: 34,
-        borderRadius: 17,
-        justifyContent: 'center',
+    userInfo: {
+        flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 4,
-    },
-    deleteButton: {
-        backgroundColor: '#fde8e8',
-        width: 34,
-        height: 34,
-        borderRadius: 17,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    languagePickerModal: {
-        width: '80%',
-        maxWidth: 300,
-        maxHeight: 300,
-        borderRadius: 12,
-        padding: 20,
-        elevation: 5,
-        alignItems: 'center',
-    },
-    languageOption: {
-        width: '100%',
-        padding: 12,
+        justifyContent: 'space-between',
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        backgroundColor: '#f9f9f9',
+        marginHorizontal: 16,
         borderRadius: 8,
-        alignItems: 'center',
-        borderWidth: 2,
+        marginBottom: 16,
+    },
+    userName: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    userEmail: {
+        fontSize: 14,
+        color: '#666',
     },
     academicCard: {
         flexDirection: 'row',
@@ -2653,6 +1463,38 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         borderWidth: 1,
     },
+    experienceCard: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+    },
+    volunteerCard: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+    },
+    publicationCard: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+    },
+    languageCard: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+    },
     iconContainer: {
         marginRight: 12,
         marginTop: 2,
@@ -2668,6 +1510,17 @@ const styles = StyleSheet.create({
     cardSubtitle: {
         fontSize: 14,
         marginBottom: 2,
+    },
+    cardLink: {
+        fontSize: 14,
+        color: '#1976d2',
+        textDecorationLine: 'underline',
+        marginBottom: 4,
+    },
+    cardAbstract: {
+        fontSize: 14,
+        fontStyle: 'italic',
+        marginTop: 4,
     },
     statusContainer: {
         flexDirection: 'row',
@@ -2697,84 +1550,94 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    experienceCard: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        padding: 16,
-        marginBottom: 12,
-        borderRadius: 8,
-        borderWidth: 1,
-    },
-    experienceDetails: {
-        flex: 1,
-        marginLeft: 12,
-    },
-    detailRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 4,
-    },
-    detailLabel: {
-        fontSize: 14,
+    sectionTitle: {
+        fontSize: 18,
         fontWeight: 'bold',
-        marginLeft: 4,
-        marginRight: 8,
+        paddingHorizontal: 16,
     },
-    detailValue: {
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+    },
+    modalContent: {
+        width: '90%',
+        maxWidth: 400,
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 20,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    label: {
         fontSize: 14,
-        marginBottom: 8,
-        marginLeft: 24,
+        marginBottom: 5,
+        marginTop: 10,
     },
-    dateRow: {
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 10,
+        fontSize: 16,
+        paddingHorizontal: 12,
+    },
+    pickerContainer: {
+        borderWidth: 1,
+        borderRadius: 8,
+        marginBottom: 10,
+    },
+    modalButtons: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 8,
+        marginTop: 20,
     },
-    dateContainer: {
+    modalButton: {
+        flex: 1,
+        padding: 15,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginHorizontal: 5,
+    },
+    cancelButton: {
+        backgroundColor: '#ccc',
+    },
+    saveButton: {
+        backgroundColor: '#10b981',
+    },
+    cancelButtonText: {
+        color: '#333',
+        fontWeight: 'bold',
+    },
+    saveButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+    menuContainer: {
+        width: '100%',
+        paddingVertical: 20,
+        paddingHorizontal: 24,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 10,
+        elevation: 10,
+    },
+    menuItem: {
         flexDirection: 'row',
         alignItems: 'center',
+        paddingVertical: 14,
     },
-    dateLabel: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        marginLeft: 4,
-        marginRight: 4,
-    },
-    dateValue: {
-        fontSize: 12,
-    },
-    volunteerCard: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        padding: 16,
-        marginBottom: 12,
-        borderRadius: 8,
-        borderWidth: 1,
-    },
-    publicationCard: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        padding: 16,
-        marginBottom: 12,
-        borderRadius: 8,
-        borderWidth: 1,
-    },
-    languageCard: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        padding: 16,
-        marginBottom: 12,
-        borderRadius: 8,
-        borderWidth: 1,
-    },
-    cardLink: {
-        fontSize: 14,
-        textDecorationLine: 'underline',
-        marginBottom: 4,
-    },
-    cardAbstract: {
-        fontSize: 14,
-        fontStyle: 'italic',
-        marginTop: 4,
+    menuText: {
+        fontSize: 16,
+        marginLeft: 12,
     },
 });

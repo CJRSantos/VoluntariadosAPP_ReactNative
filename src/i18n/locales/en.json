@@ -1,0 +1,447 @@
+{
+    "login": {
+        "title": "Volunteer Intranet",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Enter your email",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "Enter your password",
+        "loginButton": "Log In",
+        "createAccount": "Create an account",
+        "errorTitle": "Error",
+        "errorMissingFields": "Please complete all fields",
+        "errorLoginFailed": "Could not log in"
+    },
+    "register": {
+        "title": "Volunteer Account",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Enter your email",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "Enter your password",
+        "confirmPasswordLabel": "Confirm Password",
+        "appearance": {
+            "title": "Appearance",
+            "dark": "Dark mode",
+            "light": "Light mode",
+            "enableDark": "Enable dark mode",
+            "disableDark": "Disable dark mode"
+        },
+        "language": {
+            "title": "Language",
+            "subtitle": "Select app language",
+            "modalTitle": "Select Language"
+        },
+        "notifications": {
+            "title": "Notifications",
+            "subtitle": "Customize your alerts"
+        },
+        "privacy": {
+            "title": "Privacy",
+            "subtitle": "Adjust preferences"
+        },
+        "storage": {
+            "title": "Storage",
+            "subtitle": "Manage data and space",
+            "modalTitle": "Storage Options",
+            "viewSize": "View storage size",
+            "clearCache": "Clear image cache",
+            "deleteAll": "Delete all data",
+            "export": "Export my data",
+            "close": "Close"
+        }
+    },
+    "nosotros": {
+        "title": "About Us",
+        "headerTitle": "Volunteer Account",
+        "whyJoin": "Why join us?",
+        "joinDescription": "Join our institution and be part of a team that drives innovation, sustainability, and positive impact.",
+        "ourHistory": "Our History",
+        "historyDescription": "Since our inception, we have worked to strengthen education, research, and social projects.",
+        "ourMission": "Our Mission",
+        "missionDescription": "Promote initiatives that transform lives through education and social action.",
+        "difference": "What sets us apart",
+        "differenceDescription": "We are distinguished by our comprehensive approach, combining knowledge and innovation.",
+        "stats": {
+            "publications": "international scientific publications",
+            "projects": "projects currently in development",
+            "beneficiaries": "direct beneficiaries in social programs",
+            "alliances": "strategic alliances with national and international institutions"
+        },
+        "menu": {
+            "profile": "Profile",
+            "settings": "Settings",
+            "help": "Help",
+            "logout": "Log out",
+            "soon": "Coming Soon",
+            "helpSoon": "Help will be available soon"
+        },
+        "nav": {
+            "home": "Home",
+            "areas": "Areas",
+            "convocatory": "Convocatoria",
+            "about": "About Us"
+        }
+    },
+    "account": {
+        "headerTitle": "Volunteer Account",
+        "banner": {
+            "title": "Your exclusive user space starts here",
+            "subtitle": "Welcome user, be part of this new...",
+            "button": "Learn more"
+        },
+        "news": {
+            "sectionTitle": "Latest News",
+            "status": {
+                "open": "Open",
+                "closed": "Closed"
+            },
+            "apply": "Apply",
+            "details": "Details",
+            "items": {
+                "1": {
+                    "title": "Carbon monitoring in Amazonian forests",
+                    "details": "Thematic lines: Carbon monitoring, Ecosystem services, Climate change"
+                }
+            }
+        },
+        "tutorials": {
+            "title": "Guides and Tutorials"
+        },
+        "videos": {
+            "sectionTitle": "Videos",
+            "errorTitle": "Error",
+            "errorMessage": "Could not open video. Please copy and paste the link in your browser.",
+            "copyLink": "Copy link"
+        },
+        "quickLinks": {
+            "sectionTitle": "Quick Links"
+        },
+        "social": {
+            "web": "Website"
+        },
+        "loading": "Loading...",
+        "nav": {
+            "home": "Home",
+            "areas": "Areas",
+            "convocatory": "Convocatoria",
+            "about": "About Us"
+        },
+        "menu": {
+            "profile": "Profile",
+            "settings": "Settings",
+            "help": "Help",
+            "logout": "Log out",
+            "soon": "Coming Soon",
+            "helpSoon": "Help will be available soon"
+        }
+    },
+    "common": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "warning": "Warning",
+        "searchCountry": "Search country...",
+        "searchInstitution": "Search institution..."
+    },
+    "profile": {
+        "currently": "Currently",
+        "statusLabel": "Status",
+        "currentlyInRole": "Ongoing",
+        "finished": "Finished",
+        "editorialLabel": "Editorial",
+        "authorLabel": "Author",
+        "guestUser": "Guest User",
+        "volunteerRole": "Volunteer",
+        "personalInfo": "Personal Info",
+        "education": "Education",
+        "experience": "Experience",
+        "additional": "Additional",
+        "addAcademic": "Add Academic Education",
+        "addTechnical": "Add Technical Education",
+        "addComplementary": "Add Complementary Education",
+        "addExperience": "Add Work Experience",
+        "addVolunteer": "Add Volunteer Work",
+        "addPublication": "Add Publication",
+        "addLanguage": "Add Language",
+        "viewImage": "View photo",
+        "chooseFromGallery": "Choose from gallery",
+        "takePhoto": "Take photo",
+        "editPersonalInfo": "Edit Personal Info",
+        "nameLabel": "Full Name",
+        "namePlaceholder": "Enter your name",
+        "birthDateLabel": "Date of Birth",
+        "selectDate": "Select date",
+        "phoneLabel": "Phone",
+        "phonePlaceholder": "Enter your phone",
+        "documentTypeLabel": "Document Type",
+        "select": "Select",
+        "documentNumberLabel": "Document Number",
+        "documentNumberPlaceholder": "Enter your document number",
+        "genderLabel": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "other": "Other",
+        "editAcademic": "Edit Academic Education",
+        "degreeLabel": "Degree/Title",
+        "degreePlaceholder": "Ex: Bachelor in Biology",
+        "institutionLabel": "Institution",
+        "countryLabel": "Country",
+        "startDateLabel": "Start Date",
+        "endDateLabel": "End Date",
+        "graduated": "Graduated",
+        "titled": "Titled",
+        "truncated": "Incomplete",
+        "editTechnical": "Edit Technical Education",
+        "courseLabel": "Course/Program",
+        "coursePlaceholder": "Ex: Web Development",
+        "platformLabel": "Platform/Institution",
+        "platformPlaceholder": "Ex: Coursera",
+        "durationLabel": "Duration",
+        "durationPlaceholder": "Ex: 40 hours",
+        "editComplementary": "Edit Complementary Education",
+        "activityLabel": "Activity",
+        "activityPlaceholder": "Ex: Leadership Workshop",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Brief description...",
+        "dateLabel": "Date",
+        "editExperience": "Edit Work Experience",
+        "positionLabel": "Position",
+        "positionPlaceholder": "Ex: Junior Analyst",
+        "areaLabel": "Area",
+        "areaPlaceholder": "Ex: Human Resources",
+        "editVolunteer": "Edit Volunteer Work",
+        "organizationLabel": "Organization",
+        "organizationPlaceholder": "Organization name",
+        "roleLabel": "Role",
+        "rolePlaceholder": "Ex: Field Volunteer",
+        "causeLabel": "Cause",
+        "causePlaceholder": "Ex: Environment",
+        "editPublication": "Edit Publication",
+        "titleLabel": "Title",
+        "titlePlaceholder": "Publication title",
+        "editorialPlaceholder": "Editorial name",
+        "authorPlaceholder": "Author name",
+        "urlLabel": "URL",
+        "urlPlaceholder": "Link to publication",
+        "abstractLabel": "Abstract",
+        "abstractPlaceholder": "Brief abstract...",
+        "editLanguage": "Edit Language",
+        "languageLabel": "Language",
+        "languagePlaceholder": "Ex: English",
+        "proficiencyLabel": "Level",
+        "basic": "Basic",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced",
+        "native": "Native"
+    },
+    "areas": {
+        "title": "Areas",
+        "headerTitle": "Volunteer Account",
+        "sectionTitle": "Our Areas and Units",
+        "locationPermissionDenied": "Location permission denied",
+        "unknownLocation": "Unknown location",
+        "locationError": "Could not get location",
+        "noLocation": "No location",
+        "gettingLocation": "Getting location...",
+        "loading": "Cargando...",
+        "items": {
+            "1": {
+                "direction": "Directorate of Research in Ecosystems and Climate Change",
+                "title": "Forest Resources and Climate Change Area",
+                "description": "Area in charge of ecological studies, environmental monitoring and conservation strategies in the Peruvian Amazon."
+            },
+            "2": {
+                "direction": "Directorate of Environmental Research",
+                "title": "Ecology and Conservation Area",
+                "description": "Area in charge of ecological studies, environmental monitoring and conservation strategies in the Peruvian Amazon."
+            }
+        },
+        "menu": {
+            "profile": "Profile",
+            "settings": "Settings",
+            "help": "Help",
+            "logout": "Log out",
+            "soon": "Coming Soon",
+            "helpSoon": "Help will be available soon"
+        },
+        "nav": {
+            "home": "Home",
+            "areas": "Areas",
+            "convocatory": "Convocatoria",
+            "about": "About Us"
+        }
+    },
+    "convocatoria": {
+        "title": "Convocatory",
+        "headerTitle": "Volunteer Account",
+        "loading": "Loading...",
+        "items": {
+            "1": {
+                "title": "Research Assistance - Forests",
+                "location": "Iquitos, Peru",
+                "participants": "20 participants",
+                "startDate": "September 31, 2025",
+                "endDate": "October 15, 2025"
+            },
+            "2": {
+                "title": "Research Assistance - Forests",
+                "location": "Iquitos, Peru",
+                "participants": "20 participants",
+                "startDate": "September 31, 2025",
+                "endDate": "October 15, 2025"
+            },
+            "3": {
+                "title": "Animal Shelter Volunteering",
+                "location": "Arequipa, Peru",
+                "participants": "10 participants",
+                "startDate": "September 31, 2025",
+                "endDate": "October 15, 2025"
+            }
+        },
+        "card": {
+            "start": "Start",
+            "end": "End",
+            "requirements": "Requirements",
+            "moreInfo": "More Info...",
+            "apply": "Apply"
+        },
+        "menu": {
+            "profile": "Profile",
+            "settings": "Settings",
+            "help": "Help",
+            "logout": "Log out",
+            "soon": "Coming Soon",
+            "helpSoon": "Help will be available soon"
+        },
+        "nav": {
+            "home": "Home",
+            "areas": "Areas",
+            "convocatory": "Convocatoria",
+            "about": "About Us"
+        }
+    },
+    "onboarding": {
+        "title": "Welcome to IIAP Volunteers!",
+        "subtitle": "Your gateway to contribute to Amazonian science and conservation.",
+        "section1": {
+            "title": "What is IIAP Volunteers?",
+            "text": "It is a digital platform that connects people committed to scientific research and environmental conservation in the Peruvian Amazon with real projects of the Research Institute of the Peruvian Amazon (IIAP)."
+        },
+        "section2": {
+            "title": "What is IIAP?",
+            "text": "Watch this video to understand what IIAP is",
+            "button": "Watch tutorial on YouTube"
+        },
+        "section3": {
+            "title": "Benefits of being a volunteer",
+            "text": "• Practical experience in field and laboratory.\n• Certificate of participation issued by IIAP.\n• Access to networks of scientists and professionals.\n• Direct contribution to Amazon conservation."
+        },
+        "ctaButton": "Explore Convocatories"
+    },
+    "masInfo": {
+        "title": "Additional Information",
+        "deadlineTitle": "Application Deadline",
+        "deadlineDate": "Until November 15, 2025",
+        "howToApplyTitle": "HOW TO APPLY",
+        "howToApplyText": "To apply for a volunteer vacancy in FORESTS, you can choose between two submission methods: in-person or virtual.",
+        "presencialTitle": "In-Person",
+        "presencialText": "Submit your documents at the IIAP reception desk.",
+        "virtualTitle": "Virtual",
+        "virtualText": "Send your documents through the application view.",
+        "noteTitle": "Important Note",
+        "noteText": "Ensure your PDF file does not exceed 10 MB and all documents are correctly ordered and legible."
+    },
+    "requisitos": {
+        "title": "Conduct Research - Forests",
+        "vacanciesTitle": "Vacancies",
+        "educationTitle": "Academic Background",
+        "educationText": "University Graduate in Archival Science and Document Management, Administration, Industrial Engineering, Systems Engineering",
+        "experienceTitle": "Experience",
+        "experienceText": "General: 2 years\n\nSpecific: 1 year in the function or subject, 1 year at intern level, 1 year in the public sector",
+        "coursesTitle": "Specialization Courses and Programs",
+        "coursesText": "File management, document management, document management system, documentary procedure or digital government, with a minimum duration of 60 cumulative hours",
+        "savePdfButton": "Save PDF",
+        "applyButton": "Apply",
+        "pdfDialogTitle": "Save or Share PDF",
+        "pdfGeneratedTitle": "PDF Generated",
+        "pdfError": "Could not generate PDF"
+    },
+    "postulacion": {
+        "step1": {
+            "title": "Start Your Application Process",
+            "subtitle": "Environmental Volunteer Program 2025",
+            "stepTitle": "Step 1: Document Upload | Other Requirements",
+            "uploadButton": "Upload File",
+            "uploading": "Uploading...",
+            "fileSelected": "File Selected",
+            "noName": "No Name",
+            "errorSelection": "Could not select file.",
+            "warning": "Warning",
+            "warningMessage": "Please upload a file before continuing.",
+            "nextButton": "Next Step",
+            "fileLabel": "File:"
+        },
+        "step2": {
+            "title": "Apply to the opportunity",
+            "subtitle": "Complete the following steps to apply to the opportunity",
+            "stepTitle": "Step 2 of 3",
+            "coverLetterLabel": "Cover Letter",
+            "uploadCoverLetter": "Upload your cover letter",
+            "cvLabel": "CV",
+            "uploadCv": "Upload your CV",
+            "nextButton": "Next step",
+            "fileSelected": "File selected",
+            "noName": "No name",
+            "alertTitle": "Cover letter selected",
+            "alertCvTitle": "CV selected",
+            "errorTitle": "Error",
+            "errorSelection": "Could not select the",
+            "warningTitle": "Warning",
+            "warningMessage": "Please upload both documents before continuing."
+        },
+        "step3": {
+            "title": "Application",
+            "stepTitle": "Step 3 of 3",
+            "personalData": "Personal Data Registration",
+            "completed": "Completed",
+            "documents": "Document Upload | Other Requirements",
+            "confirmation": "Confirmation and Submission",
+            "currentStep": "Current Step",
+            "submitButton": "Submit Application"
+        },
+        "confirmation": {
+            "title": "Application Confirmed!",
+            "message": "Your application has been received successfully. We will keep you informed about the next steps.",
+            "backButton": "Back to Home"
+        }
+    },
+    "presencialInfo": {
+        "title": "Requirements and Steps",
+        "description": "To apply in person, you must go to the IIAP headquarters and submit your documents at the Reception Desk.",
+        "step1": {
+            "title": "1. Prepare your documents",
+            "text": "Ensure you have your documented CV and the registration form correctly filled out. Everything must be in a sealed manila envelope."
+        },
+        "step2": {
+            "title": "2. Go to IIAP",
+            "text": "Go to the Reception Desk office during business hours (Monday to Friday from 8:00 am to 4:00 pm)."
+        },
+        "step3": {
+            "title": "3. Submit your file",
+            "text": "Submit your envelope and request your reception receipt. Keep this receipt for any future inquiries."
+        },
+        "note": {
+            "title": "Important Note",
+            "text": "Remember that in-person application is valid only if submitted within the deadline established in the call."
+        }
+    },
+    "help": {
+        "title": "Help",
+        "content": "Help content here..."
+    },
+    "modal": {
+        "title": "This is a modal",
+        "link": "Go to home screen"
+    },
+    "splash": {
+        "welcome": "WELCOME VOLUNTARY"
+    }
+}

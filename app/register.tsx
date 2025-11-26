@@ -2,10 +2,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Image,
     KeyboardAvoidingView,
-    Platform, // Importa Platform
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -21,16 +22,17 @@ export default function RegisterScreen() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const { t } = useTranslation();
 
     const router = useRouter();
 
     const handleRegister = async () => {
         if (!email || !password || !confirmPassword) {
-            alert('Por favor completa todos los campos');
+            alert(t('register.errorMissingFields'));
             return;
         }
         if (password !== confirmPassword) {
-            alert('Las contraseñas no coinciden');
+            alert(t('register.errorPasswordMismatch'));
             return;
         }
 
@@ -44,7 +46,7 @@ export default function RegisterScreen() {
         await AsyncStorage.setItem('user', JSON.stringify(newUser));
         await AsyncStorage.setItem('@user_logged_in', 'true');
 
-        console.log('Registro exitoso:', email);
+        console.log(t('register.successLog'), email);
         router.replace('/account');
     };
 
@@ -53,32 +55,28 @@ export default function RegisterScreen() {
     };
 
     return (
-        // Envolvemos la vista completa con KeyboardAvoidingView
         <KeyboardAvoidingView
             style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // 'padding' en iOS, 'height' en Android
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0} // Ajuste fino en iOS
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
         >
-            {/* ScrollView permite desplazamiento si el contenido es muy grande */}
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled" // Permite tocar fuera del input para ocultar el teclado
+                keyboardShouldPersistTaps="handled"
             >
                 <View style={styles.content}>
-                    {/* Imagen superior */}
-                    <Text style={styles.title}>Volunteer Account</Text>
+                    <Text style={styles.title}>{t('register.title')}</Text>
                     <Image
                         source={require('../assets/images/Volunteer_account.png')}
                         style={styles.headerImage}
                         resizeMode="cover"
                     />
 
-                    {/* Campo Email */}
-                    <Text style={styles.label}>Email</Text>
+                    <Text style={styles.label}>{t('register.emailLabel')}</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Enter your email"
+                        placeholder={t('register.emailPlaceholder')}
                         value={email}
                         onChangeText={setEmail}
                         keyboardType="email-address"
@@ -86,12 +84,11 @@ export default function RegisterScreen() {
                         placeholderTextColor="#999"
                     />
 
-                    {/* Campo Password con ojo */}
-                    <Text style={styles.label}>Password</Text>
+                    <Text style={styles.label}>{t('register.passwordLabel')}</Text>
                     <View style={styles.passwordContainer}>
                         <TextInput
                             style={[styles.input, styles.passwordInput]}
-                            placeholder="Enter your password"
+                            placeholder={t('register.passwordPlaceholder')}
                             value={password}
                             onChangeText={setPassword}
                             secureTextEntry={!showPassword}
@@ -109,12 +106,11 @@ export default function RegisterScreen() {
                         </TouchableOpacity>
                     </View>
 
-                    {/* Campo Confirm Password con ojo */}
-                    <Text style={styles.label}>Confirm Password</Text>
+                    <Text style={styles.label}>{t('register.confirmPasswordLabel')}</Text>
                     <View style={styles.passwordContainer}>
                         <TextInput
                             style={[styles.input, styles.passwordInput]}
-                            placeholder="Confirm your password"
+                            placeholder={t('register.confirmPasswordPlaceholder')}
                             value={confirmPassword}
                             onChangeText={setConfirmPassword}
                             secureTextEntry={!showConfirmPassword}
@@ -132,14 +128,12 @@ export default function RegisterScreen() {
                         </TouchableOpacity>
                     </View>
 
-                    {/* Botón Regístrese */}
                     <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-                        <Text style={styles.registerButtonText}>Regístrese</Text>
+                        <Text style={styles.registerButtonText}>{t('register.registerButton')}</Text>
                     </TouchableOpacity>
 
-                    {/* Enlace "¿Ya tienes una cuenta?" */}
                     <TouchableOpacity onPress={handleLoginRedirect}>
-                        <Text style={styles.loginLink}>¿Ya tienes una cuenta?...</Text>
+                        <Text style={styles.loginLink}>{t('register.loginLink')}</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -153,10 +147,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     scrollContent: {
-        justifyContent: 'flex-start', // Se alinea al inicio, el ScrollView hará el resto
+        justifyContent: 'flex-start',
         alignItems: 'center',
         padding: 20,
-        paddingTop: 40, // Mantenemos el padding superior original
+        paddingTop: 40,
         flexGrow: 1,
     },
     content: {

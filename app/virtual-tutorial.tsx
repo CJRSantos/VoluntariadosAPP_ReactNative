@@ -1,9 +1,11 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 export default function VirtualTutorialScreen() {
     const router = useRouter();
+    const { t } = useTranslation();
 
     return (
         <SafeAreaView style={styles.container}>
@@ -12,7 +14,7 @@ export default function VirtualTutorialScreen() {
             {/* Video/Animation Content */}
             <View style={styles.content}>
                 <Text style={styles.description}>
-                    A continuación te mostramos cómo realizar tu postulación de manera virtual a través de nuestra plataforma.
+                    {t('virtualTutorial.description')}
                 </Text>
 
                 <View style={styles.imageContainer}>
@@ -25,7 +27,7 @@ export default function VirtualTutorialScreen() {
                 </View>
 
                 <Text style={styles.note}>
-                    * El video se reproduce automáticamente.
+                    {t('virtualTutorial.note')}
                 </Text>
             </View>
         </SafeAreaView>

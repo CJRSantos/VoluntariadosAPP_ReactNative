@@ -1,15 +1,14 @@
 // app/postulacion-confirmada.tsx
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-    Alert,
     Dimensions,
     SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 import { useTheme } from '../app/providers/ThemeProvider';
 
@@ -18,6 +17,7 @@ const { width } = Dimensions.get('window');
 export default function PostulacionConfirmadaScreen() {
     const router = useRouter();
     const { theme } = useTheme();
+    const { t } = useTranslation();
     const isDark = theme === 'dark';
 
     const handleVolverInicio = () => {
@@ -36,13 +36,12 @@ export default function PostulacionConfirmadaScreen() {
 
                 {/* Título */}
                 <Text style={[styles.title, { color: isDark ? '#FFF' : '#000' }]}>
-                    ¡Postulación confirmada!
+                    {t('postulacion.confirmation.title')}
                 </Text>
 
                 {/* Mensaje */}
                 <Text style={[styles.message, { color: isDark ? '#FFF' : '#000' }]}>
-                    Tu postulación ha sido recibida con éxito.
-                    Te mantendremos informado sobre los próximos pasos.
+                    {t('postulacion.confirmation.message')}
                 </Text>
 
                 {/* Botón Volver al inicio */}
@@ -50,7 +49,7 @@ export default function PostulacionConfirmadaScreen() {
                     style={[styles.backButton, { backgroundColor: '#4CAF50' }]}
                     onPress={handleVolverInicio}
                 >
-                    <Text style={styles.backButtonText}>Volver al inicio</Text>
+                    <Text style={styles.backButtonText}>{t('postulacion.confirmation.backButton')}</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

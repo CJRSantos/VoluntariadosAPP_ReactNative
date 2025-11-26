@@ -1,39 +1,41 @@
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function PresencialInfoScreen() {
     const router = useRouter();
+    const { t } = useTranslation();
 
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.content}>
                 {/* Contenido */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Requisitos y Pasos</Text>
+                    <Text style={styles.sectionTitle}>{t('presencialInfo.title')}</Text>
                     <Text style={styles.text}>
-                        Para postular de forma presencial, debes acercarte a la sede del IIAP y presentar tus documentos en Mesa de Partes.
+                        {t('presencialInfo.description')}
                     </Text>
 
-                    <Text style={styles.subTitle}>1. Prepara tus documentos</Text>
+                    <Text style={styles.subTitle}>{t('presencialInfo.step1.title')}</Text>
                     <Text style={styles.text}>
-                        Asegúrate de tener tu CV documentado y la ficha de inscripción llenada correctamente. Todo debe estar en un sobre manila cerrado.
+                        {t('presencialInfo.step1.text')}
                     </Text>
 
-                    <Text style={styles.subTitle}>2. Acércate al IIAP</Text>
+                    <Text style={styles.subTitle}>{t('presencialInfo.step2.title')}</Text>
                     <Text style={styles.text}>
-                        Dirígete a la oficina de Mesa de Partes en el horario de atención (Lunes a Viernes de 8:00 am a 4:00 pm).
+                        {t('presencialInfo.step2.text')}
                     </Text>
 
-                    <Text style={styles.subTitle}>3. Entrega tu expediente</Text>
+                    <Text style={styles.subTitle}>{t('presencialInfo.step3.title')}</Text>
                     <Text style={styles.text}>
-                        Entrega tu sobre y solicita tu cargo de recepción. Conserva este cargo para cualquier consulta posterior.
+                        {t('presencialInfo.step3.text')}
                     </Text>
                 </View>
 
                 <View style={styles.noteContainer}>
-                    <Text style={styles.noteTitle}>Nota Importante</Text>
+                    <Text style={styles.noteTitle}>{t('presencialInfo.note.title')}</Text>
                     <Text style={styles.noteText}>
-                        Recuerda que la postulación presencial es válida solo si se realiza dentro del plazo establecido en la convocatoria.
+                        {t('presencialInfo.note.text')}
                     </Text>
                 </View>
 

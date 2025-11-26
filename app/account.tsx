@@ -3,6 +3,7 @@ import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { Redirect, usePathname, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Alert,
     Clipboard,
@@ -40,6 +41,7 @@ export default function AccountScreen() {
     const pathname = usePathname();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
+    const { t } = useTranslation();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -165,7 +167,7 @@ export default function AccountScreen() {
     if (loading) {
         return (
             <SafeAreaView style={styles.loadingContainer}>
-                <Text style={{ color: isDark ? '#FFF' : '#333' }}>Cargando...</Text>
+                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{t('account.loading')}</Text>
             </SafeAreaView>
         );
     }
@@ -188,7 +190,7 @@ export default function AccountScreen() {
                     ]}
                 >
                     <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                        volunteer account
+                        {t('account.headerTitle')}
                     </Text>
                     <View style={styles.headerRight}>
                         <TouchableOpacity onPress={() => setIsProfileImageVisible(true)}>
@@ -213,23 +215,23 @@ export default function AccountScreen() {
                     <Image source={require('../assets/images/banner.png')} style={styles.bannerImage} />
                     <View style={styles.bannerContent}>
                         <Text style={[styles.bannerTitle, { color: '#FFF' }]}>
-                            Aquí comienza tu espacio exclusivo de usuario
+                            {t('account.banner.title')}
                         </Text>
                         <Text style={[styles.bannerSubtitle, { color: '#FFF' }]}>
-                            Bienvenido usuario se parte de este nuevo...
+                            {t('account.banner.subtitle')}
                         </Text>
                         <TouchableOpacity
                             style={styles.bannerButton}
                             onPress={() => router.push('/onboarding-info')}
                         >
-                            <Text style={styles.bannerButtonText}>Conocer más</Text>
+                            <Text style={styles.bannerButtonText}>{t('account.banner.button')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
 
                 {/* Últimas noticias - HORIZONTAL */}
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    Últimas noticias
+                    {t('account.news.sectionTitle')}
                 </Text>
                 <ScrollView
                     horizontal={true}
@@ -270,7 +272,7 @@ export default function AccountScreen() {
                                                     { backgroundColor: item.color, opacity: isDark ? 0.8 : 1 },
                                                 ]}
                                             >
-                                                <Text style={styles.statusText}>Abierto</Text>
+                                                <Text style={styles.statusText}>{t('account.news.status.open')}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity
                                                 style={[
@@ -278,7 +280,7 @@ export default function AccountScreen() {
                                                     { backgroundColor: '#4CAF50', opacity: isDark ? 0.8 : 1 },
                                                 ]}
                                             >
-                                                <Text style={styles.statusText}>Postular</Text>
+                                                <Text style={styles.statusText}>{t('account.news.apply')}</Text>
                                             </TouchableOpacity>
                                         </>
                                     ) : (
@@ -288,7 +290,7 @@ export default function AccountScreen() {
                                                 { backgroundColor: item.color, opacity: isDark ? 0.8 : 1 },
                                             ]}
                                         >
-                                            <Text style={styles.statusText}>Cerrado</Text>
+                                            <Text style={styles.statusText}>{t('account.news.status.closed')}</Text>
                                         </TouchableOpacity>
                                     )}
                                     <TouchableOpacity
@@ -300,7 +302,7 @@ export default function AccountScreen() {
                                         ]}
                                     >
                                         <Text style={[styles.detailsText, { color: isDark ? '#AAA' : '#666' }]}>
-                                            Detalles
+                                            {t('account.news.details')}
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
@@ -311,7 +313,7 @@ export default function AccountScreen() {
 
                 {/*Videos */}
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    Videos
+                    {t('account.videos.sectionTitle')}
                 </Text>
                 <View style={styles.guidesContainer}>
                     {guides.map((guide) => (
@@ -322,9 +324,9 @@ export default function AccountScreen() {
                                 Linking.openURL(guide.videoUrl).catch((err) => {
                                     console.error('Error al abrir YouTube:', err);
                                     Alert.alert(
-                                        'Error',
-                                        'No se pudo abrir el video. Por favor, copia y pega el enlace en tu navegador.',
-                                        [{ text: 'Copiar enlace', onPress: () => Clipboard.setString(guide.videoUrl) }]
+                                        t('account.videos.errorTitle'),
+                                        t('account.videos.errorMessage'),
+                                        [{ text: t('account.videos.copyLink'), onPress: () => Clipboard.setString(guide.videoUrl) }]
                                     );
                                 });
                             }}
@@ -349,7 +351,7 @@ export default function AccountScreen() {
 
                 {/* Enlaces rápidos - AHORA CON REDES SOCIALES */}
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    Enlaces Rápidos
+                    {t('account.quickLinks.sectionTitle')}
                 </Text>
                 <View style={styles.quickLinksContainer}>
                     <View style={styles.socialLinksRow}>
@@ -373,7 +375,7 @@ export default function AccountScreen() {
                                     )}
                                 </View>
                                 <Text style={[styles.socialLinkLabel, { color: isDark ? '#FFF' : '#333' }]}>
-                                    {social.name}
+                                    {social.id === 'web' ? t('account.social.web') : social.name}
                                 </Text>
                             </TouchableOpacity>
                         ))}
@@ -416,7 +418,7 @@ export default function AccountScreen() {
                             pathname === '/account' && styles.navLabelActive,
                         ]}
                     >
-                        Inicio
+                        {t('account.nav.home')}
                     </Text>
                 </TouchableOpacity>
 
@@ -441,7 +443,7 @@ export default function AccountScreen() {
                             pathname === '/areas' && styles.navLabelActive,
                         ]}
                     >
-                        Áreas
+                        {t('account.nav.areas')}
                     </Text>
                 </TouchableOpacity>
 
@@ -466,7 +468,7 @@ export default function AccountScreen() {
                             pathname === '/convocatoria' && styles.navLabelActive,
                         ]}
                     >
-                        Convocatory
+                        {t('account.nav.convocatory')}
                     </Text>
                 </TouchableOpacity>
 
@@ -491,7 +493,7 @@ export default function AccountScreen() {
                             pathname === '/nosotros' && styles.navLabelActive,
                         ]}
                     >
-                        Nosotros
+                        {t('account.nav.about')}
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -524,7 +526,7 @@ export default function AccountScreen() {
                                 }}
                             >
                                 <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
-                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>Profile</Text>
+                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('account.menu.profile')}</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
@@ -535,18 +537,18 @@ export default function AccountScreen() {
                                 }}
                             >
                                 <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
-                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>Settings</Text>
+                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('account.menu.settings')}</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                                 onPress={() => {
-                                    Alert.alert('Próximamente', 'Ayuda estará disponible pronto');
+                                    Alert.alert(t('account.menu.soon'), t('account.menu.helpSoon'));
                                     setIsMenuOpen(false);
                                 }}
                             >
                                 <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
-                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>Help</Text>
+                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('account.menu.help')}</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
@@ -557,7 +559,7 @@ export default function AccountScreen() {
                                 }}
                             >
                                 <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
-                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>Log-out</Text>
+                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('account.menu.logout')}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -582,7 +584,7 @@ export default function AccountScreen() {
                     onSwipeDown={() => setIsProfileImageVisible(false)}
                     saveToLocalByLongPress={false}
                     backgroundColor="rgba(0,0,0,0.8)"
-                    loadingRender={() => <Text style={{ color: '#FFF' }}>Cargando...</Text>}
+                    loadingRender={() => <Text style={{ color: '#FFF' }}>{t('account.loading')}</Text>}
                     onClick={() => setIsProfileImageVisible(false)}
                 />
             </Modal>

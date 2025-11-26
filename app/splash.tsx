@@ -2,9 +2,11 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Animated, Image, StyleSheet, Text } from 'react-native';
 
 export default function SplashScreen() {
+    const { t } = useTranslation();
     const router = useRouter();
     const [showText, setShowText] = useState(false);
     const fadeAnim = useState(new Animated.Value(0))[0];
@@ -41,7 +43,7 @@ export default function SplashScreen() {
 
             {showText && (
                 <Animated.View style={[styles.textContainer, { opacity: fadeAnim }]}>
-                    <Text style={styles.welcomeText}>WELCOME VOLUNTARY</Text>
+                    <Text style={styles.welcomeText}>{t('splash.welcome')}</Text>
                 </Animated.View>
             )}
         </LinearGradient>

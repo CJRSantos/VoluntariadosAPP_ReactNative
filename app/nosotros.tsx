@@ -1,8 +1,8 @@
 // app/nosotros.tsx
-import { useAuth } from '@/hooks/useAuth';
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, usePathname, useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Alert,
     Dimensions,
@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
+import { useAuth } from '../hooks/useAuth';
 
 const { width } = Dimensions.get('window');
 
@@ -28,22 +29,23 @@ export default function NosotrosScreen() {
     const pathname = usePathname(); // 👈 Detecta la ruta actual
     const { theme } = useTheme();
     const isDark = theme === 'dark';
+    const { t } = useTranslation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     const stats = [
-        { value: '+4', label: 'publicaciones científicas internacionales' },
-        { value: '+10', label: 'proyectos en desarrollo actualmente' },
-        { value: '+500', label: 'beneficiarios directos en programas sociales' },
-        { value: '+8', label: 'alianzas estratégicas con instituciones nacionales e internacionales' },
+        { value: '+4', label: t('nosotros.stats.publications') },
+        { value: '+10', label: t('nosotros.stats.projects') },
+        { value: '+500', label: t('nosotros.stats.beneficiaries') },
+        { value: '+8', label: t('nosotros.stats.alliances') },
     ];
 
     if (loading) {
         return (
             <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
                 <View style={styles.loading}>
-                    <Text style={{ color: isDark ? '#FFF' : '#333' }}>Cargando...</Text>
+                    <Text style={{ color: isDark ? '#FFF' : '#333' }}>{t('common.loading', 'Cargando...')}</Text>
                 </View>
             </SafeAreaView>
         );
@@ -65,7 +67,7 @@ export default function NosotrosScreen() {
                     ]}
                 >
                     <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                        volunteer account
+                        {t('nosotros.headerTitle')}
                     </Text>
                     <View style={styles.headerRight}>
                         <Image
@@ -111,7 +113,7 @@ export default function NosotrosScreen() {
                                 >
                                     <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
                                     <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                                        Profile
+                                        {t('nosotros.menu.profile')}
                                     </Text>
                                 </TouchableOpacity>
 
@@ -124,19 +126,19 @@ export default function NosotrosScreen() {
                                 >
                                     <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
                                     <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                                        Settings
+                                        {t('nosotros.menu.settings')}
                                     </Text>
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
                                     style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                                     onPress={() => {
-                                        Alert.alert('Próximamente', 'Ayuda estará disponible pronto');
+                                        Alert.alert(t('nosotros.menu.soon'), t('nosotros.menu.helpSoon'));
                                         setIsMenuOpen(false);
                                     }}
                                 >
                                     <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
-                                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>Help</Text>
+                                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('nosotros.menu.help')}</Text>
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
@@ -148,7 +150,7 @@ export default function NosotrosScreen() {
                                 >
                                     <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
                                     <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                                        Log-out
+                                        {t('nosotros.menu.logout')}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
@@ -160,11 +162,10 @@ export default function NosotrosScreen() {
                 <ScrollView contentContainerStyle={styles.scrollViewContent}>
                     <View style={styles.content}>
                         <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                            ¿Por qué unirte a nosotros?
+                            {t('nosotros.whyJoin')}
                         </Text>
                         <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                            Únete a nuestra institución y sé parte de un equipo que impulsa innovación,
-                            sostenibilidad e impacto positivo.
+                            {t('nosotros.joinDescription')}
                         </Text>
 
                         <View style={styles.iconsSection}>
@@ -174,13 +175,12 @@ export default function NosotrosScreen() {
                                     { backgroundColor: isDark ? '#222' : '#F5F5F5' },
                                 ]}
                             >
-                                <Ionicons name="handshake" size={40} color="#FF5722" />
+                                <Ionicons name="people" size={40} color="#FF5722" />
                                 <Text style={[styles.iconTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                                    Nuestra historia
+                                    {t('nosotros.ourHistory')}
                                 </Text>
                                 <Text style={[styles.iconText, { color: isDark ? '#AAA' : '#666' }]}>
-                                    Desde nuestros inicios, hemos trabajado en fortalecer la educación,
-                                    la investigación y los proyectos sociales.
+                                    {t('nosotros.historyDescription')}
                                 </Text>
                             </View>
 
@@ -192,10 +192,10 @@ export default function NosotrosScreen() {
                             >
                                 <Ionicons name="rocket" size={40} color="#FF9800" />
                                 <Text style={[styles.iconTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                                    Nuestra misión
+                                    {t('nosotros.ourMission')}
                                 </Text>
                                 <Text style={[styles.iconText, { color: isDark ? '#AAA' : '#666' }]}>
-                                    Impulsar iniciativas que transformen vidas a través de la educación y la acción social.
+                                    {t('nosotros.missionDescription')}
                                 </Text>
                             </View>
 
@@ -207,10 +207,10 @@ export default function NosotrosScreen() {
                             >
                                 <Ionicons name="water" size={40} color="#2196F3" />
                                 <Text style={[styles.iconTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                                    Lo que nos diferencia
+                                    {t('nosotros.difference')}
                                 </Text>
                                 <Text style={[styles.iconText, { color: isDark ? '#AAA' : '#666' }]}>
-                                    Nos distingue nuestro enfoque integral, combinando conocimiento e innovación.
+                                    {t('nosotros.differenceDescription')}
                                 </Text>
                             </View>
                         </View>
@@ -264,7 +264,7 @@ export default function NosotrosScreen() {
                         <Text
                             style={[styles.navLabel, pathname === '/inicio' && styles.navLabelActive]}
                         >
-                            Inicio
+                            {t('nosotros.nav.home')}
                         </Text>
                     </TouchableOpacity>
 
@@ -280,7 +280,7 @@ export default function NosotrosScreen() {
                         <Text
                             style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive]}
                         >
-                            Áreas
+                            {t('nosotros.nav.areas')}
                         </Text>
                     </TouchableOpacity>
 
@@ -296,7 +296,7 @@ export default function NosotrosScreen() {
                         <Text
                             style={[styles.navLabel, pathname === '/convocatoria' && styles.navLabelActive]}
                         >
-                            Convocatory
+                            {t('nosotros.nav.convocatory')}
                         </Text>
                     </TouchableOpacity>
 
@@ -312,7 +312,7 @@ export default function NosotrosScreen() {
                         <Text
                             style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive]}
                         >
-                            Nosotros
+                            {t('nosotros.nav.about')}
                         </Text>
                     </TouchableOpacity>
                 </View>

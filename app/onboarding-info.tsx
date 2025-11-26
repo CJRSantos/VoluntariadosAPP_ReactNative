@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Asset } from 'expo-asset';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Clipboard, Image, Linking, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { useTheme } from './providers/ThemeProvider';
@@ -15,6 +16,7 @@ export const screenOptions = {
 export default function OnboardingInfo() {
     const router = useRouter();
     const { theme } = useTheme();
+    const { t } = useTranslation();
     const isDark = theme === 'dark';
 
     // Estado para controlar si se muestra el modal de imagen
@@ -47,7 +49,7 @@ export default function OnboardingInfo() {
 
         } catch (error) {
             console.error('Error al cargar la imagen:', error);
-            Alert.alert('Error', 'No se pudo cargar la imagen. Intente más tarde.');
+            Alert.alert(t('login.errorTitle'), 'No se pudo cargar la imagen. Intente más tarde.');
         }
     };
 
@@ -55,9 +57,9 @@ export default function OnboardingInfo() {
         <ScrollView style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
             {/* Encabezado */}
             <View style={styles.header}>
-                <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>¡Bienvenido a Voluntariados IIAP!</Text>
+                <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{t('onboarding.title')}</Text>
                 <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                    Tu puerta de entrada para contribuir con la ciencia y conservación amazónica.
+                    {t('onboarding.subtitle')}
                 </Text>
             </View>
 
@@ -72,20 +74,20 @@ export default function OnboardingInfo() {
                     />
                 </TouchableOpacity>
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    ¿Qué es Voluntariados IIAP?
+                    {t('onboarding.section1.title')}
                 </Text>
                 <Text style={[styles.sectionText, { color: isDark ? '#DDD' : '#444' }]}>
-                    Es una plataforma digital que conecta a personas comprometidas con la investigación científica y la conservación ambiental en la Amazonía peruana, con proyectos reales del Instituto de Investigaciones de la Amazonía Peruana (IIAP).
+                    {t('onboarding.section1.text')}
                 </Text>
             </View>
 
             {/* Sección 2: ¿Cómo funciona? */}
             <View style={[styles.section, { borderColor: isDark ? '#333' : '#EEE' }]}>
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    ¿Qué es el IIAP?
+                    {t('onboarding.section2.title')}
                 </Text>
                 <Text style={[styles.sectionText, { color: isDark ? '#DDD' : '#444' }]}>
-                    Mira este video para entender que es el IIAP
+                    {t('onboarding.section2.text')}
                 </Text>
 
                 {/* Botón para abrir video de YouTube */}
@@ -96,15 +98,15 @@ export default function OnboardingInfo() {
                         Linking.openURL(youtubeUrl).catch((err) => {
                             console.error('Error al abrir YouTube:', err);
                             Alert.alert(
-                                'Error',
-                                'No se pudo abrir el video. Por favor, copia y pega el enlace en tu navegador.',
-                                [{ text: 'Copiar enlace', onPress: () => Clipboard.setString(youtubeUrl) }]
+                                t('login.errorTitle'),
+                                t('account.videos.errorMessage'),
+                                [{ text: t('account.videos.copyLink'), onPress: () => Clipboard.setString(youtubeUrl) }]
                             );
                         });
                     }}
                 >
                     <Ionicons name="play-circle" size={24} color="#FFF" style={{ marginRight: 8 }} />
-                    <Text style={styles.videoButtonText}>Ver tutorial en YouTube</Text>
+                    <Text style={styles.videoButtonText}>{t('onboarding.section2.button')}</Text>
                 </TouchableOpacity>
             </View>
 
@@ -119,13 +121,10 @@ export default function OnboardingInfo() {
                     />
                 </TouchableOpacity>
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    Beneficios de ser voluntario
+                    {t('onboarding.section3.title')}
                 </Text>
                 <Text style={[styles.sectionText, { color: isDark ? '#DDD' : '#444' }]}>
-                    • Experiencia práctica en campo y laboratorio.{'\n'}
-                    • Certificación de participación emitida por el IIAP.{'\n'}
-                    • Acceso a redes de científicos y profesionales.{'\n'}
-                    • Contribución directa a la conservación de la Amazonía.
+                    {t('onboarding.section3.text')}
                 </Text>
             </View>
 
@@ -134,7 +133,7 @@ export default function OnboardingInfo() {
                 style={[styles.ctaButton, { backgroundColor: '#4CAF50' }]}
                 onPress={() => router.push('/convocatoria')}
             >
-                <Text style={styles.ctaButtonText}>Explorar Convocatorias</Text>
+                <Text style={styles.ctaButtonText}>{t('onboarding.ctaButton')}</Text>
             </TouchableOpacity>
 
             {/* Pie de página / Volver */}
@@ -161,7 +160,7 @@ export default function OnboardingInfo() {
                     onSwipeDown={() => setIsImageVisible(false)}
                     saveToLocalByLongPress={false}
                     backgroundColor="rgba(0,0,0,0.8)"
-                    loadingRender={() => <Text style={{ color: '#FFF' }}>Cargando...</Text>}
+                    loadingRender={() => <Text style={{ color: '#FFF' }}>{t('account.loading')}</Text>}
                     onClick={() => setIsImageVisible(false)}
                     renderHeader={() => (
                         <TouchableOpacity

@@ -1,5 +1,6 @@
 // app/postulacion-paso3.tsx
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import {
     Dimensions,
     SafeAreaView,
@@ -16,6 +17,7 @@ const { width } = Dimensions.get('window');
 export default function PostulacionPaso3Screen() {
     const router = useRouter();
     const { theme } = useTheme();
+    const { t } = useTranslation();
     const isDark = theme === 'dark';
 
     const handleEnviarPostulacion = () => {
@@ -31,7 +33,7 @@ export default function PostulacionPaso3Screen() {
                 {/* Header */}
                 <View style={styles.header}>
                     <Text style={[styles.title, { color: isDark ? '#FFF' : '#000' }]}>
-                        Postulación
+                        {t('postulacion.step3.title')}
                     </Text>
                     <View style={styles.stepIndicator}>
                         <View style={[styles.dot]} />
@@ -48,7 +50,7 @@ export default function PostulacionPaso3Screen() {
                 {/* Step Content */}
                 <View style={styles.stepContent}>
                     <Text style={[styles.stepTitle, { color: isDark ? '#FFF' : '#000' }]}>
-                        Paso 3 de 3
+                        {t('postulacion.step3.stepTitle')}
                     </Text>
 
                     <View style={styles.checklist}>
@@ -56,10 +58,10 @@ export default function PostulacionPaso3Screen() {
                             <Text style={[styles.checkIcon, { color: isDark ? '#4CAF50' : '#4CAF50' }]}>✓</Text>
                             <View style={styles.checkTextContainer}>
                                 <Text style={[styles.checkLabel, { color: isDark ? '#FFF' : '#000' }]}>
-                                    Registro de Datos Personales
+                                    {t('postulacion.step3.personalData')}
                                 </Text>
                                 <Text style={[styles.checkStatus, { color: isDark ? '#AAA' : '#666' }]}>
-                                    Completado
+                                    {t('postulacion.step3.completed')}
                                 </Text>
                             </View>
                         </View>
@@ -68,10 +70,10 @@ export default function PostulacionPaso3Screen() {
                             <Text style={[styles.checkIcon, { color: isDark ? '#4CAF50' : '#4CAF50' }]}>✓</Text>
                             <View style={styles.checkTextContainer}>
                                 <Text style={[styles.checkLabel, { color: isDark ? '#FFF' : '#000' }]}>
-                                    Subida de Documentos | Otros requisitos
+                                    {t('postulacion.step3.documents')}
                                 </Text>
                                 <Text style={[styles.checkStatus, { color: isDark ? '#AAA' : '#666' }]}>
-                                    Completado
+                                    {t('postulacion.step3.completed')}
                                 </Text>
                             </View>
                         </View>
@@ -80,10 +82,10 @@ export default function PostulacionPaso3Screen() {
                             <Text style={[styles.checkIcon, { color: isDark ? '#777' : '#777' }]}>•</Text>
                             <View style={styles.checkTextContainer}>
                                 <Text style={[styles.checkLabel, { color: isDark ? '#FFF' : '#000' }]}>
-                                    Confirmación y Envío
+                                    {t('postulacion.step3.confirmation')}
                                 </Text>
                                 <Text style={[styles.checkStatus, { color: isDark ? '#AAA' : '#666' }]}>
-                                    Paso actual
+                                    {t('postulacion.step3.currentStep')}
                                 </Text>
                             </View>
                         </View>
@@ -93,7 +95,7 @@ export default function PostulacionPaso3Screen() {
                         style={[styles.submitButton, { backgroundColor: '#4CAF50' }]}
                         onPress={handleEnviarPostulacion}
                     >
-                        <Text style={styles.submitButtonText}>Enviar postulación</Text>
+                        <Text style={styles.submitButtonText}>{t('postulacion.step3.submitButton')}</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

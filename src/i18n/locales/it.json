@@ -1,0 +1,88 @@
+{
+    "login": {
+        "title": "Intranet Volontari",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Inserisci la tua email",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "Inserisci la tua password",
+        "loginButton": "Accedi",
+        "createAccount": "Crea un account",
+        "errorTitle": "Errore",
+        "errorMissingFields": "Si prega di compilare tutti i campi",
+        "errorLoginFailed": "Impossibile accedere"
+    },
+    "register": {
+        "title": "Account Volontario",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Inserisci la tua email",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "Inserisci la tua password",
+        "confirmPasswordLabel": "Conferma Password",
+        "appearance": {
+            "title": "Aspetto",
+            "dark": "Modalità scura",
+            "light": "Modalità chiara",
+            "enableDark": "Attiva modalità scura",
+            "disableDark": "Disattiva modalità scura"
+        },
+        "language": {
+            "title": "Lingua",
+            "subtitle": "Seleziona la lingua dell'app",
+            "modalTitle": "Seleziona Lingua"
+        },
+        "notifications": {
+            "title": "Notifiche",
+            "subtitle": "Personalizza i tuoi avvisi"
+        },
+        "privacy": {
+            "title": "Privacy",
+            "subtitle": "Regola preferenze"
+        },
+        "storage": {
+            "title": "Archiviazione",
+            "subtitle": "Gestisci dati e spazio",
+            "modalTitle": "Opzioni di Archiviazione",
+            "viewSize": "Vedi dimensione archiviazione",
+            "clearCache": "Pulisci cache immagini",
+            "deleteAll": "Elimina tutti i dati",
+            "export": "Esporta i miei dati",
+            "close": "Chiudi"
+        }
+    },
+    "postulacion": {
+        "step1": {
+            "title": "Inizia il tuo processo di candidatura",
+            "subtitle": "Programma di Volontariato Ambientale 2025",
+            "stepTitle": "Passo 1: Invio documenti | Altri requisiti",
+            "uploadButton": "Carica file",
+            "uploading": "Caricamento...",
+            "fileSelected": "File selezionato",
+            "noName": "Senza nome",
+            "errorSelection": "Impossibile selezionare il file.",
+            "warning": "Avviso",
+            "warningMessage": "Si prega di caricare un file prima di continuare.",
+            "nextButton": "Passo successivo",
+            "fileLabel": "File:"
+        }
+    },
+    "presencialInfo": {
+        "title": "Requisiti e Passaggi",
+        "description": "Per candidarsi di persona, devi recarti presso la sede dell'IIAP e presentare i tuoi documenti all'Ufficio Protocollo.",
+        "step1": {
+            "title": "1. Prepara i tuoi documenti",
+            "text": "Assicurati di avere il tuo CV documentato e il modulo di iscrizione compilato correttamente. Tutto deve essere in una busta manila chiusa."
+        },
+        "step2": {
+            "title": "2. Recati all'IIAP",
+            "text": "Recati all'ufficio Protocollo durante l'orario di apertura (dal lunedì al venerdì dalle 8:00 alle 16:00)."
+        },
+        "step3": {
+            "title": "3. Consegna il tuo fascicolo",
+            "text": "Consegna la tua busta e richiedi la ricevuta. Conserva questa ricevuta per qualsiasi consultazione futura."
+        },
+        "note": {
+            "title": "Nota Importante",
+            "text": "Ricorda che la candidatura di persona è valida solo se effettuata entro il termine stabilito nel bando."
+        }
+    }
+}
