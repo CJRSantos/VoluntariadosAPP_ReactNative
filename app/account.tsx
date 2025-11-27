@@ -96,58 +96,18 @@ export default function AccountScreen() {
         },
     ]);
 
-    // Videos //
+    // Videos
     const [guides] = useState([
-        {
-            id: 1,
-            title: 'Video 1: Bienvenidos al IIAP',
-            videoUrl: 'https://youtu.be/HDSMeoQosN8?si=3b3Tn1Di6vx2bH_m',
-        },
-        {
-            id: 2,
-            title: 'Video 2: Mullaca - Ciencia a tu Alcance',
-            videoUrl: 'https://youtu.be/cQaQjp4iX44?si=i4Mg4BOgkRRCwhdJ',
-        },
-        {
-            id: 3,
-            title: 'Video 3: 43 Años del IIAP',
-            videoUrl: 'https://youtu.be/V5hnXID8TQc?si=o1wgt0Tb6W_j8k_R',
-        },
-        {
-            id: 4,
-            title: 'Video 4: Embajadora de Francia en el IIAP',
-            videoUrl: 'https://youtu.be/JBvkA-ZgQDw?si=nHXErOW6Ug0h1Y5y',
-        },
-        {
-            id: 5,
-            title: 'Video 5: Inauguración de la IIAP',
-            videoUrl: 'https://youtu.be/NMF_35Q4nCU?si=qcs466ORSvUM7Ewg',
-        },
-        {
-            id: 6,
-            title: 'Video 6: Los árboles, guardianes de la vida',
-            videoUrl: 'https://youtu.be/1p4Vd_g8igo?si=ayi1RGJF64DpLlY_',
-        },
-        {
-            id: 7,
-            title: 'Video 7: Educacación ambiental - Astoria',
-            videoUrl: 'https://youtu.be/MatQhCP9dCI?si=CbZGIM504jhUDoL6',
-        },
-        {
-            id: 8,
-            title: 'Video 8:Restauración de bosques Amazó nicos con Drones',
-            videoUrl: 'https://youtu.be/MMGx5A3Olio?si=9DBF2AMQ5dI4gt23',
-        },
-        {
-            id: 9,
-            title: 'Video 9: IIAP y Ejército del Perú impulsan nuevas oportunidades para jóvenes soldados en Ucayali',
-            videoUrl: 'https://youtu.be/u7EUUNYydiU?si=GKTcLguM2MvE-83U',
-        },
-        {
-            id: 10,
-            title: 'Video 10: Niños de Madre de Dios aprenden a cuidar la Amazonía',
-            videoUrl: 'https://youtu.be/bnNYooo3gHw?si=TywKUckAVHjMp4rY',
-        },
+        { id: 1, videoUrl: 'https://youtu.be/HDSMeoQosN8?si=3b3Tn1Di6vx2bH_m' },
+        { id: 2, videoUrl: 'https://youtu.be/cQaQjp4iX44?si=i4Mg4BOgkRRCwhdJ' },
+        { id: 3, videoUrl: 'https://youtu.be/V5hnXID8TQc?si=o1wgt0Tb6W_j8k_R' },
+        { id: 4, videoUrl: 'https://youtu.be/JBvkA-ZgQDw?si=nHXErOW6Ug0h1Y5y' },
+        { id: 5, videoUrl: 'https://youtu.be/NMF_35Q4nCU?si=qcs466ORSvUM7Ewg' },
+        { id: 6, videoUrl: 'https://youtu.be/1p4Vd_g8igo?si=ayi1RGJF64DpLlY_' },
+        { id: 7, videoUrl: 'https://youtu.be/MatQhCP9dCI?si=CbZGIM504jhUDoL6' },
+        { id: 8, videoUrl: 'https://youtu.be/MMGx5A3Olio?si=9DBF2AMQ5dI4gt23' },
+        { id: 9, videoUrl: 'https://youtu.be/u7EUUNYydiU?si=GKTcLguM2MvE-83U' },
+        { id: 10, videoUrl: 'https://youtu.be/bnNYooo3gHw?si=TywKUckAVHjMp4rY' },
     ]);
 
     const openSocialLink = (url: string) => {
@@ -343,7 +303,7 @@ export default function AccountScreen() {
                                 </View>
                             </View>
                             <Text style={[styles.guideTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                                {guide.title}
+                                {t(`account.videos.items.${guide.id}`)}
                             </Text>
                         </TouchableOpacity>
                     ))}
@@ -861,16 +821,5 @@ const styles = StyleSheet.create({
     navLabel: { fontSize: 10, marginTop: 4, textAlign: 'center' },
     navLabelActive: {
         color: '#4CAF50',
-    },
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.8)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
 });

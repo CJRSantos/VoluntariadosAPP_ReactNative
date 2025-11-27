@@ -1,4 +1,3 @@
-// app/settings.tsx
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -38,27 +37,27 @@ export default function SettingsScreen() {
         try {
             await AsyncStorage.removeItem('userBannerURL');
             await AsyncStorage.removeItem('userPhotoURL');
-            Alert.alert('Éxito', 'Caché de imágenes limpiada.');
+            Alert.alert(t('common.success', 'Éxito'), t('settings.storage.cacheCleared', 'Caché de imágenes limpiada.'));
         } catch (e) {
-            Alert.alert('Error', 'No se pudo limpiar la caché.');
+            Alert.alert(t('common.error', 'Error'), t('settings.storage.cacheError', 'No se pudo limpiar la caché.'));
         }
     };
 
     const deleteAllData = async () => {
         Alert.alert(
-            '¿Estás seguro?',
-            'Esta acción eliminará TODOS tus datos guardados en este dispositivo. No se puede deshacer.',
+            t('common.warning', '¿Estás seguro?'),
+            t('settings.storage.deleteWarning', 'Esta acción eliminará TODOS tus datos guardados en este dispositivo. No se puede deshacer.'),
             [
-                { text: 'Cancelar', style: 'cancel' },
+                { text: t('common.cancel', 'Cancelar'), style: 'cancel' },
                 {
-                    text: 'Eliminar',
+                    text: t('common.delete', 'Eliminar'),
                     style: 'destructive',
                     onPress: async () => {
                         try {
                             await AsyncStorage.clear();
-                            Alert.alert('Éxito', 'Todos los datos han sido eliminados. La app se reiniciará.');
+                            Alert.alert(t('common.success', 'Éxito'), t('settings.storage.deleteSuccess', 'Todos los datos han sido eliminados. La app se reiniciará.'));
                         } catch (e) {
-                            Alert.alert('Error', 'No se pudieron eliminar los datos.');
+                            Alert.alert(t('common.error', 'Error'), t('settings.storage.deleteError', 'No se pudieron eliminar los datos.'));
                         }
                     },
                 },
@@ -72,9 +71,9 @@ export default function SettingsScreen() {
             const values = await AsyncStorage.multiGet(keys);
             const data = Object.fromEntries(values);
             const json = JSON.stringify(data, null, 2);
-            Alert.alert('Datos Exportados', `Tu información se ha exportado.\n\n${json}`);
+            Alert.alert(t('settings.storage.exportTitle', 'Datos Exportados'), `${t('settings.storage.exportMessage', 'Tu información se ha exportado.')}\n\n${json}`);
         } catch (e) {
-            Alert.alert('Error', 'No se pudieron exportar los datos.');
+            Alert.alert(t('common.error', 'Error'), t('settings.storage.exportError', 'No se pudieron exportar los datos.'));
         }
     };
 
@@ -90,15 +89,15 @@ export default function SettingsScreen() {
             visible={storageModalVisible}
             onRequestClose={() => setStorageModalVisible(false)}
         >
-            <View style={[styles.modalContainer, { backgroundColor: isDark ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.5)' }]}>
-                <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}>
+            <View style={[styles.modalContainer, { backgroundColor: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)' }]}>
+                <View style={[styles.modalContent, { backgroundColor: isDark ? '#1E1E1E' : '#FFF' }]}>
                     <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.storage.modalTitle')}</Text>
 
                     <TouchableOpacity
                         style={[styles.modalItem, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
                         onPress={async () => {
                             const size = await getStorageSize();
-                            Alert.alert('Espacio Utilizado', `La aplicación está usando ${size}.`);
+                            Alert.alert(t('settings.storage.sizeTitle', 'Tamaño de Almacenamiento'), size);
                         }}
                     >
                         <Text style={[styles.modalItemText, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.storage.viewSize')}</Text>
@@ -115,7 +114,7 @@ export default function SettingsScreen() {
                         style={[styles.modalItem, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
                         onPress={deleteAllData}
                     >
-                        <Text style={[styles.modalItemText, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.storage.deleteAll')}</Text>
+                        <Text style={[styles.modalItemText, { color: '#FF4444' }]}>{t('settings.storage.deleteAll')}</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -126,10 +125,10 @@ export default function SettingsScreen() {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        style={[styles.closeButton, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
+                        style={[styles.closeButton, { backgroundColor: isDark ? '#444' : '#DDD' }]}
                         onPress={() => setStorageModalVisible(false)}
                     >
-                        <Text style={[styles.closeButtonText, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.storage.close')}</Text>
+                        <Text style={[styles.closeButtonText, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.close')}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -143,72 +142,29 @@ export default function SettingsScreen() {
             visible={languageModalVisible}
             onRequestClose={() => setLanguageModalVisible(false)}
         >
-            <View style={[styles.modalContainer, { backgroundColor: isDark ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.5)' }]}>
-                <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#fff' }]}>
+            <View style={[styles.modalContainer, { backgroundColor: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)' }]}>
+                <View style={[styles.modalContent, { backgroundColor: isDark ? '#1E1E1E' : '#FFF' }]}>
                     <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.language.modalTitle')}</Text>
-                    <ScrollView style={{ maxHeight: 400 }}>
-                        <TouchableOpacity
-                            style={[styles.modalItem, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
-                            onPress={() => handleLanguageChange('es')}
-                        >
-                            <Text style={[styles.modalItemText, { color: isDark ? '#FFF' : '#333' }]}>Español {i18n.language === 'es' && '✓'}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[styles.modalItem, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
-                            onPress={() => handleLanguageChange('en')}
-                        >
-                            <Text style={[styles.modalItemText, { color: isDark ? '#FFF' : '#333' }]}>English {i18n.language === 'en' && '✓'}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[styles.modalItem, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
-                            onPress={() => handleLanguageChange('en-US')}
-                        >
-                            <Text style={[styles.modalItemText, { color: isDark ? '#FFF' : '#333' }]}>English (US) {i18n.language === 'en-US' && '✓'}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[styles.modalItem, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
-                            onPress={() => handleLanguageChange('en-GB')}
-                        >
-                            <Text style={[styles.modalItemText, { color: isDark ? '#FFF' : '#333' }]}>English (UK) {i18n.language === 'en-GB' && '✓'}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[styles.modalItem, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
-                            onPress={() => handleLanguageChange('pt')}
-                        >
-                            <Text style={[styles.modalItemText, { color: isDark ? '#FFF' : '#333' }]}>Português {i18n.language === 'pt' && '✓'}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[styles.modalItem, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
-                            onPress={() => handleLanguageChange('fr')}
-                        >
-                            <Text style={[styles.modalItemText, { color: isDark ? '#FFF' : '#333' }]}>Français {i18n.language === 'fr' && '✓'}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[styles.modalItem, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
-                            onPress={() => handleLanguageChange('it')}
-                        >
-                            <Text style={[styles.modalItemText, { color: isDark ? '#FFF' : '#333' }]}>Italiano {i18n.language === 'it' && '✓'}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[styles.modalItem, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
-                            onPress={() => handleLanguageChange('ja')}
-                        >
-                            <Text style={[styles.modalItemText, { color: isDark ? '#FFF' : '#333' }]}>日本語 {i18n.language === 'ja' && '✓'}</Text>
-                        </TouchableOpacity>
-                    </ScrollView>
 
                     <TouchableOpacity
-                        style={[styles.closeButton, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
+                        style={[styles.modalItem, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
+                        onPress={() => handleLanguageChange('es')}
+                    >
+                        <Text style={[styles.modalItemText, { color: isDark ? '#FFF' : '#333' }]}>Español {i18n.language === 'es' && '✓'}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.modalItem, { backgroundColor: isDark ? '#333' : '#EAEAEA' }]}
+                        onPress={() => handleLanguageChange('en')}
+                    >
+                        <Text style={[styles.modalItemText, { color: isDark ? '#FFF' : '#333' }]}>English {i18n.language === 'en' && '✓'}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.closeButton, { backgroundColor: isDark ? '#444' : '#DDD' }]}
                         onPress={() => setLanguageModalVisible(false)}
                     >
-                        <Text style={[styles.closeButtonText, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.storage.close')}</Text>
+                        <Text style={[styles.closeButtonText, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.close')}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -217,94 +173,74 @@ export default function SettingsScreen() {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#000' : '#FFF' }]}>
-            <View
-                style={[
-                    styles.header,
-                    {
-                        backgroundColor: isDark ? '#111' : '#F8F8F8',
-                        borderBottomColor: isDark ? '#333' : '#EEE',
-                    },
-                ]}
-            >
-                <TouchableOpacity onPress={handleBack} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+            <View style={[styles.header, { backgroundColor: isDark ? '#111' : '#F8F8F8', borderBottomColor: isDark ? '#333' : '#EEE' }]}>
+                <TouchableOpacity onPress={handleBack}>
                     <Ionicons name="arrow-back" size={24} color={isDark ? '#FFF' : '#333'} />
                 </TouchableOpacity>
                 <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.title')}</Text>
             </View>
 
-            <View style={styles.content}>
-                <TouchableOpacity
-                    style={[styles.settingItem, { backgroundColor: isDark ? '#222' : '#F5F5F5' }]}
-                    onPress={toggleTheme}
-                >
+            <ScrollView style={styles.content}>
+                {/* Appearance */}
+                <TouchableOpacity style={[styles.settingItem, { backgroundColor: isDark ? '#1E1E1E' : '#F5F5F5' }]} onPress={toggleTheme}>
                     <View style={[styles.iconContainer, { backgroundColor: isDark ? '#333' : '#E0E0E0' }]}>
-                        <Text style={styles.icon}>{isDark ? '🌙' : '☀️'}</Text>
+                        <Ionicons name={isDark ? 'moon' : 'sunny'} size={20} color={isDark ? '#FFF' : '#333'} />
                     </View>
                     <View style={styles.textContainer}>
-                        <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>
-                            {isDark ? t('settings.appearance.disableDark') : t('settings.appearance.enableDark')}
-                        </Text>
-                        <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                            {t('settings.appearance.title')}
-                        </Text>
+                        <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.appearance.title')}</Text>
+                        <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('settings.appearance.subtitle')}</Text>
                     </View>
+                    <Ionicons name={isDark ? 'toggle' : 'toggle-outline'} size={24} color={isDark ? '#4CAF50' : '#888'} />
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={[styles.settingItem, { backgroundColor: isDark ? '#222' : '#F5F5F5' }]}
-                    onPress={() => setLanguageModalVisible(true)}
-                >
+                {/* Language */}
+                <TouchableOpacity style={[styles.settingItem, { backgroundColor: isDark ? '#1E1E1E' : '#F5F5F5' }]} onPress={() => setLanguageModalVisible(true)}>
                     <View style={[styles.iconContainer, { backgroundColor: isDark ? '#333' : '#E0E0E0' }]}>
-                        <Text style={styles.icon}>🌐</Text>
+                        <Ionicons name="language" size={20} color={isDark ? '#FFF' : '#333'} />
                     </View>
                     <View style={styles.textContainer}>
                         <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.language.title')}</Text>
-                        <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                            {t('settings.language.subtitle')}
-                        </Text>
+                        <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('settings.language.subtitle')}</Text>
                     </View>
+                    <Ionicons name="chevron-forward" size={20} color={isDark ? '#AAA' : '#888'} />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.settingItem, { backgroundColor: isDark ? '#222' : '#F5F5F5' }]}>
+                {/* Notifications */}
+                <TouchableOpacity style={[styles.settingItem, { backgroundColor: isDark ? '#1E1E1E' : '#F5F5F5' }]}>
                     <View style={[styles.iconContainer, { backgroundColor: isDark ? '#333' : '#E0E0E0' }]}>
-                        <Text style={styles.icon}>🔔</Text>
+                        <Ionicons name="notifications" size={20} color={isDark ? '#FFF' : '#333'} />
                     </View>
                     <View style={styles.textContainer}>
                         <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.notifications.title')}</Text>
-                        <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                            {t('settings.notifications.subtitle')}
-                        </Text>
+                        <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('settings.notifications.subtitle')}</Text>
                     </View>
+                    <Ionicons name="toggle" size={24} color="#4CAF50" />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.settingItem, { backgroundColor: isDark ? '#222' : '#F5F5F5' }]}>
+                {/* Privacy */}
+                <TouchableOpacity style={[styles.settingItem, { backgroundColor: isDark ? '#1E1E1E' : '#F5F5F5' }]}>
                     <View style={[styles.iconContainer, { backgroundColor: isDark ? '#333' : '#E0E0E0' }]}>
-                        <Text style={styles.icon}>🔒</Text>
+                        <Ionicons name="lock-closed" size={20} color={isDark ? '#FFF' : '#333'} />
                     </View>
                     <View style={styles.textContainer}>
                         <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.privacy.title')}</Text>
-                        <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                            {t('settings.privacy.subtitle')}
-                        </Text>
+                        <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('settings.privacy.subtitle')}</Text>
                     </View>
+                    <Ionicons name="chevron-forward" size={20} color={isDark ? '#AAA' : '#888'} />
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={[styles.settingItem, { backgroundColor: isDark ? '#222' : '#F5F5F5' }]}
-                    onPress={() => setStorageModalVisible(true)}
-                >
+                {/* Storage */}
+                <TouchableOpacity style={[styles.settingItem, { backgroundColor: isDark ? '#1E1E1E' : '#F5F5F5' }]} onPress={() => setStorageModalVisible(true)}>
                     <View style={[styles.iconContainer, { backgroundColor: isDark ? '#333' : '#E0E0E0' }]}>
-                        <Text style={styles.icon}>💾</Text>
+                        <Ionicons name="server" size={20} color={isDark ? '#FFF' : '#333'} />
                     </View>
                     <View style={styles.textContainer}>
                         <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{t('settings.storage.title')}</Text>
-                        <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                            {t('settings.storage.subtitle')}
-                        </Text>
+                        <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('settings.storage.subtitle')}</Text>
                     </View>
+                    <Ionicons name="chevron-forward" size={20} color={isDark ? '#AAA' : '#888'} />
                 </TouchableOpacity>
-
-            </View>
+            </ScrollView>
 
             <StorageOptionsModal />
             <LanguageOptionsModal />
@@ -348,9 +284,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 15,
-    },
-    icon: {
-        fontSize: 20,
     },
     textContainer: {
         flex: 1,

@@ -31,6 +31,7 @@ interface Section {
     data: any[];
     key: string;
     component: (item: any) => React.ReactElement | null;
+    onAdd?: () => void;
 }
 
 export default function ProfileScreen() {
@@ -108,7 +109,15 @@ export default function ProfileScreen() {
     const [profileMenuVisible, setProfileMenuVisible] = useState(false);
 
     // Data
-    const [personalInfo, setPersonalInfo] = useState<any>(null);
+    const [personalInfo, setPersonalInfo] = useState<any>({
+        name: "Ethan Carter Murayari",
+        birthDate: "12/03/1998",
+        phone: "909882234",
+        documentType: "DNI",
+        documentNumber: "76456734",
+        gender: "Masculino",
+        email: "etcar@gmail.com"
+    });
     const [academicRecords, setAcademicRecords] = useState<any[]>([]);
     const [technicalRecords, setTechnicalRecords] = useState<any[]>([]);
     const [complementaryRecords, setComplementaryRecords] = useState<any[]>([]);
@@ -503,69 +512,69 @@ export default function ProfileScreen() {
         if (activeTab === 'info') {
             sections = [
                 {
-                    title: t('profile.personalInfo'),
+                    title: t('Información Personal'),
                     data: personalInfo ? [personalInfo] : [],
-                    key: 'info',
-                    component: (item: any) => (
-                        <View style={styles.userInfo}>
-                            <Text style={[styles.userName, { color: isDark ? '#FFF' : '#333' }]}>{item.name}</Text>
-                            <Text style={[styles.userEmail, { color: isDark ? '#AAA' : '#666' }]}>{item.phone}</Text>
-                            <TouchableOpacity style={styles.editButtonCircle} onPress={openPersonalModal}>
-                                <Ionicons name="pencil" size={18} color="#10b981" />
-                            </TouchableOpacity>
-                        </View>
-                    ),
+                    key: 'personal',
+                    component: renderPersonalItem,
+                    onAdd: () => openPersonalModal(),
                 },
-            ];
+            ]
         } else if (activeTab === 'formacion') {
             sections = [
                 {
-                    title: t('profile.academicInfo'),
+                    title: t('Información Académica'),
                     data: academicRecords,
                     key: 'academic',
                     component: renderAcademicItem,
+                    onAdd: () => openAcademicModal(),
                 },
                 {
-                    title: t('profile.technicalInfo'),
+                    title: t('Formación Técnica/Especializada'),
                     data: technicalRecords,
                     key: 'technical',
                     component: renderTechnicalItem,
+                    onAdd: () => openTechnicalModal(),
                 },
                 {
-                    title: t('profile.complementaryInfo'),
+                    title: t('Formación Complementaria'),
                     data: complementaryRecords,
                     key: 'complementary',
                     component: renderComplementaryItem,
+                    onAdd: () => openComplementaryModal(),
                 },
             ];
         } else if (activeTab === 'experiencia') {
             sections = [
                 {
-                    title: t('profile.experienceInfo'),
+                    title: t('Experiencia Laboral'),
                     data: experienceRecords,
                     key: 'experience',
                     component: renderExperienceItem,
-                },
-                {
-                    title: t('profile.volunteerInfo'),
-                    data: volunteerRecords,
-                    key: 'volunteer',
-                    component: renderVolunteerItem,
-                },
-                {
-                    title: t('profile.publicationsInfo'),
-                    data: publicationRecords,
-                    key: 'publication',
-                    component: renderPublicationItem,
+                    onAdd: () => openExperienceModal(),
                 },
             ];
         } else if (activeTab === 'adicional') {
             sections = [
                 {
-                    title: t('profile.languagesInfo'),
+                    title: t('Voluntariados'),
+                    data: volunteerRecords,
+                    key: 'volunteer',
+                    component: renderVolunteerItem,
+                    onAdd: () => openVolunteerModal(),
+                },
+                {
+                    title: t('Publicaciones'),
+                    data: publicationRecords,
+                    key: 'publication',
+                    component: renderPublicationItem,
+                    onAdd: () => openPublicationModal(),
+                },
+                {
+                    title: t('Idiomas'),
                     data: languageRecords,
                     key: 'language',
                     component: renderLanguageItem,
+                    onAdd: () => openLanguageModal(),
                 },
             ];
         }
@@ -585,6 +594,37 @@ export default function ProfileScreen() {
     ]);
 
     // Render functions for items
+    const renderPersonalItem = (record: any) => (
+        <View style={[styles.personalInfoCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd', borderWidth: 1 }]}>
+            <View style={styles.personalInfoRow}>
+                <Text style={[styles.personalInfoLabel, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.nameLabel')}:</Text>
+                <Text style={[styles.personalInfoValue, { color: isDark ? '#FFF' : '#333' }]}>{record.name}</Text>
+            </View>
+            <View style={styles.personalInfoRow}>
+                <Text style={[styles.personalInfoLabel, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.birthDateLabel')}:</Text>
+                <Text style={[styles.personalInfoValue, { color: isDark ? '#FFF' : '#333' }]}>{record.birthDate}</Text>
+            </View>
+            <View style={styles.personalInfoRow}>
+                <Text style={[styles.personalInfoLabel, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.phoneLabel')}:</Text>
+                <Text style={[styles.personalInfoValue, { color: isDark ? '#FFF' : '#333' }]}>{record.phone}</Text>
+            </View>
+            <View style={styles.personalInfoRow}>
+                <Text style={[styles.personalInfoLabel, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.documentTypeLabel')}:</Text>
+                <Text style={[styles.personalInfoValue, { color: isDark ? '#FFF' : '#333' }]}>{record.documentType}</Text>
+            </View>
+            <View style={styles.personalInfoRow}>
+                <Text style={[styles.personalInfoLabel, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.documentNumberLabel')}:</Text>
+                <Text style={[styles.personalInfoValue, { color: isDark ? '#FFF' : '#333' }]}>{record.documentNumber}</Text>
+            </View>
+            <View style={styles.personalInfoRow}>
+                <Text style={[styles.personalInfoLabel, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.genderLabel')}:</Text>
+                <Text style={[styles.personalInfoValue, { color: isDark ? '#FFF' : '#333' }]}>{record.gender}</Text>
+            </View>
+            <TouchableOpacity style={styles.editIconAbsolute} onPress={() => openPersonalModal()}>
+                <Ionicons name="pencil" size={20} color="#10b981" />
+            </TouchableOpacity>
+        </View>
+    );
     const renderAcademicItem = (record: any) => (
         <View key={record.id} style={[styles.academicCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
             <View style={styles.iconContainer}>
@@ -711,7 +751,9 @@ export default function ProfileScreen() {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.title')}</Text>
+                <TouchableOpacity onPress={() => router.back()}>
+                    <Ionicons name="arrow-back" size={24} color={isDark ? '#FFF' : '#333'} />
+                </TouchableOpacity>
                 <TouchableOpacity onPress={handleSettings}>
                     <Ionicons name="settings" size={24} color={isDark ? '#FFF' : '#333'} />
                 </TouchableOpacity>
@@ -721,11 +763,27 @@ export default function ProfileScreen() {
                 sections={sectionsData}
                 keyExtractor={(item) => item.id || Math.random().toString()}
                 renderItem={renderSpecificItem}
-                renderSectionHeader={({ section: { title } }) => (
-                    <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333', marginTop: 16, marginBottom: 8 }]}>
-                        {title}
-                    </Text>
+                renderSectionHeader={({ section }) => (
+                    <View style={styles.sectionHeaderContainer}>
+                        <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                            {section.title}
+                        </Text>
+                        {section.onAdd && (
+                            <TouchableOpacity onPress={section.onAdd} style={styles.sectionAddButton}>
+                                <Ionicons name="document-text-outline" size={20} color="#333" />
+                                <View style={styles.plusBadge}>
+                                    <Ionicons name="add" size={10} color="#333" />
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                    </View>
                 )}
+                renderSectionFooter={({ section }) => {
+                    if (section.data.length === 0) {
+                        return <Text style={[styles.emptySectionText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>;
+                    }
+                    return null;
+                }}
                 ListHeaderComponent={
                     <>
                         <View style={styles.headerContainer}>
@@ -773,41 +831,13 @@ export default function ProfileScreen() {
                         <View style={styles.actionButtonsContainer}>
                             {activeTab === 'formacion' && (
                                 <>
-                                    <TouchableOpacity style={styles.addButton} onPress={() => openAcademicModal()}>
-                                        <Ionicons name="add-circle" size={20} color="#FFF" />
-                                        <Text style={styles.addButtonText}>{t('profile.addAcademic')}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.addButton} onPress={() => openTechnicalModal()}>
-                                        <Ionicons name="add-circle" size={20} color="#FFF" />
-                                        <Text style={styles.addButtonText}>{t('profile.addTechnical')}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.addButton} onPress={() => openComplementaryModal()}>
-                                        <Ionicons name="add-circle" size={20} color="#FFF" />
-                                        <Text style={styles.addButtonText}>{t('profile.addComplementary')}</Text>
-                                    </TouchableOpacity>
+                                    {/* Buttons moved to section headers */}
                                 </>
                             )}
                             {activeTab === 'experiencia' && (
                                 <>
-                                    <TouchableOpacity style={styles.addButton} onPress={() => openExperienceModal()}>
-                                        <Ionicons name="add-circle" size={20} color="#FFF" />
-                                        <Text style={styles.addButtonText}>{t('profile.addExperience')}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.addButton} onPress={() => openVolunteerModal()}>
-                                        <Ionicons name="add-circle" size={20} color="#FFF" />
-                                        <Text style={styles.addButtonText}>{t('profile.addVolunteer')}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.addButton} onPress={() => openPublicationModal()}>
-                                        <Ionicons name="add-circle" size={20} color="#FFF" />
-                                        <Text style={styles.addButtonText}>{t('profile.addPublication')}</Text>
-                                    </TouchableOpacity>
+                                    {/* Buttons moved to section headers */}
                                 </>
-                            )}
-                            {activeTab === 'adicional' && (
-                                <TouchableOpacity style={styles.addButton} onPress={() => openLanguageModal()}>
-                                    <Ionicons name="add-circle" size={20} color="#FFF" />
-                                    <Text style={styles.addButtonText}>{t('profile.addLanguage')}</Text>
-                                </TouchableOpacity>
                             )}
                         </View>
                     </>
@@ -1639,5 +1669,67 @@ const styles = StyleSheet.create({
     menuText: {
         fontSize: 16,
         marginLeft: 12,
+    },
+    personalInfoCard: {
+        padding: 16,
+        borderRadius: 8,
+        marginBottom: 16,
+        marginHorizontal: 16,
+        position: 'relative',
+    },
+    personalInfoRow: {
+        flexDirection: 'row',
+        marginBottom: 8,
+    },
+    personalInfoLabel: {
+        fontSize: 14,
+        width: 80,
+        fontWeight: '600',
+    },
+    personalInfoValue: {
+        fontSize: 14,
+        flex: 1,
+    },
+    editIconAbsolute: {
+        position: 'absolute',
+        top: 16,
+        right: 16,
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#10b981',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    sectionHeaderContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        marginTop: 16,
+        marginBottom: 8,
+    },
+    sectionAddButton: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: '#e6f4ea', // Light green background
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative',
+    },
+    plusBadge: {
+        position: 'absolute',
+        bottom: 6,
+        right: 6,
+        backgroundColor: 'transparent',
+    },
+    emptySectionText: {
+        paddingHorizontal: 16,
+        marginBottom: 16,
+        fontSize: 14,
+        fontStyle: 'italic',
     },
 });
