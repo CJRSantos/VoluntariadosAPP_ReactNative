@@ -1,7 +1,7 @@
 // app/postulacion-paso2.tsx
 import { useAuth } from '@/hooks/useAuth';
 import * as DocumentPicker from 'expo-document-picker';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -25,13 +25,24 @@ export default function PostulacionPaso2Screen() {
     const { t } = useTranslation();
     const isDark = theme === 'dark';
 
+    // 👇 Recibir el ID de la convocatoria desde la URL
+    const { convocatoriaId } = useLocalSearchParams();
+    const convId = convocatoriaId
+        ? parseInt(Array.isArray(convocatoriaId) ? convocatoriaId[0] : convocatoriaId)
+        : null;
+
     const [carta, setCarta] = useState<any>(null);
     const [cv, setCv] = useState<any>(null);
 
     const pickFile = async (type: 'carta' | 'cv') => {
         try {
             const result = await DocumentPicker.getDocumentAsync({
-                type: ['application/pdf', 'image/*', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+                type: [
+                    'application/pdf',
+                    'image/*',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                ],
                 copyToCacheDirectory: true,
             });
 
@@ -47,7 +58,10 @@ export default function PostulacionPaso2Screen() {
             }
         } catch (error) {
             console.error(`Error al seleccionar ${type}:`, error);
-            Alert.alert(t('postulacion.step2.errorTitle'), `${t('postulacion.step2.errorSelection')} ${type === 'carta' ? 'archivo' : 'CV'}.`);
+            Alert.alert(
+                t('postulacion.step2.errorTitle'),
+                `${t('postulacion.step2.errorSelection')} ${type === 'carta' ? 'archivo' : 'CV'}.`
+            );
         }
     };
 
@@ -56,7 +70,11 @@ export default function PostulacionPaso2Screen() {
             Alert.alert(t('postulacion.step2.warningTitle'), t('postulacion.step2.warningMessage'));
             return;
         }
-        router.push('/postulacion-paso3');
+        // 👉 Pasar el ID al siguiente paso
+        router.push({
+            pathname: '/postulacion-paso3',
+            params: convId != null ? { convocatoriaId: convId } : {},
+        });
     };
 
     return (
@@ -96,8 +114,23 @@ export default function PostulacionPaso2Screen() {
                             style={[styles.fileInput, { borderColor: isDark ? '#444' : '#CCC' }]}
                             onPress={() => pickFile('carta')}
                         >
-                            <Text style={[styles.fileInputText, { color: carta ? (isDark ? '#FFF' : '#000') : (isDark ? '#AAA' : '#666') }]}>
-                                {carta ? (carta.name || t('postulacion.step2.fileSelected')) : t('postulacion.step2.uploadCoverLetter')}
+                            <Text
+                                style={[
+                                    styles.fileInputText,
+                                    {
+                                        color: carta
+                                            ? isDark
+                                                ? '#FFF'
+                                                : '#000'
+                                            : isDark
+                                                ? '#AAA'
+                                                : '#666',
+                                    },
+                                ]}
+                            >
+                                {carta
+                                    ? carta.name || t('postulacion.step2.fileSelected')
+                                    : t('postulacion.step2.uploadCoverLetter')}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -110,14 +143,32 @@ export default function PostulacionPaso2Screen() {
                             style={[styles.fileInput, { borderColor: isDark ? '#444' : '#CCC' }]}
                             onPress={() => pickFile('cv')}
                         >
-                            <Text style={[styles.fileInputText, { color: cv ? (isDark ? '#FFF' : '#000') : (isDark ? '#AAA' : '#666') }]}>
-                                {cv ? (cv.name || t('postulacion.step2.fileSelected')) : t('postulacion.step2.uploadCv')}
+                            <Text
+                                style={[
+                                    styles.fileInputText,
+                                    {
+                                        color: cv
+                                            ? isDark
+                                                ? '#FFF'
+                                                : '#000'
+                                            : isDark
+                                                ? '#AAA'
+                                                : '#666',
+                                    },
+                                ]}
+                            >
+                                {cv
+                                    ? cv.name || t('postulacion.step2.fileSelected')
+                                    : t('postulacion.step2.uploadCv')}
                             </Text>
                         </TouchableOpacity>
                     </View>
 
                     <TouchableOpacity
-                        style={[styles.nextButton, { backgroundColor: (carta && cv) ? '#4CAF50' : '#B0B0B0' }]}
+                        style={[
+                            styles.nextButton,
+                            { backgroundColor: carta && cv ? '#4CAF50' : '#B0B0B0' },
+                        ]}
                         onPress={handleSiguiente}
                         disabled={!carta || !cv}
                     >

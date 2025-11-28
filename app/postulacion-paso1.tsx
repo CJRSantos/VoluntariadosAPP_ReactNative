@@ -1,7 +1,7 @@
 // app/postulacion-paso1.tsx
 import { useAuth } from '@/hooks/useAuth';
 import * as DocumentPicker from 'expo-document-picker';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -24,6 +24,12 @@ export default function PostulacionPaso1Screen() {
     const { theme } = useTheme();
     const { t } = useTranslation();
     const isDark = theme === 'dark';
+
+    // 👇 Recibir el ID de la convocatoria desde la URL
+    const { convocatoriaId } = useLocalSearchParams();
+    const convId = convocatoriaId
+        ? parseInt(Array.isArray(convocatoriaId) ? convocatoriaId[0] : convocatoriaId)
+        : null;
 
     const [selectedFile, setSelectedFile] = useState<any>(null);
     const [uploading, setUploading] = useState(false);
@@ -51,8 +57,11 @@ export default function PostulacionPaso1Screen() {
             Alert.alert(t('postulacion.step1.warning'), t('postulacion.step1.warningMessage'));
             return;
         }
-        // ✅ Aquí podrías guardar temporalmente en contexto o AsyncStorage
-        router.push('/postulacion-paso2');
+        // 👉 Pasar el ID al siguiente paso
+        router.push({
+            pathname: '/postulacion-paso2',
+            params: convId != null ? { convocatoriaId: convId } : {},
+        });
     };
 
     return (
