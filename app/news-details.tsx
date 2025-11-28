@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Dimensions,
@@ -10,10 +11,12 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import ImageZoom from 'react-native-image-pan-zoom';
+import Modal from 'react-native-modal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from './providers/ThemeProvider';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function NewsDetailsScreen() {
     const router = useRouter();
@@ -22,16 +25,20 @@ export default function NewsDetailsScreen() {
     const { t } = useTranslation();
     const isDark = theme === 'dark';
 
+    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
     const title = params.title as string || 'Monitoreo de carbono en bosques amazónicos';
     const date = params.date as string || '';
     const endDate = params.endDate as string || '';
 
     const images = [
-        require('../assets/images/iiap1.PNG'),
-        require('../assets/images/iiap2.PNG'),
-        require('../assets/images/iiap3.PNG'),
-        require('../assets/images/iiap4.PNG'),
+        require('../assets/images/iiap1.png'),
+        require('../assets/images/iiap2.png'),
+        require('../assets/images/iiap3.png'),
+        require('../assets/images/iiap4.png'),
     ];
+
+    const closeModal = () => setSelectedImageIndex(null);
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
@@ -48,8 +55,7 @@ export default function NewsDetailsScreen() {
             </View>
 
             <ScrollView contentContainerStyle={styles.content}>
-
-                {/* CARRUSEL */}
+                {/* CAROUSEL */}
                 <ScrollView
                     horizontal
                     pagingEnabled
@@ -57,17 +63,22 @@ export default function NewsDetailsScreen() {
                     style={{ width: '100%', height: 250 }}
                 >
                     {images.map((img, index) => (
-                        <Image
+                        <TouchableOpacity
                             key={index}
-                            source={img}
-                            style={{ width, height: 250 }}
-                            resizeMode="cover"
-                        />
+                            onPress={() => setSelectedImageIndex(index)}
+                            activeOpacity={0.9}
+                        >
+                            <Image
+                                source={img}
+                                style={{ width, height: 250 }}
+                                resizeMode="cover"
+                            />
+                        </TouchableOpacity>
                     ))}
                 </ScrollView>
 
                 <View style={styles.detailsContainer}>
-                    {/* TITULO */}
+                    {/* TÍTULO */}
                     <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>
                         Monitoreo de carbono en bosques amazónicos — IIAP
                     </Text>
@@ -82,68 +93,58 @@ export default function NewsDetailsScreen() {
 
                     {/* CONTENIDO COMPLETO */}
                     <Text style={[styles.description, { color: isDark ? '#DDD' : '#444' }]}>
+                        {`1) ¿Qué es el monitoreo de carbono en bosques amazónicos?
+El monitoreo de carbono mide cuánto carbono almacenan los bosques amazónicos en su biomasa viva, madera muerta, hojarasca y suelo, además de cuantificar los flujos de CO₂ entre el bosque y la atmósfera. Permite estimar stocks, detectar pérdidas por deforestación o degradación, y verificar acciones de conservación o restauración.
 
-                        1) ¿Qué es el monitoreo de carbono en bosques amazónicos?
-                        El monitoreo de carbono mide cuánto carbono almacenan los bosques amazónicos en su biomasa viva, madera muerta, hojarasca y suelo, además de cuantificar los flujos de CO₂ entre el bosque y la atmósfera. Permite estimar stocks, detectar pérdidas por deforestación o degradación, y verificar acciones de conservación o restauración.
+2) ¿Por qué es relevante para la Amazonía peruana y para el IIAP?
+La Amazonía peruana es una de las mayores reservas de carbono del planeta. Conservarla es clave para mitigar el cambio climático. El IIAP genera información científica, protocolos, campañas de campo y publicaciones que permiten monitorear estos cambios de forma estándar y confiable.
 
-                        {"\n\n"}
-                        2) ¿Por qué es relevante para la Amazonía peruana y para el IIAP?
-                        La Amazonía peruana es una de las mayores reservas de carbono del planeta. Conservarla es clave para mitigar el cambio climático. El IIAP genera información científica, protocolos, campañas de campo y publicaciones que permiten monitorear estos cambios de forma estándar y confiable.
+3) Objetivos de un programa de monitoreo del IIAP
+• Estimar stocks de carbono (biomasa aérea, raíces, hojarasca, madera muerta, suelo).
+• Medir flujos de CO₂ y variaciones temporales.
+• Detectar pérdidas por deforestación, incendios o degradación.
+• Generar datos para NDCs, inventarios nacionales y proyectos REDD+.
 
-                        {"\n\n"}
-                        3) Objetivos de un programa de monitoreo del IIAP
-                        • Estimar stocks de carbono (biomasa aérea, raíces, hojarasca, madera muerta, suelo).
-                        • Medir flujos de CO₂ y variaciones temporales.
-                        • Detectar pérdidas por deforestación, incendios o degradación.
-                        • Generar datos para NDCs, inventarios nacionales y proyectos REDD+.
+4) Métodos y herramientas
+• Parcelas permanentes: DAP, altura, especie, biomasa → carbono.
+• Muestreo de suelo y madera muerta.
+• Torres Eddy Covariance: flujos directos de CO₂.
+• Sensores satelitales + LiDAR para mapas y cambios.
+• Modelos alométricos validados para especies amazónicas.
+• Protocolos estandarizados Rainfor / IIAP.
 
-                        {"\n\n"}
-                        4) Métodos y herramientas
-                        • Parcelas permanentes: DAP, altura, especie, biomasa → carbono.
-                        • Muestreo de suelo y madera muerta.
-                        • Torres Eddy Covariance: flujos directos de CO₂.
-                        • Sensores satelitales + LiDAR para mapas y cambios.
-                        • Modelos alométricos validados para especies amazónicas.
-                        • Protocolos estandarizados Rainfor / IIAP.
+5) Productos esperados
+• Mapas de stocks y cambios de carbono.
+• Series temporales de flujos de CO₂.
+• Informes técnicos para inventarios y políticas climáticas.
+• Bases de datos estandarizadas de parcelas permanentes.
 
-                        {"\n\n"}
-                        5) Productos esperados
-                        • Mapas de stocks y cambios de carbono.
-                        • Series temporales de flujos de CO₂.
-                        • Informes técnicos para inventarios y políticas climáticas.
-                        • Bases de datos estandarizadas de parcelas permanentes.
+6) Aplicaciones prácticas
+• Cumplimiento de NDCs.
+• Verificación de proyectos REDD+.
+• Conservación y gestión territorial.
+• Priorización de áreas vulnerables (aguajales, turberas).
 
-                        {"\n\n"}
-                        6) Aplicaciones prácticas
-                        • Cumplimiento de NDCs.
-                        • Verificación de proyectos REDD+.
-                        • Conservación y gestión territorial.
-                        • Priorización de áreas vulnerables (aguajales, turberas).
+7) Retos
+• Alta heterogeneidad de la Amazonía.
+• Costos de campo y acceso difícil.
+• Humedales/turberas requieren métodos específicos.
+• Integrar campo + torres + satélite en una sola plataforma.
 
-                        {"\n\n"}
-                        7) Retos
-                        • Alta heterogeneidad de la Amazonía.
-                        • Costos de campo y acceso difícil.
-                        • Humedales/turberas requieren métodos específicos.
-                        • Integrar campo + torres + satélite en una sola plataforma.
+8) Recomendaciones operativas
+• Mantener una red de parcelas permanentes bien distribuidas.
+• Contar con estaciones de flujo representativas.
+• Integrar LiDAR + satélite para escalamiento regional.
+• Priorizar turberas por su enorme almacenamiento de carbono.
+• Publicar protocolos y datos abiertos.
 
-                        {"\n\n"}
-                        8) Recomendaciones operativas
-                        • Mantener una red de parcelas permanentes bien distribuidas.
-                        • Contar con estaciones de flujo representativas.
-                        • Integrar LiDAR + satélite para escalamiento regional.
-                        • Priorizar turberas por su enorme almacenamiento de carbono.
-                        • Publicar protocolos y datos abiertos.
-
-                        {"\n\n"}
-                        9) Enfocado en el IIAP en Iquitos
-                        El IIAP, ubicado en Iquitos, lidera investigaciones sobre carbono amazónico:
-                        • Desarrollo de manuales técnicos.
-                        • Inventarios forestales permanentes.
-                        • Medición de suelos, madera muerta y ecosistemas especiales.
-                        • Colaboraciones con Rainfor, MINAM, SERFOR y proyectos REDD+.
-                        • Generación de mapas y reportes usados por el Gobierno del Perú.
-
+9) Enfocado en el IIAP en Iquitos
+El IIAP, ubicado en Iquitos, lidera investigaciones sobre carbono amazónico:
+• Desarrollo de manuales técnicos.
+• Inventarios forestales permanentes.
+• Medición de suelos, madera muerta y ecosistemas especiales.
+• Colaboraciones con Rainfor, MINAM, SERFOR y proyectos REDD+.
+• Generación de mapas y reportes usados por el Gobierno del Perú.`}
                     </Text>
 
                     <TouchableOpacity
@@ -154,6 +155,40 @@ export default function NewsDetailsScreen() {
                     </TouchableOpacity>
                 </View>
             </ScrollView>
+
+            {/* FULL-SCREEN ZOOM MODAL */}
+            <Modal
+                isVisible={selectedImageIndex !== null}
+                onBackdropPress={closeModal}
+                onBackButtonPress={closeModal}
+                style={styles.modal}
+                backdropOpacity={1}
+                animationIn="fadeIn"
+                animationOut="fadeOut"
+            >
+                <View style={styles.modalContent}>
+                    <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                        <Ionicons name="close" size={28} color="#FFF" />
+                    </TouchableOpacity>
+                    {selectedImageIndex !== null && (
+                        <ImageZoom
+                            cropWidth={width}
+                            cropHeight={height}
+                            imageWidth={width}
+                            imageHeight={height * 0.8}
+                            minScale={1}
+                            maxScale={3}
+                            pinchToZoom
+                        >
+                            <Image
+                                source={images[selectedImageIndex]}
+                                style={{ width, height: height * 0.8 }}
+                                resizeMode="contain"
+                            />
+                        </ImageZoom>
+                    )}
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 }
@@ -195,5 +230,21 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 18,
         fontWeight: 'bold',
+    },
+    modal: {
+        margin: 0,
+    },
+    modalContent: {
+        flex: 1,
+        backgroundColor: '#000',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 50,
+        right: 20,
+        zIndex: 10,
+        padding: 8,
     },
 });

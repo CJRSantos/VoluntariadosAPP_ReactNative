@@ -1,4 +1,4 @@
-import { Image } from 'expo-image';
+import { ResizeMode, Video } from 'expo-av'; // 👈 Importa ResizeMode
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
@@ -11,18 +11,21 @@ export default function VirtualTutorialScreen() {
         <SafeAreaView style={styles.container}>
             {/* Header removed to use default navigation header */}
 
-            {/* Video/Animation Content */}
+            {/* Video Content */}
             <View style={styles.content}>
                 <Text style={styles.description}>
                     {t('virtualTutorial.description')}
                 </Text>
 
-                <View style={styles.imageContainer}>
-                    <Image
-                        source={require('../assets/images/tutorial.webp')}
-                        style={styles.image}
-                        contentFit="contain"
-                    // WebP animation plays automatically by default in expo-image
+                <View style={styles.videoContainer}>
+                    <Video
+                        source={require('../assets/videos/tutorial.mp4')}
+                        style={styles.video}
+                        shouldPlay={true}
+                        resizeMode={ResizeMode.CONTAIN} // ✅ Correcto
+                        isLooping={false}
+                        useNativeControls={false}
+                        onError={(error) => console.error('Error al reproducir video:', error)}
                     />
                 </View>
 
@@ -51,9 +54,9 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         lineHeight: 22,
     },
-    imageContainer: {
+    videoContainer: {
         width: '100%',
-        aspectRatio: 9 / 16, // Enforce mobile aspect ratio
+        aspectRatio: 9 / 16,
         backgroundColor: '#f0f0f0',
         borderRadius: 12,
         overflow: 'hidden',
@@ -61,7 +64,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ddd',
     },
-    image: {
+    video: {
         width: '100%',
         height: '100%',
     },
