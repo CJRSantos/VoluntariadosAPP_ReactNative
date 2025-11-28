@@ -749,8 +749,8 @@ export default function ProfileScreen() {
     );
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
+        <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#000' : '#f5f5f5' }]}>
+            <View style={[styles.header, { backgroundColor: isDark ? '#111' : '#f5f5f5', borderBottomColor: isDark ? '#333' : '#ddd' }]}>
                 <TouchableOpacity onPress={() => router.back()}>
                     <Ionicons name="arrow-back" size={24} color={isDark ? '#FFF' : '#333'} />
                 </TouchableOpacity>
