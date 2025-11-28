@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
+import areasData from '../assets/data/areas.json';
 const { width } = Dimensions.get('window');
 
 export default function AreasScreen() {
@@ -68,20 +69,7 @@ export default function AreasScreen() {
     })();
   }, []);
 
-  const areas = [
-    {
-      id: 1,
-      direction: t('areas.items.1.direction'),
-      title: t('areas.items.1.title'),
-      description: t('areas.items.1.description'),
-    },
-    {
-      id: 2,
-      direction: t('areas.items.2.direction'),
-      title: t('areas.items.2.title'),
-      description: t('areas.items.2.description'),
-    },
-  ];
+  const areas = areasData;
 
   if (loading) {
     return (
@@ -195,7 +183,7 @@ export default function AreasScreen() {
           </Text>
 
           {areas.map((area) => (
-            <View
+            <TouchableOpacity
               key={area.id}
               style={[
                 styles.areaCard,
@@ -204,6 +192,10 @@ export default function AreasScreen() {
                   shadowColor: isDark ? '#000' : '#000',
                 },
               ]}
+              onPress={() => router.push({
+                pathname: '/area-details',
+                params: { id: area.id }
+              })}
             >
               <View style={styles.areaHeader}>
                 <View style={styles.locationBadge}>
@@ -222,7 +214,7 @@ export default function AreasScreen() {
               <Text style={[styles.areaDescription, { color: isDark ? '#AAA' : '#666' }]}>
                 {area.description}
               </Text>
-            </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
 

@@ -1,0 +1,32 @@
+{
+    "title": "Información adicional",
+    "image": "tutorial2",
+    "deadline": {
+        "title": "Plazo de postulación",
+        "date": "Hasta el 15 de Noviembre de 2025"
+    },
+    "howToApply": {
+        "title": "CÓMO POSTULAR",
+        "text": "Para postular a una vacante de voluntario en BOSQUES, puedes elegir entre dos modalidades de presentación: presencial o virtual."
+    },
+    "options": [
+        {
+            "id": "presencial",
+            "title": "Presencial",
+            "text": "Presenta tus documentos en la mesa de partes del IIAP.",
+            "icon": "🏢",
+            "route": "/presencial-info"
+        },
+        {
+            "id": "virtual",
+            "title": "Virtual",
+            "text": "Envía tus documentos a través de la vista de postulación.",
+            "icon": "🌐",
+            "route": "/virtual-tutorial"
+        }
+    ],
+    "note": {
+        "title": "Nota importante",
+        "text": "Asegúrate de que tu archivo PDF no exceda los 10 MB y que todos los documentos estén correctamente ordenados y legibles."
+    }
+}

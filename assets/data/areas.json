@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "direction": "Dirección de Investigación en Ecosistemas y Cambio Climático",
+        "title": "Área de Recursos Forestales y Cambio Climático",
+        "description": "Área encargada de estudios ecológicos, monitoreo ambiental y estrategias de conservación en la Amazonía peruana.",
+        "content": "Esta área se enfoca en la evaluación y monitoreo de los recursos forestales, así como en el estudio de los impactos del cambio climático en los ecosistemas amazónicos. \n\nObjetivos:\n- Evaluar la dinámica de los bosques.\n- Monitorear el carbono forestal.\n- Desarrollar estrategias de adaptación y mitigación.\n\nProyectos destacados:\n- Inventario Nacional Forestal.\n- Monitoreo de turberas.\n- Restauración ecológica.",
+        "image": "area1"
+    },
+    {
+        "id": 2,
+        "direction": "Dirección de Investigaciones Ambientales",
+        "title": "Área de Ecología y Conservación",
+        "description": "Área encargada de estudios ecológicos, monitoreo ambiental y estrategias de conservación en la Amazonía peruana.",
+        "content": "Esta área promueve la conservación de la biodiversidad y el uso sostenible de los recursos naturales.\n\nObjetivos:\n- Estudiar la biodiversidad amazónica.\n- Promover áreas de conservación.\n- Investigar la ecología de especies clave.\n\nProyectos destacados:\n- Conservación de fauna silvestre.\n- Gestión de áreas protegidas.\n- Educación ambiental.",
+        "image": "area2"
+    }
+]

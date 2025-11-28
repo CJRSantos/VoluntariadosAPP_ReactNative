@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import requisitosData from '../assets/data/requisitos.json';
 
 export default function RequisitosScreen() {
   return (
@@ -30,7 +31,7 @@ function RequisitosContent() {
 
   const requisitos = {
     title: t('requisitos.title'),
-    vacantes: '5',
+    vacantes: requisitosData.vacantes.count,
     formacion: t('requisitos.educationText'),
     experiencia: t('requisitos.experienceText'),
     cursos: t('requisitos.coursesText'),

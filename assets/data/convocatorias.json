@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "image": "tutorial1",
+        "title": "Ayuda a realizar investigaciones - Bosques",
+        "location": "Iquitos, Perú",
+        "participants": "20 participantes",
+        "startDate": "31 de setiembre, 2025",
+        "endDate": "15 de octubre, 2025"
+    },
+    {
+        "id": 2,
+        "image": "bosques2",
+        "title": "Ayuda a realizar investigaciones - Bosques",
+        "location": "Iquitos, Perú",
+        "participants": "20 participantes",
+        "startDate": "31 de setiembre, 2025",
+        "endDate": "15 de octubre, 2025"
+    },
+    {
+        "id": 3,
+        "image": "bosques3",
+        "title": "Voluntariado en un refugio de animales",
+        "location": "Arequipa, Perú",
+        "participants": "10 participantes",
+        "startDate": "31 de setiembre, 2025",
+        "endDate": "15 de octubre, 2025"
+    }
+]

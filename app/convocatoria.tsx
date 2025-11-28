@@ -16,6 +16,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
+import convocatoriasData from '../assets/data/convocatorias.json';
+import { IMAGES } from '../assets/data/imageMap';
 
 const { width } = Dimensions.get('window');
 
@@ -27,42 +29,14 @@ export default function ConvocatoriaScreen() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const { theme } = useTheme(); // 👈 Usado
+  const { theme } = useTheme();
   const { t } = useTranslation();
   const isDark = theme === 'dark';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const convocatorias = [
-    {
-      id: 1,
-      image: require('../assets/images/tutorial1.jpg'),
-      title: t('convocatoria.items.1.title'),
-      location: t('convocatoria.items.1.location'),
-      participants: t('convocatoria.items.1.participants'),
-      startDate: t('convocatoria.items.1.startDate'),
-      endDate: t('convocatoria.items.1.endDate'),
-    },
-    {
-      id: 2,
-      image: require('../assets/images/bosques2.png'),
-      title: t('convocatoria.items.2.title'),
-      location: t('convocatoria.items.2.location'),
-      participants: t('convocatoria.items.2.participants'),
-      startDate: t('convocatoria.items.2.startDate'),
-      endDate: t('convocatoria.items.2.endDate'),
-    },
-    {
-      id: 3,
-      image: require('../assets/images/bosques3.png'),
-      title: t('convocatoria.items.3.title'),
-      location: t('convocatoria.items.3.location'),
-      participants: t('convocatoria.items.3.participants'),
-      startDate: t('convocatoria.items.3.startDate'),
-      endDate: t('convocatoria.items.3.endDate'),
-    },
-  ];
+  const convocatorias = convocatoriasData;
 
   if (loading) {
     return (
@@ -196,22 +170,22 @@ export default function ConvocatoriaScreen() {
                 ]}
               >
                 <Image
-                  source={convocatoria.image}
+                  source={IMAGES[convocatoria.image]}
                   style={styles.cardImage}
                   resizeMode="cover"
                 />
                 <View style={styles.cardContent}>
                   <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    {convocatoria.title}
+                    {t(`convocatoria.items.${convocatoria.id}.title`)}
                   </Text>
                   <Text style={[styles.cardInfo, { color: isDark ? '#AAA' : '#666' }]}>
-                    {convocatoria.location} · {convocatoria.participants}
+                    {t(`convocatoria.items.${convocatoria.id}.location`)} · {t(`convocatoria.items.${convocatoria.id}.participants`)}
                   </Text>
                   <Text style={[styles.cardDate, { color: isDark ? '#AAA' : '#666' }]}>
-                    {t('convocatoria.card.start')}: {convocatoria.startDate}
+                    {t('convocatoria.card.start')}: {t(`convocatoria.items.${convocatoria.id}.startDate`)}
                   </Text>
                   <Text style={[styles.cardDate, { color: isDark ? '#AAA' : '#666' }]}>
-                    {t('convocatoria.card.end')}: {convocatoria.endDate}
+                    {t('convocatoria.card.end')}: {t(`convocatoria.items.${convocatoria.id}.endDate`)}
                   </Text>
                   <View style={styles.buttonGroup}>
                     <TouchableOpacity

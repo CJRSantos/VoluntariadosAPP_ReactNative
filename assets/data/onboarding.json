@@ -1,0 +1,26 @@
+{
+    "title": "¡Bienvenido a Voluntariados IIAP!",
+    "subtitle": "Tu puerta de entrada para contribuir con la ciencia y conservación amazónica.",
+    "sections": [
+        {
+            "id": "section1",
+            "title": "¿Qué es Voluntariados IIAP?",
+            "text": "Es una plataforma digital que conecta a personas comprometidas con la investigación científica y la conservación ambiental en la Amazonía peruana, con proyectos reales del Instituto de Investigaciones de la Amazonía Peruana (IIAP).",
+            "image": "about-iiap"
+        },
+        {
+            "id": "section2",
+            "title": "¿Qué es el IIAP?",
+            "text": "Mira este video para entender que es el IIAP",
+            "buttonText": "Ver tutorial en YouTube",
+            "videoUrl": "https://youtu.be/RPHdeC-QQOM?si=S3YlBo9IUsnLQr5w"
+        },
+        {
+            "id": "section3",
+            "title": "Beneficios de ser voluntario",
+            "text": "• Experiencia práctica en campo y laboratorio.\n• Certificación de participación emitida por el IIAP.\n• Acceso a redes de científicos y profesionales.\n• Contribución directa a la conservación de la Amazonía.",
+            "image": "benefits"
+        }
+    ],
+    "ctaButton": "Explorar Convocatorias"
+}

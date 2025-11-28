@@ -1,0 +1,115 @@
+[
+    {
+        "id": 1,
+        "title": {
+            "es": "Monitoreo de carbono en bosques amazónicos",
+            "en": "Carbon monitoring in Amazonian forests"
+        },
+        "date": {
+            "es": "12/10/2025, Hr: 00:00",
+            "en": "12/10/2025, Time: 00:00"
+        },
+        "endDate": {
+            "es": "12/11/2025, Hr: 11:59",
+            "en": "12/11/2025, Time: 11:59"
+        },
+        "topics": [
+            "Monitoreo de carbono",
+            "Servicios ecosistémicos",
+            "Cambio climático"
+        ],
+        "status": "Abierto",
+        "color": "#4CAF50",
+        "image": "news1",
+        "description": {
+            "es": "1) ¿Qué es el monitoreo de carbono en bosques amazónicos?\nEl monitoreo de carbono mide cuánto carbono almacenan los bosques amazónicos en su biomasa viva, madera muerta, hojarasca y suelo, además de cuantificar los flujos de CO₂ entre el bosque y la atmósfera. Permite estimar stocks, detectar pérdidas por deforestación o degradación, y verificar acciones de conservación o restauración.\n\n2) ¿Por qué es relevante para la Amazonía peruana y para el IIAP?\nLa Amazonía peruana es una de las mayores reservas de carbono del planeta. Conservarla es clave para mitigar el cambio climático. El IIAP genera información científica, protocolos, campañas de campo y publicaciones que permiten monitorear estos cambios de forma estándar y confiable.\n\n3) Objetivos de un programa de monitoreo del IIAP\n• Estimar stocks de carbono (biomasa aérea, raíces, hojarasca, madera muerta, suelo).\n• Medir flujos de CO₂ y variaciones temporales.\n• Detectar pérdidas por deforestación, incendios o degradación.\n• Generar datos para NDCs, inventarios nacionales y proyectos REDD+.\n\n4) Métodos y herramientas\n• Parcelas permanentes: DAP, altura, especie, biomasa → carbono.\n• Muestreo de suelo y madera muerta.\n• Torres Eddy Covariance: flujos directos de CO₂.\n• Sensores satelitales + LiDAR para mapas y cambios.\n• Modelos alométricos validados para especies amazónicas.\n• Protocolos estandarizados Rainfor / IIAP.\n\n5) Productos esperados\n• Mapas de stocks y cambios de carbono.\n• Series temporales de flujos de CO₂.\n• Informes técnicos para inventarios y políticas climáticas.\n• Bases de datos estandarizadas de parcelas permanentes.\n\n6) Aplicaciones prácticas\n• Cumplimiento de NDCs.\n• Verificación de proyectos REDD+.\n• Conservación y gestión territorial.\n• Priorización de áreas vulnerables (aguajales, turberas).\n\n7) Retos\n• Alta heterogeneidad de la Amazonía.\n• Costos de campo y acceso difícil.\n• Humedales/turberas requieren métodos específicos.\n• Integrar campo + torres + satélite en una sola plataforma.\n\n8) Recomendaciones operativas\n• Mantener una red de parcelas permanentes bien distribuidas.\n• Contar con estaciones de flujo representativas.\n• Integrar LiDAR + satélite para escalamiento regional.\n• Priorizar turberas por su enorme almacenamiento de carbono.\n• Publicar protocolos y datos abiertos.\n\n9) Enfocado en el IIAP en Iquitos\nEl IIAP, ubicado en Iquitos, lidera investigaciones sobre carbono amazónico:\n• Desarrollo de manuales técnicos.\n• Inventarios forestales permanentes.\n• Medición de suelos, madera muerta y ecosistemas especiales.\n• Colaboraciones con Rainfor, MINAM, SERFOR y proyectos REDD+.\n• Generación de mapas y reportes usados por el Gobierno del Perú.",
+            "en": "1) What is carbon monitoring in Amazonian forests?\nCarbon monitoring measures how much carbon Amazonian forests store in their living biomass, dead wood, litter, and soil, as well as quantifying CO₂ fluxes between the forest and the atmosphere. It allows estimating stocks, detecting losses due to deforestation or degradation, and verifying conservation or restoration actions.\n\n2) Why is it relevant for the Peruvian Amazon and IIAP?\nThe Peruvian Amazon is one of the planet's largest carbon reserves. Conserving it is key to mitigating climate change. IIAP generates scientific information, protocols, field campaigns, and publications that allow monitoring these changes in a standard and reliable way.\n\n3) Objectives of an IIAP monitoring program\n• Estimate carbon stocks (aboveground biomass, roots, litter, dead wood, soil).\n• Measure CO₂ fluxes and temporal variations.\n• Detect losses due to deforestation, fires, or degradation.\n• Generate data for NDCs, national inventories, and REDD+ projects.\n\n4) Methods and tools\n• Permanent plots: DBH, height, species, biomass → carbon.\n• Soil and dead wood sampling.\n• Eddy Covariance Towers: direct CO₂ fluxes.\n• Satellite sensors + LiDAR for maps and changes.\n• Allometric models validated for Amazonian species.\n• Standardized Rainfor / IIAP protocols.\n\n5) Expected products\n• Carbon stock and change maps.\n• Time series of CO₂ fluxes.\n• Technical reports for inventories and climate policies.\n• Standardized databases of permanent plots.\n\n6) Practical applications\n• Compliance with NDCs.\n• Verification of REDD+ projects.\n• Conservation and territorial management.\n• Prioritization of vulnerable areas (aguajales, peatlands).\n\n7) Challenges\n• High heterogeneity of the Amazon.\n• Field costs and difficult access.\n• Wetlands/peatlands require specific methods.\n• Integrating field + towers + satellite into a single platform.\n\n8) Operational recommendations\n• Maintain a network of well-distributed permanent plots.\n• Have representative flux stations.\n• Integrate LiDAR + satellite for regional scaling.\n• Prioritize peatlands due to their enormous carbon storage.\n• Publish protocols and open data.\n\n9) Focused on IIAP in Iquitos\nIIAP, located in Iquitos, leads research on Amazonian carbon:\n• Development of technical manuals.\n• Permanent forest inventories.\n• Measurement of soils, dead wood, and special ecosystems.\n• Collaborations with Rainfor, MINAM, SERFOR, and REDD+ projects.\n• Generation of maps and reports used by the Government of Peru."
+        },
+        "carouselImages": [
+            "iiap1",
+            "iiap2",
+            "iiap3",
+            "iiap4"
+        ]
+    },
+    {
+        "id": 2,
+        "title": {
+            "es": "Monitoreo de carbono en bosques amazónicos",
+            "en": "Carbon monitoring in Amazonian forests"
+        },
+        "date": {
+            "es": "12/10/2025, Hr: 00:00",
+            "en": "12/10/2025, Time: 00:00"
+        },
+        "endDate": {
+            "es": "12/11/2025, Hr: 11:59",
+            "en": "12/11/2025, Time: 11:59"
+        },
+        "topics": [
+            "Monitoreo de carbono",
+            "Servicios ecosistémicos",
+            "Cambio climático"
+        ],
+        "status": "Cerrado",
+        "color": "#F44336",
+        "image": "news2",
+        "description": {
+            "es": "Contenido para la noticia 2...",
+            "en": "Content for news 2..."
+        },
+        "carouselImages": []
+    },
+    {
+        "id": 3,
+        "title": {
+            "es": "Monitoreo de carbono en bosques amazónicos",
+            "en": "Carbon monitoring in Amazonian forests"
+        },
+        "date": {
+            "es": "12/10/2025, Hr: 00:00",
+            "en": "12/10/2025, Time: 00:00"
+        },
+        "endDate": {
+            "es": "12/11/20, Hr: 11:59",
+            "en": "12/11/20, Time: 11:59"
+        },
+        "topics": [
+            "Lineas temática: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático"
+        ],
+        "status": "Abierto",
+        "color": "#4CAF50",
+        "image": "news3",
+        "description": {
+            "es": "Contenido para la noticia 3...",
+            "en": "Content for news 3..."
+        },
+        "carouselImages": []
+    },
+    {
+        "id": 4,
+        "title": {
+            "es": "Monitoreo de carbono en bosques amazónicos",
+            "en": "Carbon monitoring in Amazonian forests"
+        },
+        "date": {
+            "es": "12/10/2025, Hr: 00:00",
+            "en": "12/10/2025, Time: 00:00"
+        },
+        "endDate": {
+            "es": "12/11/20, Hr: 11:59",
+            "en": "12/11/20, Time: 11:59"
+        },
+        "topics": [
+            "Lineas temáticas: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático"
+        ],
+        "status": "Cerrado",
+        "color": "#F44336",
+        "image": "news4",
+        "description": {
+            "es": "Contenido para la noticia 4...",
+            "en": "Content for news 4..."
+        },
+        "carouselImages": []
+    }
+]

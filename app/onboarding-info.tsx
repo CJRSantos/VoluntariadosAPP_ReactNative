@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Clipboard, Image, Linking, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import { IMAGES } from '../assets/data/imageMap';
+import onboardingData from '../assets/data/onboarding.json';
 import { useTheme } from './providers/ThemeProvider';
 
 // 👇 Ocultar solo el título, mantener la flecha de retroceso
@@ -57,44 +59,44 @@ export default function OnboardingInfo() {
         <ScrollView style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
             {/* Encabezado */}
             <View style={styles.header}>
-                <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{t('onboarding.title')}</Text>
+                <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{onboardingData.title}</Text>
                 <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                    {t('onboarding.subtitle')}
+                    {onboardingData.subtitle}
                 </Text>
             </View>
 
             {/* Sección 1: ¿Qué es Voluntariados IIAP? */}
             <View style={[styles.section, { borderColor: isDark ? '#333' : '#EEE' }]}>
                 {/* Imagen ahora clickeable para zoom */}
-                <TouchableOpacity onPress={async () => await openImage(require('../assets/images/about-iiap.png'))}>
+                <TouchableOpacity onPress={async () => await openImage(IMAGES[onboardingData.sections[0].image!])}>
                     <Image
-                        source={require('../assets/images/about-iiap.png')}
+                        source={IMAGES[onboardingData.sections[0].image!]}
                         style={styles.sectionImage}
                         resizeMode="cover"
                     />
                 </TouchableOpacity>
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    {t('onboarding.section1.title')}
+                    {onboardingData.sections[0].title}
                 </Text>
                 <Text style={[styles.sectionText, { color: isDark ? '#DDD' : '#444' }]}>
-                    {t('onboarding.section1.text')}
+                    {onboardingData.sections[0].text}
                 </Text>
             </View>
 
             {/* Sección 2: ¿Cómo funciona? */}
             <View style={[styles.section, { borderColor: isDark ? '#333' : '#EEE' }]}>
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    {t('onboarding.section2.title')}
+                    {onboardingData.sections[1].title}
                 </Text>
                 <Text style={[styles.sectionText, { color: isDark ? '#DDD' : '#444' }]}>
-                    {t('onboarding.section2.text')}
+                    {onboardingData.sections[1].text}
                 </Text>
 
                 {/* Botón para abrir video de YouTube */}
                 <TouchableOpacity
                     style={[styles.videoButton, { backgroundColor: '#FF0000', marginTop: 16 }]}
                     onPress={() => {
-                        const youtubeUrl = 'https://youtu.be/RPHdeC-QQOM?si=S3YlBo9IUsnLQr5w  ';
+                        const youtubeUrl = onboardingData.sections[1].videoUrl!;
                         Linking.openURL(youtubeUrl).catch((err) => {
                             console.error('Error al abrir YouTube:', err);
                             Alert.alert(
@@ -106,25 +108,25 @@ export default function OnboardingInfo() {
                     }}
                 >
                     <Ionicons name="play-circle" size={24} color="#FFF" style={{ marginRight: 8 }} />
-                    <Text style={styles.videoButtonText}>{t('onboarding.section2.button')}</Text>
+                    <Text style={styles.videoButtonText}>{onboardingData.sections[1].buttonText}</Text>
                 </TouchableOpacity>
             </View>
 
             {/* Sección 3: Beneficios */}
             <View style={[styles.section, { borderColor: isDark ? '#333' : '#EEE' }]}>
                 {/* Imagen ahora clickeable para zoom */}
-                <TouchableOpacity onPress={async () => await openImage(require('../assets/images/benefits.png'))}>
+                <TouchableOpacity onPress={async () => await openImage(IMAGES[onboardingData.sections[2].image!])}>
                     <Image
-                        source={require('../assets/images/benefits.png')}
+                        source={IMAGES[onboardingData.sections[2].image!]}
                         style={styles.sectionImage}
                         resizeMode="cover"
                     />
                 </TouchableOpacity>
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    {t('onboarding.section3.title')}
+                    {onboardingData.sections[2].title}
                 </Text>
                 <Text style={[styles.sectionText, { color: isDark ? '#DDD' : '#444' }]}>
-                    {t('onboarding.section3.text')}
+                    {onboardingData.sections[2].text}
                 </Text>
             </View>
 
@@ -133,7 +135,7 @@ export default function OnboardingInfo() {
                 style={[styles.ctaButton, { backgroundColor: '#4CAF50' }]}
                 onPress={() => router.push('/convocatoria')}
             >
-                <Text style={styles.ctaButtonText}>{t('onboarding.ctaButton')}</Text>
+                <Text style={styles.ctaButtonText}>{onboardingData.ctaButton}</Text>
             </TouchableOpacity>
 
             {/* Pie de página / Volver */}

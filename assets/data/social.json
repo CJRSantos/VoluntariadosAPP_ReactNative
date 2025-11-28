@@ -1,0 +1,59 @@
+[
+    {
+        "id": "facebook",
+        "name": "Facebook",
+        "icon": "logo-facebook",
+        "color": "#1877F2",
+        "url": "https://www.facebook.com/IIAPPeru"
+    },
+    {
+        "id": "twitter",
+        "name": "Twitter",
+        "icon": "logo-twitter",
+        "color": "#1DA1F2",
+        "url": "https://twitter.com/IIAPPeru"
+    },
+    {
+        "id": "instagram",
+        "name": "Instagram",
+        "icon": "logo-instagram",
+        "color": "#E4405F",
+        "url": "https://www.instagram.com/iiapperu/"
+    },
+    {
+        "id": "youtube",
+        "name": "YouTube",
+        "icon": "logo-youtube",
+        "color": "#FF0000",
+        "url": "https://www.youtube.com/@webiiap"
+    },
+    {
+        "id": "linkedin",
+        "name": "LinkedIn",
+        "icon": "logo-linkedin",
+        "color": "#0077B5",
+        "url": "https://www.linkedin.com/company/iiap"
+    },
+    {
+        "id": "web",
+        "name": "Sitio Web",
+        "icon": "globe-outline",
+        "color": "#4CAF50",
+        "url": "https://www.gob.pe/iiap"
+    },
+    {
+        "id": "tiktok",
+        "name": "Tiktok",
+        "icon": "logo-tiktok",
+        "color": "#000000",
+        "url": "https://www.tiktok.com/@iiapperu?is_from_webapp=1&sender_device=pc"
+    },
+    {
+        "id": "spotify",
+        "name": "Spotify",
+        "icon": "spotify",
+        "type": "fontawesome",
+        "color": "#1DB954",
+        "url": "https://open.spotify.com/show/22EKStrMUkA8MciXSj9EaE?si=3454d74d68a244b1"
+    }
+]

@@ -19,21 +19,16 @@ import {
 } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { IMAGES } from '../assets/data/imageMap';
+import newsData from '../assets/data/news.json';
+import socialData from '../assets/data/social.json';
+import videosData from '../assets/data/videos.json';
 import { useTheme } from './providers/ThemeProvider';
 
 const { width } = Dimensions.get('window');
 
 // 👇 Definición de redes sociales del IIAP
-const SOCIAL_LINKS = [
-    { id: 'facebook', name: 'Facebook', icon: 'logo-facebook', color: '#1877F2', url: 'https://www.facebook.com/IIAPPeru' },
-    { id: 'twitter', name: 'Twitter', icon: 'logo-twitter', color: '#1DA1F2', url: 'https://twitter.com/IIAPPeru' },
-    { id: 'instagram', name: 'Instagram', icon: 'logo-instagram', color: '#E4405F', url: 'https://www.instagram.com/iiapperu/' },
-    { id: 'youtube', name: 'YouTube', icon: 'logo-youtube', color: '#FF0000', url: 'https://www.youtube.com/@webiiap' },
-    { id: 'linkedin', name: 'LinkedIn', icon: 'logo-linkedin', color: '#0077B5', url: 'https://www.linkedin.com/company/iiap' },
-    { id: 'web', name: 'Sitio Web', icon: 'globe-outline', color: '#4CAF50', url: 'https://www.gob.pe/iiap' },
-    { id: 'tiktok', name: 'Tiktok', icon: 'logo-tiktok', color: '#000000', url: 'https://www.tiktok.com/@iiapperu?is_from_webapp=1&sender_device=pc' },
-    { id: 'spotify', name: 'Spotify', icon: 'spotify', type: 'fontawesome', color: '#1DB954', url: 'https://open.spotify.com/show/22EKStrMUkA8MciXSj9EaE?si=3454d74d68a244b1' },
-];
+const SOCIAL_LINKS = socialData;
 
 export default function AccountScreen() {
     const { user, loading, reloadUser } = useAuth();
@@ -41,7 +36,8 @@ export default function AccountScreen() {
     const pathname = usePathname();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const currentLang = (i18n.language === 'en' ? 'en' : 'es') as 'es' | 'en';
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -54,61 +50,10 @@ export default function AccountScreen() {
         }, [reloadUser])
     );
 
-    const [news] = useState([
-        {
-            id: 1,
-            title: 'Monitoreo de carbono en bosques amazónicos',
-            date: '12/10/2025, Hr: 00:00',
-            endDate: '12/11/2025, Hr: 11:59',
-            topics: ['Monitoreo de carbono', 'Servicios ecosistémicos', 'Cambio climático'],
-            status: 'Abierto',
-            color: '#4CAF50',
-            image: require('../assets/images/news1.png'),
-        },
-        {
-            id: 2,
-            title: 'Monitoreo de carbono en bosques amazónicos',
-            date: '12/10/2025, Hr: 00:00',
-            endDate: '12/11/2025, Hr: 11:59',
-            topics: ['Monitoreo de carbono', 'Servicios ecosistémicos', 'Cambio climático'],
-            status: 'Cerrado',
-            color: '#F44336',
-            image: require('../assets/images/news2.jpeg'),
-        },
-        {
-            id: 3,
-            title: 'Monitoreo de carbono en bosques amazónicos',
-            date: '12/10/2025, Hr: 00:00',
-            endDate: '12/11/20, Hr: 11:59',
-            topics: ['Lineas temática: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático'],
-            status: 'Abierto',
-            color: '#4CAF50',
-            image: require('../assets/images/news3.png'),
-        },
-        {
-            id: 4,
-            title: 'Monitoreo de carbono en bosques amazónicos',
-            date: '12/10/2025, Hr: 00:00     12/11/20, Hr: 11:59',
-            topics: ['Lineas temáticas: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático'],
-            status: 'Cerrado',
-            color: '#F44336',
-            image: require('../assets/images/news4.png'),
-        },
-    ]);
+    const [news] = useState(newsData);
 
     // Videos
-    const [guides] = useState([
-        { id: 1, videoUrl: 'https://youtu.be/HDSMeoQosN8?si=3b3Tn1Di6vx2bH_m' },
-        { id: 2, videoUrl: 'https://youtu.be/cQaQjp4iX44?si=i4Mg4BOgkRRCwhdJ' },
-        { id: 3, videoUrl: 'https://youtu.be/V5hnXID8TQc?si=o1wgt0Tb6W_j8k_R' },
-        { id: 4, videoUrl: 'https://youtu.be/JBvkA-ZgQDw?si=nHXErOW6Ug0h1Y5y' },
-        { id: 5, videoUrl: 'https://youtu.be/NMF_35Q4nCU?si=qcs466ORSvUM7Ewg' },
-        { id: 6, videoUrl: 'https://youtu.be/1p4Vd_g8igo?si=ayi1RGJF64DpLlY_' },
-        { id: 7, videoUrl: 'https://youtu.be/MatQhCP9dCI?si=CbZGIM504jhUDoL6' },
-        { id: 8, videoUrl: 'https://youtu.be/MMGx5A3Olio?si=9DBF2AMQ5dI4gt23' },
-        { id: 9, videoUrl: 'https://youtu.be/u7EUUNYydiU?si=GKTcLguM2MvE-83U' },
-        { id: 10, videoUrl: 'https://youtu.be/bnNYooo3gHw?si=TywKUckAVHjMp4rY' },
-    ]);
+    const [guides] = useState(videosData);
 
     const openSocialLink = (url: string) => {
         Linking.openURL(url).catch((err) => {
@@ -209,16 +154,16 @@ export default function AccountScreen() {
                                 },
                             ]}
                         >
-                            <Image source={item.image} style={styles.newsImage} />
+                            <Image source={IMAGES[item.image]} style={styles.newsImage} />
                             <View style={styles.newsText}>
                                 <Text style={[styles.newsDate, { color: isDark ? '#AAA' : '#666' }]}>
-                                    {item.date}
+                                    {item.date[currentLang]}
                                 </Text>
                                 <Text style={[styles.newsEndDate, { color: isDark ? '#AAA' : '#666' }]}>
-                                    {item.endDate}
+                                    {item.endDate[currentLang]}
                                 </Text>
                                 <Text style={[styles.newsTitle, { color: isDark ? '#FFF' : '#333', marginBottom: 8 }]}>
-                                    {item.title}
+                                    {item.title[currentLang]}
                                 </Text>
                                 <Text style={[styles.newsTopics, { color: isDark ? '#AAA' : '#666' }]}>
                                     {item.topics.join(', ')}
@@ -263,11 +208,7 @@ export default function AccountScreen() {
                                         ]}
                                         onPress={() => router.push({
                                             pathname: '/news-details',
-                                            params: {
-                                                title: item.title,
-                                                date: item.date,
-                                                endDate: item.endDate,
-                                            }
+                                            params: { id: item.id }
                                         })}
                                     >
                                         <Text style={[styles.detailsText, { color: isDark ? '#AAA' : '#666' }]}>
@@ -350,17 +291,18 @@ export default function AccountScreen() {
                         ))}
                     </View>
                 </View>
-            </ScrollView>
+            </ScrollView >
 
             {/* Barra de navegación inferior */}
-            <View
-                style={[
-                    styles.bottomNav,
-                    {
-                        borderTopColor: isDark ? '#333' : '#EEE',
-                        backgroundColor: isDark ? '#111' : '#FFF',
-                    },
-                ]}
+            < View
+                style={
+                    [
+                        styles.bottomNav,
+                        {
+                            borderTopColor: isDark ? '#333' : '#EEE',
+                            backgroundColor: isDark ? '#111' : '#FFF',
+                        },
+                    ]}
             >
                 <TouchableOpacity
                     style={[
@@ -465,75 +407,77 @@ export default function AccountScreen() {
                         {t('account.nav.about')}
                     </Text>
                 </TouchableOpacity>
-            </View>
+            </View >
 
             {/* Menú desplegable + overlay */}
-            {isMenuOpen && (
-                <>
-                    <TouchableOpacity
-                        style={styles.overlay}
-                        activeOpacity={1}
-                        onPress={() => setIsMenuOpen(false)}
-                    />
-                    <View
-                        style={[
-                            styles.menuOverlay,
-                            { backgroundColor: isDark ? '#111' : '#FFF' },
-                        ]}
-                    >
+            {
+                isMenuOpen && (
+                    <>
+                        <TouchableOpacity
+                            style={styles.overlay}
+                            activeOpacity={1}
+                            onPress={() => setIsMenuOpen(false)}
+                        />
                         <View
                             style={[
-                                styles.menuContainer,
-                                { backgroundColor: isDark ? '#222' : '#FFF' },
+                                styles.menuOverlay,
+                                { backgroundColor: isDark ? '#111' : '#FFF' },
                             ]}
                         >
-                            <TouchableOpacity
-                                style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                                onPress={() => {
-                                    router.push('/profile');
-                                    setIsMenuOpen(false);
-                                }}
+                            <View
+                                style={[
+                                    styles.menuContainer,
+                                    { backgroundColor: isDark ? '#222' : '#FFF' },
+                                ]}
                             >
-                                <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
-                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('account.menu.profile')}</Text>
-                            </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                                    onPress={() => {
+                                        router.push('/profile');
+                                        setIsMenuOpen(false);
+                                    }}
+                                >
+                                    <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
+                                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('account.menu.profile')}</Text>
+                                </TouchableOpacity>
 
-                            <TouchableOpacity
-                                style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                                onPress={() => {
-                                    router.push('/settings');
-                                    setIsMenuOpen(false);
-                                }}
-                            >
-                                <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
-                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('account.menu.settings')}</Text>
-                            </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                                    onPress={() => {
+                                        router.push('/settings');
+                                        setIsMenuOpen(false);
+                                    }}
+                                >
+                                    <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
+                                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('account.menu.settings')}</Text>
+                                </TouchableOpacity>
 
-                            <TouchableOpacity
-                                style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                                onPress={() => {
-                                    Alert.alert(t('account.menu.soon'), t('account.menu.helpSoon'));
-                                    setIsMenuOpen(false);
-                                }}
-                            >
-                                <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
-                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('account.menu.help')}</Text>
-                            </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                                    onPress={() => {
+                                        Alert.alert(t('account.menu.soon'), t('account.menu.helpSoon'));
+                                        setIsMenuOpen(false);
+                                    }}
+                                >
+                                    <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
+                                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('account.menu.help')}</Text>
+                                </TouchableOpacity>
 
-                            <TouchableOpacity
-                                style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                                onPress={() => {
-                                    router.push('/login');
-                                    setIsMenuOpen(false);
-                                }}
-                            >
-                                <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
-                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('account.menu.logout')}</Text>
-                            </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                                    onPress={() => {
+                                        router.push('/login');
+                                        setIsMenuOpen(false);
+                                    }}
+                                >
+                                    <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
+                                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('account.menu.logout')}</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                </>
-            )}
+                    </>
+                )
+            }
 
             <Modal
                 visible={isProfileImageVisible}
@@ -557,7 +501,7 @@ export default function AccountScreen() {
                     onClick={() => setIsProfileImageVisible(false)}
                 />
             </Modal>
-        </SafeAreaView>
+        </SafeAreaView >
     );
 }
 

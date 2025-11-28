@@ -1,0 +1,19 @@
+{
+    "title": "Realizar investigaciones - Bosques",
+    "vacantes": {
+        "title": "Vacantes",
+        "count": "5"
+    },
+    "formacion": {
+        "title": "Formación académica",
+        "content": "Egresado(a) Universitario de Archivística y Gestión Documental, Administración, Ingeniería Industrial, Ingeniería de Sistemas"
+    },
+    "experiencia": {
+        "title": "Experiencia",
+        "content": "General: 2 años\n\nEspecífica: 1 año en la función o materia, 1 año a nivel de practicante, 1 año en el sector público"
+    },
+    "cursos": {
+        "title": "Cursos y programas de especialización",
+        "content": "Gestión de archivos, gestión documental, sistema de gestión documental, trámite documentario o gobierno digital, con duración mínima de 60 horas acumulables"
+    }
+}

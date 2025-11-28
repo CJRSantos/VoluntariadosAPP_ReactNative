@@ -1,6 +1,8 @@
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { IMAGES } from '../assets/data/imageMap';
+import moreInfoData from '../assets/data/more-info.json';
 
 export default function MasInfoScreen() {
   const router = useRouter();
@@ -20,7 +22,7 @@ export default function MasInfoScreen() {
         {/* Imagen */}
         <View style={styles.imageContainer}>
           <Image
-            source={require('../assets/images/Tutorial2.png')}
+            source={IMAGES[moreInfoData.image]}
             style={styles.image}
             resizeMode="cover"
           />
@@ -36,36 +38,25 @@ export default function MasInfoScreen() {
           {t('masInfo.howToApplyText')}
         </Text>
 
-        {/* Presencial */}
-        <TouchableOpacity style={styles.optionCard} onPress={() => router.push('/presencial-info')}>
-          <View style={styles.iconContainer}>
-            <Text style={styles.icon}>🏢</Text>
-          </View>
-          <View style={styles.optionContent}>
-            <Text style={styles.optionTitle}>{t('masInfo.presencialTitle')}</Text>
-            <Text style={styles.optionDescription}>
-              {t('masInfo.presencialText')}
-            </Text>
-          </View>
-          <Text style={styles.arrow}>→</Text>
-        </TouchableOpacity>
-
-        {/* Virtual */}
-        <TouchableOpacity
-          style={styles.optionCard}
-          onPress={() => router.push('/virtual-tutorial')}
-        >
-          <View style={styles.iconContainer}>
-            <Text style={styles.icon}>🌐</Text>
-          </View>
-          <View style={styles.optionContent}>
-            <Text style={styles.optionTitle}>{t('masInfo.virtualTitle')}</Text>
-            <Text style={styles.optionDescription}>
-              {t('masInfo.virtualText')}
-            </Text>
-          </View>
-          <Text style={styles.arrow}>→</Text>
-        </TouchableOpacity>
+        {/* Opciones */}
+        {moreInfoData.options.map((option) => (
+          <TouchableOpacity
+            key={option.id}
+            style={styles.optionCard}
+            onPress={() => router.push(option.route as any)}
+          >
+            <View style={styles.iconContainer}>
+              <Text style={styles.icon}>{option.icon}</Text>
+            </View>
+            <View style={styles.optionContent}>
+              <Text style={styles.optionTitle}>{t(`masInfo.${option.id}Title`)}</Text>
+              <Text style={styles.optionDescription}>
+                {t(`masInfo.${option.id}Text`)}
+              </Text>
+            </View>
+            <Text style={styles.arrow}>→</Text>
+          </TouchableOpacity>
+        ))}
 
         {/* Nota importante */}
         <Text style={styles.noteTitle}>{t('masInfo.noteTitle')}</Text>
