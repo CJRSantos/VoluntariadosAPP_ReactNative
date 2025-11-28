@@ -1,5 +1,5 @@
 // app/postulacion-paso3.tsx
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import {
     Dimensions,
@@ -29,6 +29,7 @@ export default function PostulacionPaso3Screen() {
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+            <Stack.Screen options={{ title: '', headerBackTitle: '', headerStyle: { backgroundColor: isDark ? '#000' : '#fff' }, headerTintColor: isDark ? '#fff' : '#000' }} />
             <ScrollView contentContainerStyle={styles.container}>
                 {/* Header */}
                 <View style={styles.header}>

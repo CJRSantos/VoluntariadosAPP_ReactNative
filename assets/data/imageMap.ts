@@ -17,4 +17,12 @@ export const IMAGES: { [key: string]: any } = {
     'bosques3': require('../images/bosques3.png'),
     'area1': require('../images/Area1.jpg'),
     'area2': require('../images/Area2.jpg'),
+    'convocatoria_bosques': require('../images/convocatoria_bosques.png'),
+    'news2_1': require('../images/news2_1.png'),
+    'news2_2': require('../images/news2_2.png'),
+    'news2_3': require('../images/news2_3.png'),
+    'news3_1': require('../images/news3_1.png'),
+    'news3_2': require('../images/news3_2.png'),
+    'news3_3': require('../images/news3_3.png'),
+    'news4_1': require('../images/news4_1.png'),
 };

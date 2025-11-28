@@ -25,8 +25,9 @@ export default function AreasScreen() {
   const router = useRouter();
   const pathname = usePathname();
   const { theme } = useTheme();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isDark = theme === 'dark';
+  const currentLang = (i18n.language === 'en' ? 'en' : 'es') as 'es' | 'en';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -206,13 +207,13 @@ export default function AreasScreen() {
                 </View>
               </View>
               <Text style={[styles.areaDirection, { color: isDark ? '#AAA' : '#666' }]}>
-                {area.direction}
+                {area.direction[currentLang]}
               </Text>
               <Text style={[styles.areaTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                {area.title}
+                {area.title[currentLang]}
               </Text>
               <Text style={[styles.areaDescription, { color: isDark ? '#AAA' : '#666' }]}>
-                {area.description}
+                {area.description[currentLang]}
               </Text>
             </TouchableOpacity>
           ))}

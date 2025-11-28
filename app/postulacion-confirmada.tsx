@@ -1,5 +1,5 @@
 // app/postulacion-confirmada.tsx
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import {
     Dimensions,
@@ -26,6 +26,7 @@ export default function PostulacionConfirmadaScreen() {
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+            <Stack.Screen options={{ title: '', headerBackTitle: '', headerStyle: { backgroundColor: isDark ? '#000' : '#fff' }, headerTintColor: isDark ? '#fff' : '#000' }} />
             <ScrollView contentContainerStyle={styles.container}>
                 {/* Icono de éxito */}
                 <View style={styles.successIconContainer}>

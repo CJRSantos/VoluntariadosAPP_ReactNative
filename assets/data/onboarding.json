@@ -1,26 +1,56 @@
 {
-    "title": "¡Bienvenido a Voluntariados IIAP!",
-    "subtitle": "Tu puerta de entrada para contribuir con la ciencia y conservación amazónica.",
+    "title": {
+        "es": "¡Bienvenido a Voluntariados IIAP!",
+        "en": "Welcome to IIAP Volunteering!"
+    },
+    "subtitle": {
+        "es": "Tu puerta de entrada para contribuir con la ciencia y conservación amazónica.",
+        "en": "Your gateway to contribute to Amazonian science and conservation."
+    },
     "sections": [
         {
             "id": "section1",
-            "title": "¿Qué es Voluntariados IIAP?",
-            "text": "Es una plataforma digital que conecta a personas comprometidas con la investigación científica y la conservación ambiental en la Amazonía peruana, con proyectos reales del Instituto de Investigaciones de la Amazonía Peruana (IIAP).",
+            "title": {
+                "es": "¿Qué es Voluntariados IIAP?",
+                "en": "What is IIAP Volunteering?"
+            },
+            "text": {
+                "es": "Es una plataforma digital que conecta a personas comprometidas con la investigación científica y la conservación ambiental en la Amazonía peruana, con proyectos reales del Instituto de Investigaciones de la Amazonía Peruana (IIAP).",
+                "en": "It is a digital platform that connects people committed to scientific research and environmental conservation in the Peruvian Amazon with real projects of the Research Institute of the Peruvian Amazon (IIAP)."
+            },
             "image": "about-iiap"
         },
         {
             "id": "section2",
-            "title": "¿Qué es el IIAP?",
-            "text": "Mira este video para entender que es el IIAP",
-            "buttonText": "Ver tutorial en YouTube",
+            "title": {
+                "es": "¿Qué es el IIAP?",
+                "en": "What is the IIAP?"
+            },
+            "text": {
+                "es": "Mira este video para entender que es el IIAP",
+                "en": "Watch this video to understand what the IIAP is"
+            },
+            "buttonText": {
+                "es": "Ver tutorial en YouTube",
+                "en": "Watch tutorial on YouTube"
+            },
             "videoUrl": "https://youtu.be/RPHdeC-QQOM?si=S3YlBo9IUsnLQr5w"
         },
         {
             "id": "section3",
-            "title": "Beneficios de ser voluntario",
-            "text": "• Experiencia práctica en campo y laboratorio.\n• Certificación de participación emitida por el IIAP.\n• Acceso a redes de científicos y profesionales.\n• Contribución directa a la conservación de la Amazonía.",
+            "title": {
+                "es": "Beneficios de ser voluntario",
+                "en": "Benefits of being a volunteer"
+            },
+            "text": {
+                "es": "• Experiencia práctica en campo y laboratorio.\n• Certificación de participación emitida por el IIAP.\n• Acceso a redes de científicos y profesionales.\n• Contribución directa a la conservación de la Amazonía.",
+                "en": "• Practical experience in the field and laboratory.\n• Certificate of participation issued by the IIAP.\n• Access to networks of scientists and professionals.\n• Direct contribution to the conservation of the Amazon."
+            },
             "image": "benefits"
         }
     ],
-    "ctaButton": "Explorar Convocatorias"
+    "ctaButton": {
+        "es": "Explorar Convocatorias",
+        "en": "Explore Calls"
+    }
 }

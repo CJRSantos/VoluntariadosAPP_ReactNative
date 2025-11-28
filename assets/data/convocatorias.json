@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "image": "tutorial1",
+        "image": "convocatoria_bosques",
         "title": "Ayuda a realizar investigaciones - Bosques",
         "location": "Iquitos, Perú",
         "participants": "20 participantes",
@@ -10,7 +10,7 @@
     },
     {
         "id": 2,
-        "image": "bosques2",
+        "image": "convocatoria_bosques",
         "title": "Ayuda a realizar investigaciones - Bosques",
         "location": "Iquitos, Perú",
         "participants": "20 participantes",

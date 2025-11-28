@@ -242,7 +242,23 @@
         "basic": "Básico",
         "intermediate": "Intermediate",
         "advanced": "Advanced",
-        "native": "Native"
+        "native": "Native",
+        "personalSection": "Personal Information",
+        "academicSection": "Academic Information",
+        "technicalSection": "Technical/Specialized Training",
+        "complementarySection": "Complementary Training",
+        "experienceSection": "Work Experience",
+        "volunteerSection": "Volunteering",
+        "publicationSection": "Publications",
+        "languageSection": "Languages",
+        "emptySection": "No information to display",
+        "timeLabel": "Period",
+        "status": {
+            "current": "Currently",
+            "graduated": "Graduated",
+            "titled": "Titled",
+            "truncated": "Incomplete"
+        }
     },
     "areas": {
         "title": "Areas",

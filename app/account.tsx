@@ -166,7 +166,7 @@ export default function AccountScreen() {
                                     {item.title[currentLang]}
                                 </Text>
                                 <Text style={[styles.newsTopics, { color: isDark ? '#AAA' : '#666' }]}>
-                                    {item.topics.join(', ')}
+                                    {item.topics[currentLang].join(', ')}
                                 </Text>
                                 <View style={styles.newsStatusContainer}>
                                     {item.status === 'Abierto' ? (

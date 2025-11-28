@@ -13,11 +13,18 @@
             "es": "12/11/2025, Hr: 11:59",
             "en": "12/11/2025, Time: 11:59"
         },
-        "topics": [
-            "Monitoreo de carbono",
-            "Servicios ecosistémicos",
-            "Cambio climático"
-        ],
+        "topics": {
+            "es": [
+                "Monitoreo de carbono",
+                "Servicios ecosistémicos",
+                "Cambio climático"
+            ],
+            "en": [
+                "Carbon monitoring",
+                "Ecosystem services",
+                "Climate change"
+            ]
+        },
         "status": "Abierto",
         "color": "#4CAF50",
         "image": "news1",
@@ -35,81 +42,116 @@
     {
         "id": 2,
         "title": {
-            "es": "Monitoreo de carbono en bosques amazónicos",
-            "en": "Carbon monitoring in Amazonian forests"
+            "es": "Restauración de ecosistemas degradados",
+            "en": "Restoration of degraded ecosystems"
         },
         "date": {
-            "es": "12/10/2025, Hr: 00:00",
-            "en": "12/10/2025, Time: 00:00"
+            "es": "15/10/2025, Hr: 08:00",
+            "en": "15/10/2025, Time: 08:00"
         },
         "endDate": {
-            "es": "12/11/2025, Hr: 11:59",
-            "en": "12/11/2025, Time: 11:59"
+            "es": "20/10/2025, Hr: 17:00",
+            "en": "20/10/2025, Time: 17:00"
         },
-        "topics": [
-            "Monitoreo de carbono",
-            "Servicios ecosistémicos",
-            "Cambio climático"
-        ],
-        "status": "Cerrado",
-        "color": "#F44336",
+        "topics": {
+            "es": [
+                "Reforestación",
+                "Viveros forestales",
+                "Restauración ecológica"
+            ],
+            "en": [
+                "Reforestation",
+                "Forest nurseries",
+                "Ecological restoration"
+            ]
+        },
+        "status": "Abierto",
+        "color": "#4CAF50",
         "image": "news2",
         "description": {
-            "es": "Contenido para la noticia 2...",
-            "en": "Content for news 2..."
+            "es": "El programa de restauración busca recuperar áreas degradadas mediante la reforestación con especies nativas. Los voluntarios participarán en la producción de plantones en viveros, siembra en campo y monitoreo de crecimiento. Es una oportunidad para aprender sobre silvicultura amazónica y contribuir a la recuperación del bosque.",
+            "en": "The restoration program seeks to recover degraded areas through reforestation with native species. Volunteers will participate in seedling production in nurseries, field planting, and growth monitoring. It is an opportunity to learn about Amazonian forestry and contribute to forest recovery."
         },
-        "carouselImages": []
+        "carouselImages": [
+            "news2_1",
+            "news2_2",
+            "news2_3"
+        ]
     },
     {
         "id": 3,
         "title": {
-            "es": "Monitoreo de carbono en bosques amazónicos",
-            "en": "Carbon monitoring in Amazonian forests"
+            "es": "Evaluación de biodiversidad en aguajales",
+            "en": "Biodiversity assessment in aguajales"
         },
         "date": {
-            "es": "12/10/2025, Hr: 00:00",
-            "en": "12/10/2025, Time: 00:00"
+            "es": "01/11/2025, Hr: 09:00",
+            "en": "01/11/2025, Time: 09:00"
         },
         "endDate": {
-            "es": "12/11/20, Hr: 11:59",
-            "en": "12/11/20, Time: 11:59"
+            "es": "05/11/2025, Hr: 16:00",
+            "en": "05/11/2025, Time: 16:00"
         },
-        "topics": [
-            "Lineas temática: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático"
-        ],
+        "topics": {
+            "es": [
+                "Biodiversidad",
+                "Fauna silvestre",
+                "Aguajales"
+            ],
+            "en": [
+                "Biodiversity",
+                "Wildlife",
+                "Peatlands"
+            ]
+        },
         "status": "Abierto",
         "color": "#4CAF50",
         "image": "news3",
         "description": {
-            "es": "Contenido para la noticia 3...",
-            "en": "Content for news 3..."
+            "es": "Este proyecto se enfoca en el estudio de la fauna y flora de los aguajales, ecosistemas clave para el almacenamiento de carbono. Las actividades incluyen censos de aves, monitoreo de mamíferos y evaluación de la salud de las palmeras de aguaje. Ideal para amantes de la naturaleza y la biología.",
+            "en": "This project focuses on the study of the fauna and flora of the aguajales, key ecosystems for carbon storage. Activities include bird censuses, mammal monitoring, and assessment of the health of aguaje palms. Ideal for nature and biology lovers."
         },
-        "carouselImages": []
+        "carouselImages": [
+            "news3_1",
+            "news3_2",
+            "news3_3"
+        ]
     },
     {
         "id": 4,
         "title": {
-            "es": "Monitoreo de carbono en bosques amazónicos",
-            "en": "Carbon monitoring in Amazonian forests"
+            "es": "Educación ambiental en comunidades nativas",
+            "en": "Environmental education in native communities"
         },
         "date": {
-            "es": "12/10/2025, Hr: 00:00",
-            "en": "12/10/2025, Time: 00:00"
+            "es": "20/11/2025, Hr: 10:00",
+            "en": "20/11/2025, Time: 10:00"
         },
         "endDate": {
-            "es": "12/11/20, Hr: 11:59",
-            "en": "12/11/20, Time: 11:59"
+            "es": "25/11/2025, Hr: 15:00",
+            "en": "25/11/2025, Time: 15:00"
         },
-        "topics": [
-            "Lineas temáticas: Monitoreo de carbono, Servicios ecosistématicos, Cambio climático"
-        ],
+        "topics": {
+            "es": [
+                "Educación ambiental",
+                "Comunidades nativas",
+                "Sostenibilidad"
+            ],
+            "en": [
+                "Environmental education",
+                "Native communities",
+                "Sustainability"
+            ]
+        },
         "status": "Cerrado",
         "color": "#F44336",
         "image": "news4",
         "description": {
-            "es": "Contenido para la noticia 4...",
-            "en": "Content for news 4..."
+            "es": "La educación ambiental es fundamental para la conservación a largo plazo. Trabajamos con comunidades nativas para fortalecer sus conocimientos sobre gestión sostenible de recursos. Los voluntarios apoyarán en talleres, elaboración de materiales educativos y actividades lúdicas con niños y adultos.",
+            "en": "Environmental education is fundamental for long-term conservation. We work with native communities to strengthen their knowledge on sustainable resource management. Volunteers will support workshops, the development of educational materials, and recreational activities with children and adults."
         },
-        "carouselImages": []
+        "carouselImages": [
+            "news4_1"
+        ]
     }
 ]

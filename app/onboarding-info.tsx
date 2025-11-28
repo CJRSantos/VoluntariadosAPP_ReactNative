@@ -1,7 +1,7 @@
 // app/onboarding-info.tsx
 import { Ionicons } from '@expo/vector-icons';
 import { Asset } from 'expo-asset';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Clipboard, Image, Linking, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -10,16 +10,12 @@ import { IMAGES } from '../assets/data/imageMap';
 import onboardingData from '../assets/data/onboarding.json';
 import { useTheme } from './providers/ThemeProvider';
 
-// 👇 Ocultar solo el título, mantener la flecha de retroceso
-export const screenOptions = {
-    headerTitle: '',
-};
-
 export default function OnboardingInfo() {
     const router = useRouter();
     const { theme } = useTheme();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const isDark = theme === 'dark';
+    const currentLang = (i18n.language === 'en' ? 'en' : 'es') as 'es' | 'en';
 
     // Estado para controlar si se muestra el modal de imagen
     const [isImageVisible, setIsImageVisible] = useState(false);
@@ -57,11 +53,23 @@ export default function OnboardingInfo() {
 
     return (
         <ScrollView style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+            <Stack.Screen options={{
+                headerShown: false,
+            }} />
+
+            {/* Botón de retroceso superior */}
+            <TouchableOpacity
+                style={styles.topBackButton}
+                onPress={() => router.back()}
+            >
+                <Ionicons name="arrow-back" size={28} color={isDark ? '#FFF' : '#333'} />
+            </TouchableOpacity>
+
             {/* Encabezado */}
             <View style={styles.header}>
-                <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{onboardingData.title}</Text>
+                <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{onboardingData.title[currentLang]}</Text>
                 <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                    {onboardingData.subtitle}
+                    {onboardingData.subtitle[currentLang]}
                 </Text>
             </View>
 
@@ -76,20 +84,20 @@ export default function OnboardingInfo() {
                     />
                 </TouchableOpacity>
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    {onboardingData.sections[0].title}
+                    {onboardingData.sections[0].title[currentLang]}
                 </Text>
                 <Text style={[styles.sectionText, { color: isDark ? '#DDD' : '#444' }]}>
-                    {onboardingData.sections[0].text}
+                    {onboardingData.sections[0].text[currentLang]}
                 </Text>
             </View>
 
             {/* Sección 2: ¿Cómo funciona? */}
             <View style={[styles.section, { borderColor: isDark ? '#333' : '#EEE' }]}>
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    {onboardingData.sections[1].title}
+                    {onboardingData.sections[1].title[currentLang]}
                 </Text>
                 <Text style={[styles.sectionText, { color: isDark ? '#DDD' : '#444' }]}>
-                    {onboardingData.sections[1].text}
+                    {onboardingData.sections[1].text[currentLang]}
                 </Text>
 
                 {/* Botón para abrir video de YouTube */}
@@ -108,7 +116,7 @@ export default function OnboardingInfo() {
                     }}
                 >
                     <Ionicons name="play-circle" size={24} color="#FFF" style={{ marginRight: 8 }} />
-                    <Text style={styles.videoButtonText}>{onboardingData.sections[1].buttonText}</Text>
+                    <Text style={styles.videoButtonText}>{onboardingData.sections[1].buttonText![currentLang]}</Text>
                 </TouchableOpacity>
             </View>
 
@@ -123,10 +131,10 @@ export default function OnboardingInfo() {
                     />
                 </TouchableOpacity>
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    {onboardingData.sections[2].title}
+                    {onboardingData.sections[2].title[currentLang]}
                 </Text>
                 <Text style={[styles.sectionText, { color: isDark ? '#DDD' : '#444' }]}>
-                    {onboardingData.sections[2].text}
+                    {onboardingData.sections[2].text[currentLang]}
                 </Text>
             </View>
 
@@ -135,14 +143,7 @@ export default function OnboardingInfo() {
                 style={[styles.ctaButton, { backgroundColor: '#4CAF50' }]}
                 onPress={() => router.push('/convocatoria')}
             >
-                <Text style={styles.ctaButtonText}>{onboardingData.ctaButton}</Text>
-            </TouchableOpacity>
-
-            {/* Pie de página / Volver */}
-            <TouchableOpacity
-                style={[styles.backButton, { borderColor: isDark ? '#AAA' : '#666' }]}
-                onPress={() => router.back()}
-            >
+                <Text style={styles.ctaButtonText}>{onboardingData.ctaButton[currentLang]}</Text>
             </TouchableOpacity>
 
             {/* Modal para ver imagen con zoom */}
@@ -191,6 +192,12 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
     },
+    topBackButton: {
+        marginTop: 40,
+        marginBottom: 10,
+        alignSelf: 'flex-start',
+        padding: 8,
+    },
     header: {
         marginBottom: 24,
         alignItems: 'center',
@@ -229,6 +236,7 @@ const styles = StyleSheet.create({
     },
     ctaButton: {
         marginTop: 24,
+        marginBottom: 40,
         paddingVertical: 12,
         paddingHorizontal: 24,
         borderRadius: 8,
@@ -238,17 +246,6 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 16,
         fontWeight: 'bold',
-    },
-    backButton: {
-        marginTop: 16,
-        paddingVertical: 12,
-        paddingHorizontal: 24,
-        borderRadius: 8,
-        borderWidth: 1,
-        alignItems: 'center',
-    },
-    backButtonText: {
-        fontSize: 14,
     },
     videoButton: {
         flexDirection: 'row',

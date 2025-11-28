@@ -1,7 +1,6 @@
 // app/postulacion-paso1.tsx
-import { useAuth } from '@/hooks/useAuth';
 import * as DocumentPicker from 'expo-document-picker';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -20,7 +19,6 @@ const { width } = Dimensions.get('window');
 
 export default function PostulacionPaso1Screen() {
     const router = useRouter();
-    const { user } = useAuth();
     const { theme } = useTheme();
     const { t } = useTranslation();
     const isDark = theme === 'dark';
@@ -57,6 +55,7 @@ export default function PostulacionPaso1Screen() {
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+            <Stack.Screen options={{ title: '', headerBackTitle: '', headerStyle: { backgroundColor: isDark ? '#000' : '#fff' }, headerTintColor: isDark ? '#fff' : '#000' }} />
             <ScrollView contentContainerStyle={styles.container}>
                 {/* Header */}
                 <View style={styles.header}>

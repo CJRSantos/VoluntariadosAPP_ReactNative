@@ -39,12 +39,29 @@ export default function ProfileScreen() {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
     const { t } = useTranslation();
+    const { i18n } = useTranslation();
+
+    const getLocalizedValue = (val: any) => {
+        if (!val) return '';
+        if (typeof val === 'object') {
+            return val[i18n.language] || val['es'] || val['en'] || '';
+        }
+        return val;
+    };
+
+    const updateLocalizedField = (originalRecord: any, fieldName: string, newValue: string) => {
+        const originalValue = originalRecord ? originalRecord[fieldName] : {};
+        const valueObj = typeof originalValue === 'object' && originalValue !== null ? originalValue : { es: originalValue };
+        return { ...valueObj, [i18n.language]: newValue };
+    };
 
     // Imágenes
     const [bannerImage, setBannerImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [isBannerZoomVisible, setIsBannerZoomVisible] = useState(false);
     const [isProfileZoomVisible, setIsProfileZoomVisible] = useState(false);
+    const [pendingImage, setPendingImage] = useState<{ uri: string, type: 'banner' | 'profile' } | null>(null);
+    const [showImageConfirmation, setShowImageConfirmation] = useState(false);
 
     // Modales
     const [showPersonalInfoForm, setShowPersonalInfoForm] = useState(false);
@@ -200,39 +217,48 @@ export default function ProfileScreen() {
     const pickImage = async (type: 'banner' | 'profile') => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
+            allowsEditing: false,
             aspect: type === 'banner' ? [16, 9] : [1, 1],
             quality: 1,
         });
         if (!result.canceled && result.assets?.[0]) {
             const uri = result.assets[0].uri;
-            if (type === 'banner') {
-                setBannerImage(uri);
-                await AsyncStorage.setItem('userBannerURL', uri);
-            } else {
-                setProfileImage(uri);
-                await AsyncStorage.setItem('userPhotoURL', uri);
-            }
+            setPendingImage({ uri, type });
+            setShowImageConfirmation(true);
         }
     };
 
     const takePhoto = async (type: 'banner' | 'profile') => {
         let result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
+            allowsEditing: false,
             aspect: type === 'banner' ? [16, 9] : [1, 1],
             quality: 1,
         });
         if (!result.canceled && result.assets?.[0]) {
             const uri = result.assets[0].uri;
-            if (type === 'banner') {
-                setBannerImage(uri);
-                await AsyncStorage.setItem('userBannerURL', uri);
-            } else {
-                setProfileImage(uri);
-                await AsyncStorage.setItem('userPhotoURL', uri);
-            }
+            setPendingImage({ uri, type });
+            setShowImageConfirmation(true);
         }
+    };
+
+    const confirmImage = async () => {
+        if (pendingImage) {
+            if (pendingImage.type === 'banner') {
+                setBannerImage(pendingImage.uri);
+                await AsyncStorage.setItem('userBannerURL', pendingImage.uri);
+            } else {
+                setProfileImage(pendingImage.uri);
+                await AsyncStorage.setItem('userPhotoURL', pendingImage.uri);
+            }
+            setPendingImage(null);
+            setShowImageConfirmation(false);
+        }
+    };
+
+    const cancelImage = () => {
+        setPendingImage(null);
+        setShowImageConfirmation(false);
     };
 
     const showBannerMenu = () => setBannerMenuVisible(true);
@@ -271,7 +297,7 @@ export default function ProfileScreen() {
 
     const openPersonalModal = () => {
         if (personalInfo) {
-            setNameInput(personalInfo.name || '');
+            setNameInput(getLocalizedValue(personalInfo.name) || '');
             setBirthDateInput(personalInfo.birthDate || '');
             setPhoneInput(personalInfo.phone || '');
             setDocumentType(personalInfo.documentType || '');
@@ -291,12 +317,12 @@ export default function ProfileScreen() {
 
     const openAcademicModal = (record: any = null) => {
         if (record) {
-            setDegreeInput(record.degree || '');
-            setInstitutionInput(record.institution || '');
-            setCountryInput(record.country || '');
+            setDegreeInput(getLocalizedValue(record.degree) || '');
+            setInstitutionInput(getLocalizedValue(record.institution) || '');
+            setCountryInput(getLocalizedValue(record.country) || '');
             setStartDateInput(record.startDate || '');
             setEndDateInput(record.endDate || '');
-            setAcademicStatus(record.status || 'Actualmente');
+            setAcademicStatus(record.status || 'CURRENT');
             setEditingAcademic(record);
         } else {
             setDegreeInput('');
@@ -304,7 +330,7 @@ export default function ProfileScreen() {
             setCountryInput('');
             setStartDateInput('');
             setEndDateInput('');
-            setAcademicStatus('Actualmente');
+            setAcademicStatus('CURRENT');
             setEditingAcademic(null);
         }
         setShowAcademicModal(true);
@@ -312,9 +338,9 @@ export default function ProfileScreen() {
 
     const openTechnicalModal = (record: any = null) => {
         if (record) {
-            setCourseInput(record.course || '');
-            setPlatformInput(record.platform || '');
-            setDurationInput(record.duration || '');
+            setCourseInput(getLocalizedValue(record.course) || '');
+            setPlatformInput(getLocalizedValue(record.platform) || '');
+            setDurationInput(getLocalizedValue(record.duration) || '');
             setEndDateInput(record.endDate || '');
             setEditingTechnical(record);
         } else {
@@ -329,8 +355,8 @@ export default function ProfileScreen() {
 
     const openComplementaryModal = (record: any = null) => {
         if (record) {
-            setActivityInput(record.activity || '');
-            setDescriptionInput(record.description || '');
+            setActivityInput(getLocalizedValue(record.activity) || '');
+            setDescriptionInput(getLocalizedValue(record.description) || '');
             setDateInput(record.date || '');
             setEditingComplementary(record);
         } else {
@@ -344,10 +370,10 @@ export default function ProfileScreen() {
 
     const openExperienceModal = (record: any = null) => {
         if (record) {
-            setPositionInput(record.position || '');
-            setInstitutionInput(record.institution || '');
-            setAreaInput(record.area || '');
-            setCountryInput(record.country || '');
+            setPositionInput(getLocalizedValue(record.position) || '');
+            setInstitutionInput(getLocalizedValue(record.institution) || '');
+            setAreaInput(getLocalizedValue(record.area) || '');
+            setCountryInput(getLocalizedValue(record.country) || '');
             setStartDateInput(record.startDate || '');
             setEndDateInput(record.endDate || '');
             setEditingExperience(record);
@@ -365,13 +391,13 @@ export default function ProfileScreen() {
 
     const openVolunteerModal = (record: any = null) => {
         if (record) {
-            setOrgInput(record.organization || '');
-            setRoleInput(record.role || '');
-            setCauseInput(record.cause || '');
+            setOrgInput(getLocalizedValue(record.organization) || '');
+            setRoleInput(getLocalizedValue(record.role) || '');
+            setCauseInput(getLocalizedValue(record.cause) || '');
             setCurrentlyInRole(record.currentlyInRole || false);
             setStartDateInput(record.startDate || '');
             setEndDateInput(record.endDate || '');
-            setDescriptionInput(record.description || '');
+            setDescriptionInput(getLocalizedValue(record.description) || '');
             setEditingVolunteer(record);
         } else {
             setOrgInput('');
@@ -388,12 +414,12 @@ export default function ProfileScreen() {
 
     const openPublicationModal = (record: any = null) => {
         if (record) {
-            setPubTitleInput(record.title || '');
-            setPubEditorialInput(record.editorial || '');
-            setPubAuthorInput(record.author || '');
+            setPubTitleInput(getLocalizedValue(record.title) || '');
+            setPubEditorialInput(getLocalizedValue(record.editorial) || '');
+            setPubAuthorInput(getLocalizedValue(record.author) || '');
             setPubDateInput(record.date || '');
             setPubUrlInput(record.url || '');
-            setPubAbstractInput(record.abstract || '');
+            setPubAbstractInput(getLocalizedValue(record.abstract) || '');
             setEditingPublication(record);
         } else {
             setPubTitleInput('');
@@ -409,8 +435,8 @@ export default function ProfileScreen() {
 
     const openLanguageModal = (record: any = null) => {
         if (record) {
-            setLanguageInput(record.language || '');
-            setLanguageProficiency(record.proficiency || '');
+            setLanguageInput(getLocalizedValue(record.language) || '');
+            setLanguageProficiency(getLocalizedValue(record.proficiency) || '');
             setEditingLanguage(record);
         } else {
             setLanguageInput('');
@@ -512,7 +538,7 @@ export default function ProfileScreen() {
         if (activeTab === 'info') {
             sections = [
                 {
-                    title: t('Información Personal'),
+                    title: t('profile.personalSection'),
                     data: personalInfo ? [personalInfo] : [],
                     key: 'personal',
                     component: renderPersonalItem,
@@ -522,21 +548,21 @@ export default function ProfileScreen() {
         } else if (activeTab === 'formacion') {
             sections = [
                 {
-                    title: t('Información Académica'),
+                    title: t('profile.academicSection'),
                     data: academicRecords,
                     key: 'academic',
                     component: renderAcademicItem,
                     onAdd: () => openAcademicModal(),
                 },
                 {
-                    title: t('Formación Técnica/Especializada'),
+                    title: t('profile.technicalSection'),
                     data: technicalRecords,
                     key: 'technical',
                     component: renderTechnicalItem,
                     onAdd: () => openTechnicalModal(),
                 },
                 {
-                    title: t('Formación Complementaria'),
+                    title: t('profile.complementarySection'),
                     data: complementaryRecords,
                     key: 'complementary',
                     component: renderComplementaryItem,
@@ -546,7 +572,7 @@ export default function ProfileScreen() {
         } else if (activeTab === 'experiencia') {
             sections = [
                 {
-                    title: t('Experiencia Laboral'),
+                    title: t('profile.experienceSection'),
                     data: experienceRecords,
                     key: 'experience',
                     component: renderExperienceItem,
@@ -556,21 +582,21 @@ export default function ProfileScreen() {
         } else if (activeTab === 'adicional') {
             sections = [
                 {
-                    title: t('Voluntariados'),
+                    title: t('profile.volunteerSection'),
                     data: volunteerRecords,
                     key: 'volunteer',
                     component: renderVolunteerItem,
                     onAdd: () => openVolunteerModal(),
                 },
                 {
-                    title: t('Publicaciones'),
+                    title: t('profile.publicationSection'),
                     data: publicationRecords,
                     key: 'publication',
                     component: renderPublicationItem,
                     onAdd: () => openPublicationModal(),
                 },
                 {
-                    title: t('Idiomas'),
+                    title: t('profile.languageSection'),
                     data: languageRecords,
                     key: 'language',
                     component: renderLanguageItem,
@@ -598,7 +624,7 @@ export default function ProfileScreen() {
         <View style={[styles.personalInfoCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd', borderWidth: 1 }]}>
             <View style={styles.personalInfoRow}>
                 <Text style={[styles.personalInfoLabel, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.nameLabel')}:</Text>
-                <Text style={[styles.personalInfoValue, { color: isDark ? '#FFF' : '#333' }]}>{record.name}</Text>
+                <Text style={[styles.personalInfoValue, { color: isDark ? '#FFF' : '#333' }]}>{getLocalizedValue(record.name)}</Text>
             </View>
             <View style={styles.personalInfoRow}>
                 <Text style={[styles.personalInfoLabel, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.birthDateLabel')}:</Text>
@@ -625,27 +651,40 @@ export default function ProfileScreen() {
             </TouchableOpacity>
         </View>
     );
-    const renderAcademicItem = (record: any) => (
-        <View key={record.id} style={[styles.academicCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-            <View style={styles.iconContainer}>
-                <Ionicons name="school" size={24} color="#10b981" />
-            </View>
-            <View style={styles.cardContent}>
-                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.degree}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.institutionLabel')}: {record.institution}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.timeLabel')}: {record.startDate} - {record.endDate || t('profile.currently')}</Text>
-                <View style={styles.statusContainer}>
-                    <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.statusLabel')}:</Text>
-                    <View style={[styles.statusBadge, { backgroundColor: record.status === 'Graduado' ? '#10b981' : record.status === 'Titulado' ? '#3b82f6' : '#f59e0b' }]}>
-                        <Text style={styles.statusBadgeText}>{record.status}</Text>
+    const renderAcademicItem = (record: any) => {
+        const getStatusLabel = (status: string) => {
+            const map: { [key: string]: string } = {
+                'Actualmente': 'current', 'CURRENT': 'current',
+                'Graduado': 'graduated', 'GRADUATED': 'graduated',
+                'Titulado': 'titled', 'TITLED': 'titled',
+                'Trunco': 'truncated', 'TRUNCATED': 'truncated'
+            };
+            const key = map[status] || 'current';
+            return t(`profile.status.${key}`);
+        };
+
+        return (
+            <View key={record.id} style={[styles.academicCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+                <View style={styles.iconContainer}>
+                    <Ionicons name="school" size={24} color="#10b981" />
+                </View>
+                <View style={styles.cardContent}>
+                    <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{getLocalizedValue(record.degree)}</Text>
+                    <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.institutionLabel')}: {getLocalizedValue(record.institution)}</Text>
+                    <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.timeLabel')}: {record.startDate} - {record.endDate || t('profile.status.current')}</Text>
+                    <View style={styles.statusContainer}>
+                        <Text style={[styles.statusText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.statusLabel')}:</Text>
+                        <View style={[styles.statusBadge, { backgroundColor: ['Graduado', 'GRADUATED', 'Titulado', 'TITLED'].includes(record.status) ? '#10b981' : '#f59e0b' }]}>
+                            <Text style={styles.statusBadgeText}>{getStatusLabel(record.status)}</Text>
+                        </View>
                     </View>
                 </View>
+                <TouchableOpacity style={styles.editButtonCircle} onPress={() => openAcademicModal(record)}>
+                    <Ionicons name="pencil" size={18} color="#10b981" />
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openAcademicModal(record)}>
-                <Ionicons name="pencil" size={18} color="#10b981" />
-            </TouchableOpacity>
-        </View>
-    );
+        );
+    };
 
     const renderTechnicalItem = (record: any) => (
         <View key={record.id} style={[styles.technicalCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
@@ -653,9 +692,9 @@ export default function ProfileScreen() {
                 <Ionicons name="construct" size={24} color="#10b981" />
             </View>
             <View style={styles.cardContent}>
-                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.course}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.platformLabel')}: {record.platform}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.durationLabel')}: {record.duration}</Text>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{getLocalizedValue(record.course)}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.platformLabel')}: {getLocalizedValue(record.platform)}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.durationLabel')}: {getLocalizedValue(record.duration)}</Text>
                 <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.finished')}: {record.endDate}</Text>
             </View>
             <TouchableOpacity style={styles.editButtonCircle} onPress={() => openTechnicalModal(record)}>
@@ -670,8 +709,8 @@ export default function ProfileScreen() {
                 <Ionicons name="newspaper" size={24} color="#10b981" />
             </View>
             <View style={styles.cardContent}>
-                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.activity}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.descriptionLabel')}: {record.description}</Text>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{getLocalizedValue(record.activity)}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.descriptionLabel')}: {getLocalizedValue(record.description)}</Text>
                 <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.dateLabel')}: {record.date}</Text>
             </View>
             <TouchableOpacity style={styles.editButtonCircle} onPress={() => openComplementaryModal(record)}>
@@ -686,10 +725,10 @@ export default function ProfileScreen() {
                 <Ionicons name="briefcase" size={24} color="#10b981" />
             </View>
             <View style={styles.cardContent}>
-                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.position}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.institutionLabel')}: {record.institution}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.areaLabel')}: {record.area}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.timeLabel')}: {record.startDate} - {record.endDate || t('profile.currently')}</Text>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{getLocalizedValue(record.position)}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.institutionLabel')}: {getLocalizedValue(record.institution)}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.areaLabel')}: {getLocalizedValue(record.area)}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.timeLabel')}: {record.startDate} - {record.endDate || t('profile.status.current')}</Text>
             </View>
             <TouchableOpacity style={styles.editButtonCircle} onPress={() => openExperienceModal(record)}>
                 <Ionicons name="pencil" size={18} color="#10b981" />
@@ -703,10 +742,10 @@ export default function ProfileScreen() {
                 <Ionicons name="people" size={24} color="#10b981" />
             </View>
             <View style={styles.cardContent}>
-                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.role}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.organizationLabel')}: {record.organization}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.causeLabel')}: {record.cause}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.timeLabel')}: {record.startDate} - {record.endDate || (record.currentlyInRole ? t('profile.currently') : '')}</Text>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{getLocalizedValue(record.role)}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.organizationLabel')}: {getLocalizedValue(record.organization)}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.causeLabel')}: {getLocalizedValue(record.cause)}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.timeLabel')}: {record.startDate} - {record.endDate || (record.currentlyInRole ? t('profile.status.current') : '')}</Text>
             </View>
             <TouchableOpacity style={styles.editButtonCircle} onPress={() => openVolunteerModal(record)}>
                 <Ionicons name="pencil" size={18} color="#10b981" />
@@ -720,12 +759,12 @@ export default function ProfileScreen() {
                 <Ionicons name="book" size={24} color="#10b981" />
             </View>
             <View style={styles.cardContent}>
-                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.title}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.authorLabel')}: {record.author}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.editorialLabel')}: {record.editorial}</Text>
+                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{getLocalizedValue(record.title)}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.authorLabel')}: {getLocalizedValue(record.author)}</Text>
+                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.editorialLabel')}: {getLocalizedValue(record.editorial)}</Text>
                 <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.dateLabel')}: {record.date}</Text>
                 {record.url ? <Text style={[styles.cardLink, { color: isDark ? '#4fc3f7' : '#1976d2' }]}>{record.url}</Text> : null}
-                {record.abstract ? <Text style={[styles.cardAbstract, { color: isDark ? '#AAA' : '#666' }]}>{record.abstract}</Text> : null}
+                {record.abstract ? <Text style={[styles.cardAbstract, { color: isDark ? '#AAA' : '#666' }]}>{getLocalizedValue(record.abstract)}</Text> : null}
             </View>
             <TouchableOpacity style={styles.editButtonCircle} onPress={() => openPublicationModal(record)}>
                 <Ionicons name="pencil" size={18} color="#10b981" />
@@ -733,20 +772,33 @@ export default function ProfileScreen() {
         </View>
     );
 
-    const renderLanguageItem = (record: any) => (
-        <View key={record.id} style={[styles.languageCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
-            <View style={styles.iconContainer}>
-                <Ionicons name="language" size={24} color="#10b981" />
+    const renderLanguageItem = (record: any) => {
+        const getProficiencyLabel = (code: string) => {
+            const map: { [key: string]: string } = {
+                'Básico': 'basic', 'BASIC': 'basic',
+                'Intermedio': 'intermediate', 'INTERMEDIATE': 'intermediate',
+                'Avanzado': 'advanced', 'ADVANCED': 'advanced',
+                'Nativo': 'native', 'NATIVE': 'native'
+            };
+            const key = map[code];
+            return key ? t(`profile.${key}`) : code;
+        };
+
+        return (
+            <View key={record.id} style={[styles.languageCard, { backgroundColor: isDark ? '#222' : '#f9f9f9', borderColor: isDark ? '#444' : '#ddd' }]}>
+                <View style={styles.iconContainer}>
+                    <Ionicons name="language" size={24} color="#10b981" />
+                </View>
+                <View style={styles.cardContent}>
+                    <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{getLocalizedValue(record.language)}</Text>
+                    <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.proficiencyLabel')}: {getProficiencyLabel(record.proficiency)}</Text>
+                </View>
+                <TouchableOpacity style={styles.editButtonCircle} onPress={() => openLanguageModal(record)}>
+                    <Ionicons name="pencil" size={18} color="#10b981" />
+                </TouchableOpacity>
             </View>
-            <View style={styles.cardContent}>
-                <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>{record.language}</Text>
-                <Text style={[styles.cardSubtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.proficiencyLabel')}: {record.proficiency}</Text>
-            </View>
-            <TouchableOpacity style={styles.editButtonCircle} onPress={() => openLanguageModal(record)}>
-                <Ionicons name="pencil" size={18} color="#10b981" />
-            </TouchableOpacity>
-        </View>
-    );
+        );
+    };
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#000' : '#f5f5f5' }]}>
@@ -780,7 +832,7 @@ export default function ProfileScreen() {
                 )}
                 renderSectionFooter={({ section }) => {
                     if (section.data.length === 0) {
-                        return <Text style={[styles.emptySectionText, { color: isDark ? '#AAA' : '#666' }]}>No se visualiza ninguna información</Text>;
+                        return <Text style={[styles.emptySectionText, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.emptySection')}</Text>;
                     }
                     return null;
                 }}
@@ -939,13 +991,23 @@ export default function ProfileScreen() {
                                 <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={() => {
                                     const error = validatePersonalFields();
                                     if (showAlertIfMissingFields(error)) return;
-                                    const newPersonal = { name: nameInput, birthDate: birthDateInput, phone: phoneInput, documentType, documentNumber: documentNumberInput, gender };
+                                    const newPersonal = {
+                                        ...personalInfo,
+                                        name: updateLocalizedField(personalInfo, 'name', nameInput),
+                                        birthDate: birthDateInput,
+                                        phone: phoneInput,
+                                        documentType,
+                                        documentNumber: documentNumberInput,
+                                        gender
+                                    };
                                     setPersonalInfo(newPersonal);
                                     saveToStorage('personalInfo', newPersonal);
                                     setShowPersonalInfoForm(false);
                                 }}>
                                     <Text style={styles.saveButtonText}>{t('common.save')}</Text>
                                 </TouchableOpacity>
+
+
                             </View>
                         </ScrollView>
                     </View>
@@ -997,10 +1059,10 @@ export default function ProfileScreen() {
                             <Text style={[styles.label, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.statusLabel')}</Text>
                             <View style={[styles.pickerContainer, { borderColor: isDark ? '#444' : '#ddd' }]}>
                                 <Picker selectedValue={academicStatus} onValueChange={(itemValue) => setAcademicStatus(itemValue)} style={{ color: isDark ? '#FFF' : '#333' }}>
-                                    <Picker.Item label={t('profile.currently')} value="Actualmente" />
-                                    <Picker.Item label={t('profile.graduated')} value="Graduado" />
-                                    <Picker.Item label={t('profile.titled')} value="Titulado" />
-                                    <Picker.Item label={t('profile.truncated')} value="Trunco" />
+                                    <Picker.Item label={t('profile.currently')} value="CURRENT" />
+                                    <Picker.Item label={t('profile.graduated')} value="GRADUATED" />
+                                    <Picker.Item label={t('profile.titled')} value="TITLED" />
+                                    <Picker.Item label={t('profile.truncated')} value="TRUNCATED" />
                                 </Picker>
                             </View>
                             <View style={styles.modalButtons}>
@@ -1057,11 +1119,18 @@ export default function ProfileScreen() {
                                 <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={() => {
                                     const error = validateTechnicalFields();
                                     if (showAlertIfMissingFields(error)) return;
-                                    const record = { course: courseInput, platform: platformInput, duration: durationInput, endDate: endDateInput };
+                                    const record = {
+                                        course: updateLocalizedField(editingTechnical, 'course', courseInput),
+                                        platform: updateLocalizedField(editingTechnical, 'platform', platformInput),
+                                        duration: updateLocalizedField(editingTechnical, 'duration', durationInput),
+                                        endDate: endDateInput
+                                    };
                                     if (editingTechnical) updateRecord(technicalRecords, setTechnicalRecords, { ...editingTechnical, ...record }, 'technicalRecords');
                                     else addRecord(technicalRecords, setTechnicalRecords, record, 'technicalRecords');
                                     setShowTechnicalModal(false);
                                 }}>
+
+
                                     <Text style={styles.saveButtonText}>{t('common.save')}</Text>
                                 </TouchableOpacity>
                             </View>
@@ -1166,11 +1235,20 @@ export default function ProfileScreen() {
                                 <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={() => {
                                     const error = validateExperienceFields();
                                     if (showAlertIfMissingFields(error)) return;
-                                    const record = { position: positionInput, institution: institutionInput, area: areaInput, country: countryInput, startDate: startDateInput, endDate: endDateInput };
+                                    const record = {
+                                        position: updateLocalizedField(editingExperience, 'position', positionInput),
+                                        institution: updateLocalizedField(editingExperience, 'institution', institutionInput),
+                                        area: updateLocalizedField(editingExperience, 'area', areaInput),
+                                        country: updateLocalizedField(editingExperience, 'country', countryInput),
+                                        startDate: startDateInput,
+                                        endDate: endDateInput
+                                    };
                                     if (editingExperience) updateRecord(experienceRecords, setExperienceRecords, { ...editingExperience, ...record }, 'experienceRecords');
                                     else addRecord(experienceRecords, setExperienceRecords, record, 'experienceRecords');
                                     setShowExperienceModal(false);
                                 }}>
+
+
                                     <Text style={styles.saveButtonText}>{t('common.save')}</Text>
                                 </TouchableOpacity>
                             </View>
@@ -1279,11 +1357,20 @@ export default function ProfileScreen() {
                                 <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={() => {
                                     const error = validatePublicationFields();
                                     if (showAlertIfMissingFields(error)) return;
-                                    const record = { title: pubTitleInput, editorial: pubEditorialInput, author: pubAuthorInput, date: pubDateInput, url: pubUrlInput, abstract: pubAbstractInput };
+                                    const record = {
+                                        title: updateLocalizedField(editingPublication, 'title', pubTitleInput),
+                                        editorial: updateLocalizedField(editingPublication, 'editorial', pubEditorialInput),
+                                        author: updateLocalizedField(editingPublication, 'author', pubAuthorInput),
+                                        date: pubDateInput,
+                                        url: pubUrlInput,
+                                        abstract: updateLocalizedField(editingPublication, 'abstract', pubAbstractInput)
+                                    };
                                     if (editingPublication) updateRecord(publicationRecords, setPublicationRecords, { ...editingPublication, ...record }, 'publicationRecords');
                                     else addRecord(publicationRecords, setPublicationRecords, record, 'publicationRecords');
                                     setShowPublicationModal(false);
                                 }}>
+
+
                                     <Text style={styles.saveButtonText}>{t('common.save')}</Text>
                                 </TouchableOpacity>
                             </View>
@@ -1304,10 +1391,10 @@ export default function ProfileScreen() {
                             <View style={[styles.pickerContainer, { borderColor: isDark ? '#444' : '#ddd' }]}>
                                 <Picker selectedValue={languageProficiency} onValueChange={(itemValue) => setLanguageProficiency(itemValue)} style={{ color: isDark ? '#FFF' : '#333' }}>
                                     <Picker.Item label={t('profile.select')} value="" />
-                                    <Picker.Item label={t('profile.basic')} value="Básico" />
-                                    <Picker.Item label={t('profile.intermediate')} value="Intermedio" />
-                                    <Picker.Item label={t('profile.advanced')} value="Avanzado" />
-                                    <Picker.Item label={t('profile.native')} value="Nativo" />
+                                    <Picker.Item label={t('profile.basic')} value="BASIC" />
+                                    <Picker.Item label={t('profile.intermediate')} value="INTERMEDIATE" />
+                                    <Picker.Item label={t('profile.advanced')} value="ADVANCED" />
+                                    <Picker.Item label={t('profile.native')} value="NATIVE" />
                                 </Picker>
                             </View>
                             <View style={styles.modalButtons}>
@@ -1341,6 +1428,37 @@ export default function ProfileScreen() {
                     <ImageViewer imageUrls={[{ url: profileImage }]} enableSwipeDown onSwipeDown={() => setIsProfileZoomVisible(false)} />
                 </Modal>
             )}
+
+            {/* Image Confirmation Modal */}
+            <Modal visible={showImageConfirmation} transparent={true} animationType="fade" onRequestClose={cancelImage}>
+                <View style={styles.modalOverlay}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF', alignItems: 'center' }]}>
+                        <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333', marginBottom: 20 }]}>
+                            {t('common.warning')}
+                        </Text>
+                        {pendingImage && (
+                            <Image
+                                source={{ uri: pendingImage.uri }}
+                                style={{
+                                    width: 200,
+                                    height: pendingImage.type === 'banner' ? 112 : 200,
+                                    borderRadius: pendingImage.type === 'banner' ? 8 : 100,
+                                    marginBottom: 20,
+                                    resizeMode: 'cover'
+                                }}
+                            />
+                        )}
+                        <View style={styles.modalButtons}>
+                            <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={cancelImage}>
+                                <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.modalButton, styles.saveButton]} onPress={confirmImage}>
+                                <Text style={styles.saveButtonText}>OK</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 }

@@ -1,18 +1,42 @@
 [
     {
         "id": 1,
-        "direction": "Dirección de Investigación en Ecosistemas y Cambio Climático",
-        "title": "Área de Recursos Forestales y Cambio Climático",
-        "description": "Área encargada de estudios ecológicos, monitoreo ambiental y estrategias de conservación en la Amazonía peruana.",
-        "content": "Esta área se enfoca en la evaluación y monitoreo de los recursos forestales, así como en el estudio de los impactos del cambio climático en los ecosistemas amazónicos. \n\nObjetivos:\n- Evaluar la dinámica de los bosques.\n- Monitorear el carbono forestal.\n- Desarrollar estrategias de adaptación y mitigación.\n\nProyectos destacados:\n- Inventario Nacional Forestal.\n- Monitoreo de turberas.\n- Restauración ecológica.",
+        "direction": {
+            "es": "Dirección de Investigación en Ecosistemas y Cambio Climático",
+            "en": "Directorate of Research on Ecosystems and Climate Change"
+        },
+        "title": {
+            "es": "Área de Recursos Forestales y Cambio Climático",
+            "en": "Forest Resources and Climate Change Area"
+        },
+        "description": {
+            "es": "Área encargada de estudios ecológicos, monitoreo ambiental y estrategias de conservación en la Amazonía peruana.",
+            "en": "Area in charge of ecological studies, environmental monitoring and conservation strategies in the Peruvian Amazon."
+        },
+        "content": {
+            "es": "Esta área se enfoca en la evaluación y monitoreo de los recursos forestales, así como en el estudio de los impactos del cambio climático en los ecosistemas amazónicos. \n\nObjetivos:\n- Evaluar la dinámica de los bosques.\n- Monitorear el carbono forestal.\n- Desarrollar estrategias de adaptación y mitigación.\n\nProyectos destacados:\n- Inventario Nacional Forestal.\n- Monitoreo de turberas.\n- Restauración ecológica.",
+            "en": "This area focuses on the assessment and monitoring of forest resources, as well as the study of the impacts of climate change on Amazonian ecosystems.\n\nObjectives:\n- Evaluate forest dynamics.\n- Monitor forest carbon.\n- Develop adaptation and mitigation strategies.\n\nFeatured projects:\n- National Forest Inventory.\n- Peatland monitoring.\n- Ecological restoration."
+        },
         "image": "area1"
     },
     {
         "id": 2,
-        "direction": "Dirección de Investigaciones Ambientales",
-        "title": "Área de Ecología y Conservación",
-        "description": "Área encargada de estudios ecológicos, monitoreo ambiental y estrategias de conservación en la Amazonía peruana.",
-        "content": "Esta área promueve la conservación de la biodiversidad y el uso sostenible de los recursos naturales.\n\nObjetivos:\n- Estudiar la biodiversidad amazónica.\n- Promover áreas de conservación.\n- Investigar la ecología de especies clave.\n\nProyectos destacados:\n- Conservación de fauna silvestre.\n- Gestión de áreas protegidas.\n- Educación ambiental.",
+        "direction": {
+            "es": "Dirección de Investigaciones Ambientales",
+            "en": "Directorate of Environmental Research"
+        },
+        "title": {
+            "es": "Área de Ecología y Conservación",
+            "en": "Ecology and Conservation Area"
+        },
+        "description": {
+            "es": "Área encargada de estudios ecológicos, monitoreo ambiental y estrategias de conservación en la Amazonía peruana.",
+            "en": "Area in charge of ecological studies, environmental monitoring and conservation strategies in the Peruvian Amazon."
+        },
+        "content": {
+            "es": "Esta área promueve la conservación de la biodiversidad y el uso sostenible de los recursos naturales.\n\nObjetivos:\n- Estudiar la biodiversidad amazónica.\n- Promover áreas de conservación.\n- Investigar la ecología de especies clave.\n\nProyectos destacados:\n- Conservación de fauna silvestre.\n- Gestión de áreas protegidas.\n- Educación ambiental.",
+            "en": "This area promotes biodiversity conservation and the sustainable use of natural resources.\n\nObjectives:\n- Study Amazonian biodiversity.\n- Promote conservation areas.\n- Investigate the ecology of key species.\n\nFeatured projects:\n- Wildlife conservation.\n- Protected areas management.\n- Environmental education."
+        },
         "image": "area2"
     }
 ]

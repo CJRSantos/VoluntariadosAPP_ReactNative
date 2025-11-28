@@ -14,12 +14,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import ImageZoom from 'react-native-image-pan-zoom';
+import Modal from 'react-native-modal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
 import convocatoriasData from '../assets/data/convocatorias.json';
 import { IMAGES } from '../assets/data/imageMap';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export const options = {
   headerShown: false,
@@ -33,6 +35,7 @@ export default function ConvocatoriaScreen() {
   const { t } = useTranslation();
   const isDark = theme === 'dark';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -169,11 +172,13 @@ export default function ConvocatoriaScreen() {
                   },
                 ]}
               >
-                <Image
-                  source={IMAGES[convocatoria.image]}
-                  style={styles.cardImage}
-                  resizeMode="cover"
-                />
+                <TouchableOpacity onPress={() => setSelectedImage(convocatoria.image)}>
+                  <Image
+                    source={IMAGES[convocatoria.image]}
+                    style={styles.cardImage}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
                 <View style={styles.cardContent}>
                   <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>
                     {t(`convocatoria.items.${convocatoria.id}.title`)}
@@ -332,6 +337,44 @@ export default function ConvocatoriaScreen() {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Zoom Modal */}
+      <Modal
+        isVisible={selectedImage !== null}
+        onBackdropPress={() => setSelectedImage(null)}
+        onBackButtonPress={() => setSelectedImage(null)}
+        style={{ margin: 0 }}
+        backdropOpacity={1}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+      >
+        <View style={{ flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity
+            onPress={() => setSelectedImage(null)}
+            style={{ position: 'absolute', top: 50, right: 20, zIndex: 10, padding: 8 }}
+          >
+            <Ionicons name="close" size={28} color="#FFF" />
+          </TouchableOpacity>
+          {selectedImage && (
+            // @ts-ignore
+            <ImageZoom
+              cropWidth={width}
+              cropHeight={height}
+              imageWidth={width}
+              imageHeight={height * 0.8}
+              minScale={1}
+              maxScale={3}
+              pinchToZoom
+            >
+              <Image
+                source={IMAGES[selectedImage]}
+                style={{ width: width, height: height * 0.8 }}
+                resizeMode="contain"
+              />
+            </ImageZoom>
+          )}
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -435,14 +478,15 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    padding: 16,
+    backgroundColor: '#fff',
   },
   navItem: { alignItems: 'center', paddingVertical: 8, borderRadius: 8 },
   navItemActive: {
     borderTopWidth: 2,
     borderTopColor: '#4CAF50',
-    backgroundColor: 'transparent', // 🔹 evita el fondo blanco
+    backgroundColor: 'transparent',
   },
-
   navIcon: {
     width: 24,
     height: 24,

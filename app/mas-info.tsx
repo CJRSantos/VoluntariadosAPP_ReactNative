@@ -1,23 +1,28 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { IMAGES } from '../assets/data/imageMap';
 import moreInfoData from '../assets/data/more-info.json';
 
+import { useTheme } from '../app/providers/ThemeProvider';
+
 export default function MasInfoScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
       <ScrollView contentContainerStyle={styles.content}>
         {/* Flecha para regresar */}
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backArrow}>←</Text>
+          <Ionicons name="arrow-back" size={28} color={isDark ? '#FFF' : '#000'} />
         </TouchableOpacity>
 
         {/* Título */}
-        <Text style={styles.title}>{t('masInfo.title')}</Text>
+        <Text style={[styles.title, { color: isDark ? '#FFF' : '#000' }]}>{t('masInfo.title')}</Text>
 
         {/* Imagen */}
         <View style={styles.imageContainer}>
@@ -33,8 +38,8 @@ export default function MasInfoScreen() {
         </View>
 
         {/* CÓMO POSTULAR */}
-        <Text style={styles.sectionTitle}>{t('masInfo.howToApplyTitle')}</Text>
-        <Text style={styles.sectionText}>
+        <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#000' }]}>{t('masInfo.howToApplyTitle')}</Text>
+        <Text style={[styles.sectionText, { color: isDark ? '#CCC' : '#333' }]}>
           {t('masInfo.howToApplyText')}
         </Text>
 
@@ -42,25 +47,25 @@ export default function MasInfoScreen() {
         {moreInfoData.options.map((option) => (
           <TouchableOpacity
             key={option.id}
-            style={styles.optionCard}
+            style={[styles.optionCard, { backgroundColor: isDark ? '#222' : '#F5F5F5' }]}
             onPress={() => router.push(option.route as any)}
           >
-            <View style={styles.iconContainer}>
-              <Text style={styles.icon}>{option.icon}</Text>
+            <View style={[styles.iconContainer, { backgroundColor: isDark ? '#444' : '#E0E0E0' }]}>
+              <Text style={[styles.icon, { color: isDark ? '#FFF' : '#333' }]}>{option.icon}</Text>
             </View>
             <View style={styles.optionContent}>
-              <Text style={styles.optionTitle}>{t(`masInfo.${option.id}Title`)}</Text>
-              <Text style={styles.optionDescription}>
+              <Text style={[styles.optionTitle, { color: isDark ? '#FFF' : '#000' }]}>{t(`masInfo.${option.id}Title`)}</Text>
+              <Text style={[styles.optionDescription, { color: isDark ? '#AAA' : '#666' }]}>
                 {t(`masInfo.${option.id}Text`)}
               </Text>
             </View>
-            <Text style={styles.arrow}>→</Text>
+            <Text style={[styles.arrow, { color: isDark ? '#FFF' : '#666' }]}>→</Text>
           </TouchableOpacity>
         ))}
 
         {/* Nota importante */}
-        <Text style={styles.noteTitle}>{t('masInfo.noteTitle')}</Text>
-        <Text style={styles.noteText}>
+        <Text style={[styles.noteTitle, { color: isDark ? '#FFF' : '#000' }]}>{t('masInfo.noteTitle')}</Text>
+        <Text style={[styles.noteText, { color: isDark ? '#CCC' : '#333' }]}>
           {t('masInfo.noteText')}
         </Text>
       </ScrollView>
@@ -78,10 +83,7 @@ const styles = StyleSheet.create({
     top: 50,
     left: 20,
     zIndex: 10,
-    backgroundColor: '#fff',
-    borderRadius: 20,
     padding: 6,
-    elevation: 3,
   },
   backArrow: {
     fontSize: 22,

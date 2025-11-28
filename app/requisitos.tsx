@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useTheme } from '../app/providers/ThemeProvider';
 import requisitosData from '../assets/data/requisitos.json';
 
 export default function RequisitosScreen() {
@@ -27,6 +28,8 @@ export default function RequisitosScreen() {
 function RequisitosContent() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   const requisitos = {
@@ -66,19 +69,19 @@ function RequisitosContent() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backArrow}>←</Text>
+          <Text style={[styles.backArrow, { color: isDark ? '#FFF' : '#000' }]}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>{requisitos.title}</Text>
+        <Text style={[styles.title, { color: isDark ? '#FFF' : '#000' }]}>{requisitos.title}</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
         {/* Vacantes */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>{t('requisitos.vacanciesTitle')}</Text>
-          <Text style={styles.vacantesNumber}>{requisitos.vacantes}</Text>
+          <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#000' }]}>{t('requisitos.vacanciesTitle')}</Text>
+          <Text style={[styles.vacantesNumber, { color: isDark ? '#FFF' : '#000' }]}>{requisitos.vacantes}</Text>
         </View>
 
         {/* Formación académica */}
@@ -86,13 +89,13 @@ function RequisitosContent() {
           style={styles.sectionHeader}
           onPress={() => toggleSection('formacion')}
         >
-          <Text style={styles.sectionTitle}>{t('requisitos.educationTitle')}</Text>
-          <Text style={styles.arrow}>
+          <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#000' }]}>{t('requisitos.educationTitle')}</Text>
+          <Text style={[styles.arrow, { color: isDark ? '#FFF' : '#000' }]}>
             {expandedSection === 'formacion' ? '∨' : '>'}
           </Text>
         </TouchableOpacity>
         {expandedSection === 'formacion' && (
-          <Text style={styles.sectionContent}>{requisitos.formacion}</Text>
+          <Text style={[styles.sectionContent, { color: isDark ? '#CCC' : '#333' }]}>{requisitos.formacion}</Text>
         )}
 
         {/* Experiencia */}
@@ -100,13 +103,13 @@ function RequisitosContent() {
           style={styles.sectionHeader}
           onPress={() => toggleSection('experiencia')}
         >
-          <Text style={styles.sectionTitle}>{t('requisitos.experienceTitle')}</Text>
-          <Text style={styles.arrow}>
+          <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#000' }]}>{t('requisitos.experienceTitle')}</Text>
+          <Text style={[styles.arrow, { color: isDark ? '#FFF' : '#000' }]}>
             {expandedSection === 'experiencia' ? '∨' : '>'}
           </Text>
         </TouchableOpacity>
         {expandedSection === 'experiencia' && (
-          <Text style={styles.sectionContent}>{requisitos.experiencia}</Text>
+          <Text style={[styles.sectionContent, { color: isDark ? '#CCC' : '#333' }]}>{requisitos.experiencia}</Text>
         )}
 
         {/* Cursos */}
@@ -114,20 +117,20 @@ function RequisitosContent() {
           style={styles.sectionHeader}
           onPress={() => toggleSection('cursos')}
         >
-          <Text style={styles.sectionTitle}>
+          <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#000' }]}>
             {t('requisitos.coursesTitle')}
           </Text>
-          <Text style={styles.arrow}>
+          <Text style={[styles.arrow, { color: isDark ? '#FFF' : '#000' }]}>
             {expandedSection === 'cursos' ? '∨' : '>'}
           </Text>
         </TouchableOpacity>
         {expandedSection === 'cursos' && (
-          <Text style={styles.sectionContent}>{requisitos.cursos}</Text>
+          <Text style={[styles.sectionContent, { color: isDark ? '#CCC' : '#333' }]}>{requisitos.cursos}</Text>
         )}
       </ScrollView>
 
       {/* Botones inferiores */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
         <TouchableOpacity style={styles.pdfButton} onPress={handleGeneratePDF}>
           <Text style={styles.buttonText}>{t('requisitos.savePdfButton')}</Text>
         </TouchableOpacity>
