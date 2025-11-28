@@ -239,6 +239,7 @@ export default function AccountScreen() {
                                                     styles.statusButton,
                                                     { backgroundColor: '#4CAF50', opacity: isDark ? 0.8 : 1 },
                                                 ]}
+                                                onPress={() => router.push('/postulacion-paso1')}
                                             >
                                                 <Text style={styles.statusText}>{t('account.news.apply')}</Text>
                                             </TouchableOpacity>
@@ -260,6 +261,14 @@ export default function AccountScreen() {
                                                 borderColor: isDark ? '#AAA' : '#666',
                                             },
                                         ]}
+                                        onPress={() => router.push({
+                                            pathname: '/news-details',
+                                            params: {
+                                                title: item.title,
+                                                date: item.date,
+                                                endDate: item.endDate,
+                                            }
+                                        })}
                                     >
                                         <Text style={[styles.detailsText, { color: isDark ? '#AAA' : '#666' }]}>
                                             {t('account.news.details')}
