@@ -35,6 +35,7 @@ export default function ConvocatoriaScreen() {
   const isDark = theme === 'dark';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [postulaciones, setPostulaciones] = useState<Record<number, boolean>>({});
+  const [selectedImage, setSelectedImage] = useState<any>(null);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -217,11 +218,13 @@ export default function ConvocatoriaScreen() {
                   },
                 ]}
               >
-                <Image
-                  source={convocatoria.image}
-                  style={styles.cardImage}
-                  resizeMode="cover"
-                />
+                <TouchableOpacity onPress={() => setSelectedImage(convocatoria.image)}>
+                  <Image
+                    source={convocatoria.image}
+                    style={styles.cardImage}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
                 <View style={styles.cardContent}>
                   <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>
                     {convocatoria.title}
@@ -435,7 +438,7 @@ export default function ConvocatoriaScreen() {
               pinchToZoom
             >
               <Image
-                source={IMAGES[selectedImage]}
+                source={selectedImage}
                 style={{ width: width, height: height * 0.8 }}
                 resizeMode="contain"
               />
