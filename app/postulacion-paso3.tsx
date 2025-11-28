@@ -1,5 +1,5 @@
 // app/postulacion-paso3.tsx
-import { Stack, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import {
     Dimensions,
@@ -20,10 +20,20 @@ export default function PostulacionPaso3Screen() {
     const { t } = useTranslation();
     const isDark = theme === 'dark';
 
+    // 👇 Recibir el ID de la convocatoria desde la URL
+    const { convocatoriaId } = useLocalSearchParams();
+    const convId = convocatoriaId
+        ? parseInt(Array.isArray(convocatoriaId) ? convocatoriaId[0] : convocatoriaId)
+        : null;
+
     const handleEnviarPostulacion = () => {
         // Simulamos envío exitoso
         setTimeout(() => {
-            router.push('/postulacion-confirmada');
+            // 👉 Pasar el ID a la pantalla de confirmación
+            router.push({
+                pathname: '/postulacion-confirmada',
+                params: convId != null ? { convocatoriaId: convId } : {},
+            });
         }, 500);
     };
 

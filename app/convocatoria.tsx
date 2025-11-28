@@ -1,8 +1,9 @@
 // app/convocatoria.tsx
 import { useAuth } from '@/hooks/useAuth';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Stack, usePathname, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -18,8 +19,6 @@ import ImageZoom from 'react-native-image-pan-zoom';
 import Modal from 'react-native-modal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
-import convocatoriasData from '../assets/data/convocatorias.json';
-import { IMAGES } from '../assets/data/imageMap';
 
 const { width, height } = Dimensions.get('window');
 
@@ -35,11 +34,55 @@ export default function ConvocatoriaScreen() {
   const { t } = useTranslation();
   const isDark = theme === 'dark';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [postulaciones, setPostulaciones] = useState<Record<number, boolean>>({});
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const convocatorias = convocatoriasData;
+  // 🔁 Cargar estado de postulación al iniciar
+  useEffect(() => {
+    const cargarPostulaciones = async () => {
+      try {
+        const saved = await AsyncStorage.getItem('postulaciones');
+        if (saved) {
+          setPostulaciones(JSON.parse(saved));
+        }
+      } catch (error) {
+        console.error('Error al cargar postulaciones:', error);
+      }
+    };
+
+    cargarPostulaciones();
+  }, []);
+
+  const convocatorias = [
+    {
+      id: 1,
+      image: require('../assets/images/tutorial1.jpg'),
+      title: t('convocatoria.items.1.title'),
+      location: t('convocatoria.items.1.location'),
+      participants: t('convocatoria.items.1.participants'),
+      startDate: t('convocatoria.items.1.startDate'),
+      endDate: t('convocatoria.items.1.endDate'),
+    },
+    {
+      id: 2,
+      image: require('../assets/images/bosques2.png'),
+      title: t('convocatoria.items.2.title'),
+      location: t('convocatoria.items.2.location'),
+      participants: t('convocatoria.items.2.participants'),
+      startDate: t('convocatoria.items.2.startDate'),
+      endDate: t('convocatoria.items.2.endDate'),
+    },
+    {
+      id: 3,
+      image: require('../assets/images/bosques3.png'),
+      title: t('convocatoria.items.3.title'),
+      location: t('convocatoria.items.3.location'),
+      participants: t('convocatoria.items.3.participants'),
+      startDate: t('convocatoria.items.3.startDate'),
+      endDate: t('convocatoria.items.3.endDate'),
+    },
+  ];
 
   if (loading) {
     return (
@@ -138,7 +181,9 @@ export default function ConvocatoriaScreen() {
                   }}
                 >
                   <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
-                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('convocatoria.menu.help')}</Text>
+                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                    {t('convocatoria.menu.help')}
+                  </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -172,45 +217,71 @@ export default function ConvocatoriaScreen() {
                   },
                 ]}
               >
-                <TouchableOpacity onPress={() => setSelectedImage(convocatoria.image)}>
-                  <Image
-                    source={IMAGES[convocatoria.image]}
-                    style={styles.cardImage}
-                    resizeMode="cover"
-                  />
-                </TouchableOpacity>
+                <Image
+                  source={convocatoria.image}
+                  style={styles.cardImage}
+                  resizeMode="cover"
+                />
                 <View style={styles.cardContent}>
                   <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    {t(`convocatoria.items.${convocatoria.id}.title`)}
+                    {convocatoria.title}
                   </Text>
                   <Text style={[styles.cardInfo, { color: isDark ? '#AAA' : '#666' }]}>
-                    {t(`convocatoria.items.${convocatoria.id}.location`)} · {t(`convocatoria.items.${convocatoria.id}.participants`)}
+                    {convocatoria.location} · {convocatoria.participants}
                   </Text>
                   <Text style={[styles.cardDate, { color: isDark ? '#AAA' : '#666' }]}>
-                    {t('convocatoria.card.start')}: {t(`convocatoria.items.${convocatoria.id}.startDate`)}
+                    {t('convocatoria.card.start')}: {convocatoria.startDate}
                   </Text>
                   <Text style={[styles.cardDate, { color: isDark ? '#AAA' : '#666' }]}>
-                    {t('convocatoria.card.end')}: {t(`convocatoria.items.${convocatoria.id}.endDate`)}
+                    {t('convocatoria.card.end')}: {convocatoria.endDate}
                   </Text>
                   <View style={styles.buttonGroup}>
                     <TouchableOpacity
                       style={styles.button}
                       onPress={() => router.push('/requisitos')}
                     >
-                      <Text style={styles.buttonText}>{t('convocatoria.card.requirements')}</Text>
+                      <Text style={styles.buttonText}>
+                        {t('convocatoria.card.requirements')}
+                      </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.button}
                       onPress={() => router.push('/mas-info')}
                     >
-                      <Text style={styles.buttonText}>{t('convocatoria.card.moreInfo')}</Text>
+                      <Text style={styles.buttonText}>
+                        {t('convocatoria.card.moreInfo')}
+                      </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                      style={[styles.button, { backgroundColor: '#4CAF50' }]}
-                      onPress={() => router.push('/postulacion-paso1')}
-                    >
-                      <Text style={styles.buttonText}>{t('convocatoria.card.apply')}</Text>
-                    </TouchableOpacity>
+
+                    {/* ✅ BOTÓN DE POSTULACIÓN CONDICIONAL */}
+                    {postulaciones[convocatoria.id] ? (
+                      <View
+                        style={[
+                          styles.button,
+                          { backgroundColor: isDark ? '#444' : '#ccc' },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.buttonText,
+                            { color: isDark ? '#bbb' : '#666' },
+                          ]}
+                        >
+                          {t('Postulado')}
+                        </Text>
+                      </View>
+                    ) : (
+                      <TouchableOpacity
+                        style={[styles.button, { backgroundColor: '#4CAF50' }]}
+                        onPress={() =>
+                          router.push(`/postulacion-paso1?convocatoriaId=${convocatoria.id}`)
+                        }
+                      >
+                        <Text style={styles.buttonText}>
+                          {t('convocatoria.card.apply')}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </View>
               </View>
@@ -257,10 +328,7 @@ export default function ConvocatoriaScreen() {
 
           {/* Áreas */}
           <TouchableOpacity
-            style={[
-              styles.navItem,
-              pathname === '/areas' && styles.navItemActive,
-            ]}
+            style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
             onPress={() => router.push('/areas')}
           >
             <Image
@@ -463,6 +531,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
+    flex: 1, // 👈 asegura que los botones tengan el mismo ancho
+    alignItems: 'center',
   },
   buttonText: {
     color: '#fff',

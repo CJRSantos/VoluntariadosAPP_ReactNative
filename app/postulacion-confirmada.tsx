@@ -1,5 +1,7 @@
 // app/postulacion-confirmada.tsx
-import { Stack, useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Dimensions,
@@ -20,8 +22,32 @@ export default function PostulacionConfirmadaScreen() {
     const { t } = useTranslation();
     const isDark = theme === 'dark';
 
+    // 👇 Recibir el ID de la convocatoria
+    const { convocatoriaId } = useLocalSearchParams();
+    const convId = convocatoriaId
+        ? parseInt(Array.isArray(convocatoriaId) ? convocatoriaId[0] : convocatoriaId)
+        : null;
+
+    // ✅ Guardar en AsyncStorage cuando se monte la pantalla
+    useEffect(() => {
+        if (convId !== null) {
+            const guardarPostulacion = async () => {
+                try {
+                    const saved = await AsyncStorage.getItem('postulaciones');
+                    const postulaciones = saved ? JSON.parse(saved) : {};
+                    postulaciones[convId] = true;
+                    await AsyncStorage.setItem('postulaciones', JSON.stringify(postulaciones));
+                    console.log(`✅ Marcada como postulada: convocatoria ID ${convId}`);
+                } catch (error) {
+                    console.error('❌ Error al guardar postulación:', error);
+                }
+            };
+            guardarPostulacion();
+        }
+    }, [convId]);
+
     const handleVolverInicio = () => {
-        router.push('/account'); // Cambia esto si tu inicio es otra ruta
+        router.push('/convocatoria'); // 👈 Cambiado a '/convocatoria' para ver el estado actualizado
     };
 
     return (
@@ -50,7 +76,9 @@ export default function PostulacionConfirmadaScreen() {
                     style={[styles.backButton, { backgroundColor: '#4CAF50' }]}
                     onPress={handleVolverInicio}
                 >
-                    <Text style={styles.backButtonText}>{t('postulacion.confirmation.backButton')}</Text>
+                    <Text style={styles.backButtonText}>
+                        {t('postulacion.confirmation.backButton')}
+                    </Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
