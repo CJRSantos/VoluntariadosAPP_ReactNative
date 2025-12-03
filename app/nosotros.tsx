@@ -24,9 +24,9 @@ export const options = {
 };
 
 export default function NosotrosScreen() {
-    const { user, loading } = useAuth();
+    const { user, loading, signOut } = useAuth();
     const router = useRouter();
-    const pathname = usePathname(); // 👈 Detecta la ruta actual
+    const pathname = usePathname();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
     const { t } = useTranslation();
@@ -56,7 +56,7 @@ export default function NosotrosScreen() {
             <Stack.Screen options={{ headerShown: false }} />
 
             <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-                {/* Encabezado gris */}
+                {/* Encabezado Moderno */}
                 <View
                     style={[
                         styles.header,
@@ -76,7 +76,7 @@ export default function NosotrosScreen() {
                                     ? { uri: user.photoURL }
                                     : require('../assets/images/avatar-default.png')
                             }
-                            style={[styles.avatar, { marginRight: 12 }]}
+                            style={styles.avatar}
                         />
                         <TouchableOpacity onPress={toggleMenu}>
                             <Ionicons name="menu" size={24} color={isDark ? '#FFF' : '#333'} />
@@ -144,7 +144,7 @@ export default function NosotrosScreen() {
                                 <TouchableOpacity
                                     style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                                     onPress={() => {
-                                        router.push('/login');
+                                        signOut();
                                         setIsMenuOpen(false);
                                     }}
                                 >
@@ -172,7 +172,7 @@ export default function NosotrosScreen() {
                             <View
                                 style={[
                                     styles.iconCard,
-                                    { backgroundColor: isDark ? '#222' : '#F5F5F5' },
+                                    { backgroundColor: isDark ? '#111' : '#FFF' },
                                 ]}
                             >
                                 <Ionicons name="people" size={40} color="#FF5722" />
@@ -187,7 +187,7 @@ export default function NosotrosScreen() {
                             <View
                                 style={[
                                     styles.iconCard,
-                                    { backgroundColor: isDark ? '#222' : '#F5F5F5' },
+                                    { backgroundColor: isDark ? '#111' : '#FFF' },
                                 ]}
                             >
                                 <Ionicons name="rocket" size={40} color="#FF9800" />
@@ -202,7 +202,7 @@ export default function NosotrosScreen() {
                             <View
                                 style={[
                                     styles.iconCard,
-                                    { backgroundColor: isDark ? '#222' : '#F5F5F5' },
+                                    { backgroundColor: isDark ? '#111' : '#FFF' },
                                 ]}
                             >
                                 <Ionicons name="water" size={40} color="#2196F3" />
@@ -227,7 +227,7 @@ export default function NosotrosScreen() {
                                     key={i}
                                     style={[
                                         styles.statCard,
-                                        { backgroundColor: isDark ? '#222' : '#F5F5F5' },
+                                        { backgroundColor: isDark ? '#111' : '#FFF' },
                                     ]}
                                 >
                                     <Text style={[styles.statValue, { color: isDark ? '#FFF' : '#333' }]}>
@@ -242,7 +242,7 @@ export default function NosotrosScreen() {
                     </View>
                 </ScrollView>
 
-                {/* Barra inferior con resaltado verde */}
+                {/* Barra inferior con resaltado */}
                 <View
                     style={[
                         styles.bottomNav,
@@ -254,15 +254,23 @@ export default function NosotrosScreen() {
                 >
                     {/* Inicio */}
                     <TouchableOpacity
-                        style={[styles.navItem, pathname === '/inicio' && styles.navItemActive]}
+                        style={[styles.navItem, pathname === '/account' && styles.navItemActive]}
                         onPress={() => router.push('/account')}
                     >
                         <Image
                             source={require('../assets/images/home-icon.png')}
-                            style={[styles.navIcon, pathname === '/inicio' && styles.navIconActive]}
+                            style={[
+                                styles.navIcon,
+                                { tintColor: pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
+                                pathname === '/account' && styles.navIconActive
+                            ]}
                         />
                         <Text
-                            style={[styles.navLabel, pathname === '/inicio' && styles.navLabelActive]}
+                            style={[
+                                styles.navLabel,
+                                pathname === '/account' && styles.navLabelActive,
+                                { color: isDark ? '#AAA' : '#666' }
+                            ]}
                         >
                             {t('nosotros.nav.home')}
                         </Text>
@@ -275,10 +283,18 @@ export default function NosotrosScreen() {
                     >
                         <Image
                             source={require('../assets/images/areas-icon.png')}
-                            style={[styles.navIcon, pathname === '/areas' && styles.navIconActive]}
+                            style={[
+                                styles.navIcon,
+                                { tintColor: pathname === '/areas' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
+                                pathname === '/areas' && styles.navIconActive
+                            ]}
                         />
                         <Text
-                            style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive]}
+                            style={[
+                                styles.navLabel,
+                                pathname === '/areas' && styles.navLabelActive,
+                                { color: isDark ? '#AAA' : '#666' }
+                            ]}
                         >
                             {t('nosotros.nav.areas')}
                         </Text>
@@ -291,10 +307,18 @@ export default function NosotrosScreen() {
                     >
                         <Image
                             source={require('../assets/images/convocatory-icon.png')}
-                            style={[styles.navIcon, pathname === '/convocatoria' && styles.navIconActive]}
+                            style={[
+                                styles.navIcon,
+                                { tintColor: pathname === '/convocatoria' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
+                                pathname === '/convocatoria' && styles.navIconActive
+                            ]}
                         />
                         <Text
-                            style={[styles.navLabel, pathname === '/convocatoria' && styles.navLabelActive]}
+                            style={[
+                                styles.navLabel,
+                                pathname === '/convocatoria' && styles.navLabelActive,
+                                { color: isDark ? '#AAA' : '#666' }
+                            ]}
                         >
                             {t('nosotros.nav.convocatory')}
                         </Text>
@@ -307,10 +331,18 @@ export default function NosotrosScreen() {
                     >
                         <Image
                             source={require('../assets/images/nosotros-icon.png')}
-                            style={[styles.navIcon, pathname === '/nosotros' && styles.navIconActive]}
+                            style={[
+                                styles.navIcon,
+                                { tintColor: pathname === '/nosotros' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
+                                pathname === '/nosotros' && styles.navIconActive
+                            ]}
                         />
                         <Text
-                            style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive]}
+                            style={[
+                                styles.navLabel,
+                                pathname === '/nosotros' && styles.navLabelActive,
+                                { color: '#4CAF50' }
+                            ]}
                         >
                             {t('nosotros.nav.about')}
                         </Text>
@@ -339,18 +371,28 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 16,
+        paddingVertical: 16,
+        paddingHorizontal: 20,
         borderBottomWidth: 1,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 2,
+        zIndex: 10,
     },
-    headerTitle: { fontSize: 18, fontWeight: 'bold' },
-    headerRight: { flexDirection: 'row', alignItems: 'center' },
+    headerTitle: {
+        fontSize: 22,
+        fontWeight: '800',
+        letterSpacing: 0.5,
+    },
+    headerRight: { flexDirection: 'row', alignItems: 'center', gap: 16 },
     avatar: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        borderWidth: 1,
-        borderColor: '#ddd',
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        borderWidth: 2,
+        borderColor: '#4CAF50',
     },
     menuOverlay: {
         position: 'absolute',
@@ -365,32 +407,42 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     menuContainer: { padding: 8, minWidth: 160 },
-    menuItem: { flexDirection: 'row', alignItems: 'center', padding: 8 },
+    menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 4 },
     menuText: { marginLeft: 8, fontSize: 14 },
     content: { paddingHorizontal: 16, paddingTop: 20 },
-    sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 12, textAlign: 'center' },
-    subtitle: { fontSize: 16, marginBottom: 20, textAlign: 'center' },
-    iconsSection: { flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap', marginBottom: 20 },
+    sectionTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 12, textAlign: 'center' },
+    subtitle: { fontSize: 16, marginBottom: 24, textAlign: 'center', lineHeight: 24 },
+    iconsSection: { flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', marginBottom: 24 },
     iconCard: {
         width: (width - 48) / 3,
-        borderRadius: 8,
-        padding: 12,
+        borderRadius: 16,
+        padding: 16,
         alignItems: 'center',
         marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
-    iconTitle: { fontSize: 14, fontWeight: 'bold', marginTop: 8, textAlign: 'center' },
-    iconText: { fontSize: 12, textAlign: 'center', marginTop: 4 },
-    labImage: { width: '100%', height: 200, borderRadius: 12, marginBottom: 20 },
-    statsSection: { flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap', marginBottom: 20 },
+    iconTitle: { fontSize: 14, fontWeight: 'bold', marginTop: 12, textAlign: 'center' },
+    iconText: { fontSize: 11, textAlign: 'center', marginTop: 6, lineHeight: 16 },
+    labImage: { width: '100%', height: 220, borderRadius: 20, marginBottom: 24 },
+    statsSection: { flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', marginBottom: 20 },
     statCard: {
-        width: (width - 48) / 4,
-        borderRadius: 8,
+        width: (width - 60) / 4,
+        borderRadius: 12,
         padding: 12,
         alignItems: 'center',
         marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
     },
-    statValue: { fontSize: 20, fontWeight: 'bold' },
-    statLabel: { fontSize: 12, textAlign: 'center', marginTop: 4 },
+    statValue: { fontSize: 18, fontWeight: 'bold' },
+    statLabel: { fontSize: 10, textAlign: 'center', marginTop: 4 },
     bottomNav: {
         position: 'absolute',
         bottom: 0,
@@ -400,13 +452,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         borderTopWidth: 1,
         paddingVertical: 8,
+        zIndex: 1000,
     },
     navItem: { alignItems: 'center', paddingVertical: 8 },
     navIcon: { width: 24, height: 24, marginBottom: 4, resizeMode: 'contain' },
     navLabel: { fontSize: 10, marginTop: 4, textAlign: 'center' },
-
-    // 🔹 Estilos para el resaltado verde
-    navItemActive: { borderTopWidth: 2, borderTopColor: '#00C853' },
-    navIconActive: { tintColor: '#00C853' },
-    navLabelActive: { color: '#00C853', fontWeight: 'bold' },
+    navItemActive: { borderTopWidth: 2, borderTopColor: '#4CAF50' },
+    navIconActive: { tintColor: '#4CAF50' },
+    navLabelActive: { color: '#4CAF50', fontWeight: 'bold' },
 });

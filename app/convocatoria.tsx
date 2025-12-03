@@ -27,7 +27,7 @@ export const options = {
 };
 
 export default function ConvocatoriaScreen() {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const { theme } = useTheme();
@@ -100,7 +100,7 @@ export default function ConvocatoriaScreen() {
       <Stack.Screen options={{ headerShown: false }} />
 
       <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-        {/* Encabezado gris */}
+        {/* Encabezado Moderno */}
         <View
           style={[
             styles.header,
@@ -178,7 +178,6 @@ export default function ConvocatoriaScreen() {
                   style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                   onPress={() => {
                     Alert.alert(t('convocatoria.menu.soon'), t('convocatoria.menu.helpSoon'));
-                    setIsMenuOpen(false);
                   }}
                 >
                   <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
@@ -190,7 +189,7 @@ export default function ConvocatoriaScreen() {
                 <TouchableOpacity
                   style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                   onPress={() => {
-                    router.push('/login');
+                    signOut();
                     setIsMenuOpen(false);
                   }}
                 >
@@ -213,8 +212,8 @@ export default function ConvocatoriaScreen() {
                 style={[
                   styles.convocatoriaCard,
                   {
-                    backgroundColor: isDark ? '#111' : '#F5F5F5',
-                    shadowColor: isDark ? '#000' : '#000',
+                    backgroundColor: isDark ? '#111' : '#FFF', // Cleaner white background
+                    shadowColor: '#000',
                   },
                 ]}
               >
@@ -240,18 +239,18 @@ export default function ConvocatoriaScreen() {
                   </Text>
                   <View style={styles.buttonGroup}>
                     <TouchableOpacity
-                      style={styles.button}
+                      style={[styles.button, styles.secondaryButton]}
                       onPress={() => router.push('/requisitos')}
                     >
-                      <Text style={styles.buttonText}>
+                      <Text style={[styles.buttonText, styles.secondaryButtonText]}>
                         {t('convocatoria.card.requirements')}
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={styles.button}
+                      style={[styles.button, styles.secondaryButton]}
                       onPress={() => router.push('/mas-info')}
                     >
-                      <Text style={styles.buttonText}>
+                      <Text style={[styles.buttonText, styles.secondaryButtonText]}>
                         {t('convocatoria.card.moreInfo')}
                       </Text>
                     </TouchableOpacity>
@@ -277,7 +276,10 @@ export default function ConvocatoriaScreen() {
                       <TouchableOpacity
                         style={[styles.button, { backgroundColor: '#4CAF50' }]}
                         onPress={() =>
-                          router.push(`/postulacion-paso1?convocatoriaId=${convocatoria.id}`)
+                          router.push({
+                            pathname: '/postulacion-paso1',
+                            params: { convocatoriaId: convocatoria.id }
+                          })
                         }
                       >
                         <Text style={styles.buttonText}>
@@ -314,6 +316,7 @@ export default function ConvocatoriaScreen() {
               source={require('../assets/images/home-icon.png')}
               style={[
                 styles.navIcon,
+                { tintColor: pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
                 pathname === '/account' && styles.navIconActive,
               ]}
               resizeMode="contain"
@@ -322,7 +325,7 @@ export default function ConvocatoriaScreen() {
               style={[
                 styles.navLabel,
                 pathname === '/account' && styles.navLabelActive,
-                { color: isDark ? '#AAA' : '#333' },
+                { color: isDark ? '#AAA' : '#666' },
               ]}
             >
               {t('convocatoria.nav.home')}
@@ -338,6 +341,7 @@ export default function ConvocatoriaScreen() {
               source={require('../assets/images/areas-icon.png')}
               style={[
                 styles.navIcon,
+                { tintColor: pathname === '/areas' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
                 pathname === '/areas' && styles.navIconActive,
               ]}
               resizeMode="contain"
@@ -346,7 +350,7 @@ export default function ConvocatoriaScreen() {
               style={[
                 styles.navLabel,
                 pathname === '/areas' && styles.navLabelActive,
-                { color: isDark ? '#AAA' : '#333' },
+                { color: isDark ? '#AAA' : '#666' },
               ]}
             >
               {t('convocatoria.nav.areas')}
@@ -365,6 +369,7 @@ export default function ConvocatoriaScreen() {
               source={require('../assets/images/convocatory-icon.png')}
               style={[
                 styles.navIcon,
+                { tintColor: pathname === '/convocatoria' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
                 pathname === '/convocatoria' && styles.navIconActive,
               ]}
               resizeMode="contain"
@@ -373,7 +378,7 @@ export default function ConvocatoriaScreen() {
               style={[
                 styles.navLabel,
                 pathname === '/convocatoria' && styles.navLabelActive,
-                { color: isDark ? '#4CAF50' : '#4CAF50' },
+                { color: '#4CAF50' },
               ]}
             >
               {t('convocatoria.nav.convocatory')}
@@ -392,6 +397,7 @@ export default function ConvocatoriaScreen() {
               source={require('../assets/images/nosotros-icon.png')}
               style={[
                 styles.navIcon,
+                { tintColor: pathname === '/nosotros' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
                 pathname === '/nosotros' && styles.navIconActive,
               ]}
               resizeMode="contain"
@@ -400,7 +406,7 @@ export default function ConvocatoriaScreen() {
               style={[
                 styles.navLabel,
                 pathname === '/nosotros' && styles.navLabelActive,
-                { color: isDark ? '#AAA' : '#333' },
+                { color: isDark ? '#AAA' : '#666' },
               ]}
             >
               {t('convocatoria.nav.about')}
@@ -468,18 +474,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    backgroundColor: 'transparent',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+    zIndex: 10,
   },
-  headerTitle: { fontSize: 18, fontWeight: 'bold' },
-  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 16 },
   avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#4CAF50',
   },
   menuOverlay: {
     position: 'absolute',
@@ -487,33 +503,34 @@ const styles = StyleSheet.create({
     right: 16,
     zIndex: 1000,
     borderRadius: 8,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
   },
   menuContainer: { padding: 8, minWidth: 160 },
-  menuItem: { flexDirection: 'row', alignItems: 'center', padding: 8 },
+  menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 4 },
   menuText: { marginLeft: 8, fontSize: 14 },
   content: { paddingHorizontal: 16, paddingTop: 20 },
   convocatoriaCard: {
-    borderRadius: 12,
-    marginBottom: 16,
+    borderRadius: 20,
+    marginBottom: 20,
     overflow: 'hidden',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowRadius: 8,
+    elevation: 4,
   },
   cardImage: {
     width: '100%',
     height: 200,
   },
   cardContent: {
-    padding: 16,
+    padding: 20,
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 8,
   },
@@ -527,20 +544,30 @@ const styles = StyleSheet.create({
   },
   buttonGroup: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 12,
+    marginTop: 12,
   },
   button: {
-    backgroundColor: '#673AB7',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    flex: 1, // 👈 asegura que los botones tengan el mismo ancho
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 12,
+    flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  secondaryButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#4CAF50',
   },
   buttonText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
+  },
+  secondaryButtonText: {
+    color: '#4CAF50',
   },
   bottomNav: {
     flexDirection: 'row',
@@ -551,10 +578,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    padding: 16,
-    backgroundColor: '#fff',
+    zIndex: 1000,
   },
-  navItem: { alignItems: 'center', paddingVertical: 8, borderRadius: 8 },
+  navItem: { alignItems: 'center', paddingVertical: 8 },
   navItemActive: {
     borderTopWidth: 2,
     borderTopColor: '#4CAF50',
@@ -565,7 +591,6 @@ const styles = StyleSheet.create({
     height: 24,
     marginBottom: 4,
     resizeMode: 'contain',
-    tintColor: '#777',
   },
   navIconActive: { tintColor: '#4CAF50' },
   navLabel: {
@@ -573,5 +598,5 @@ const styles = StyleSheet.create({
     marginTop: 4,
     textAlign: 'center',
   },
-  navLabelActive: { fontWeight: '600' },
+  navLabelActive: { color: '#4CAF50' },
 });

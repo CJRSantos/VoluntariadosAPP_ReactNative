@@ -21,7 +21,7 @@ import { useAuth } from './providers/AuthProvider';
 const { width } = Dimensions.get('window');
 
 export default function AreasScreen() {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const { theme } = useTheme();
@@ -74,7 +74,7 @@ export default function AreasScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#E0E0E0' }]}>
+      <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
         <View style={styles.loading}>
           <Text style={{ color: isDark ? '#FFF' : '#333' }}>{t('areas.loading')}</Text>
         </View>
@@ -83,9 +83,9 @@ export default function AreasScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#E0E0E0' }]}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
       <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-        {/* Encabezado */}
+        {/* Encabezado Moderno */}
         <View
           style={[
             styles.header,
@@ -163,7 +163,7 @@ export default function AreasScreen() {
                 <TouchableOpacity
                   style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                   onPress={() => {
-                    router.push('/login');
+                    signOut();
                     setIsMenuOpen(false);
                   }}
                 >
@@ -189,8 +189,8 @@ export default function AreasScreen() {
               style={[
                 styles.areaCard,
                 {
-                  backgroundColor: isDark ? '#111' : '#F5F5F5',
-                  shadowColor: isDark ? '#000' : '#000',
+                  backgroundColor: isDark ? '#111' : '#FFF',
+                  shadowColor: '#000',
                 },
               ]}
               onPress={() => router.push({
@@ -200,7 +200,7 @@ export default function AreasScreen() {
             >
               <View style={styles.areaHeader}>
                 <View style={styles.locationBadge}>
-                  <Ionicons name="location" size={16} color="#fff" />
+                  <Ionicons name="location" size={14} color="#fff" />
                   <Text style={styles.locationText}>
                     {errorMsg ? t('areas.noLocation') : address || t('areas.gettingLocation')}
                   </Text>
@@ -225,32 +225,60 @@ export default function AreasScreen() {
             style={[styles.navItem, pathname === '/account' && styles.navItemActive]}
             onPress={() => router.push('/account')}
           >
-            <Image source={require('../assets/images/home-icon.png')} style={[styles.navIcon, pathname === '/account' && styles.navIconActive]} />
-            <Text style={[styles.navLabel, pathname === '/account' && styles.navLabelActive]}>{t('areas.nav.home')}</Text>
+            <Image
+              source={require('../assets/images/home-icon.png')}
+              style={[
+                styles.navIcon,
+                { tintColor: pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
+                pathname === '/account' && styles.navIconActive
+              ]}
+            />
+            <Text style={[styles.navLabel, pathname === '/account' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('areas.nav.home')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
             onPress={() => router.push('/areas')}
           >
-            <Image source={require('../assets/images/areas-icon.png')} style={[styles.navIcon, pathname === '/areas' && styles.navIconActive]} />
-            <Text style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive]}>{t('areas.nav.areas')}</Text>
+            <Image
+              source={require('../assets/images/areas-icon.png')}
+              style={[
+                styles.navIcon,
+                { tintColor: pathname === '/areas' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
+                pathname === '/areas' && styles.navIconActive
+              ]}
+            />
+            <Text style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive, { color: '#4CAF50' }]}>{t('areas.nav.areas')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.navItem, pathname === '/convocatoria' && styles.navItemActive]}
             onPress={() => router.push('/convocatoria')}
           >
-            <Image source={require('../assets/images/convocatory-icon.png')} style={[styles.navIcon, pathname === '/convocatoria' && styles.navIconActive]} />
-            <Text style={[styles.navLabel, pathname === '/convocatoria' && styles.navLabelActive]}>{t('areas.nav.convocatory')}</Text>
+            <Image
+              source={require('../assets/images/convocatory-icon.png')}
+              style={[
+                styles.navIcon,
+                { tintColor: pathname === '/convocatoria' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
+                pathname === '/convocatoria' && styles.navIconActive
+              ]}
+            />
+            <Text style={[styles.navLabel, pathname === '/convocatoria' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('areas.nav.convocatory')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.navItem, pathname === '/nosotros' && styles.navItemActive]}
             onPress={() => router.push('/nosotros')}
           >
-            <Image source={require('../assets/images/nosotros-icon.png')} style={[styles.navIcon, pathname === '/nosotros' && styles.navIconActive]} />
-            <Text style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive]}>{t('areas.nav.about')}</Text>
+            <Image
+              source={require('../assets/images/nosotros-icon.png')}
+              style={[
+                styles.navIcon,
+                { tintColor: pathname === '/nosotros' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
+                pathname === '/nosotros' && styles.navIconActive
+              ]}
+            />
+            <Text style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('areas.nav.about')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -264,24 +292,67 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   overlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'transparent', zIndex: 999 },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, borderBottomWidth: 1 },
-  headerTitle: { fontSize: 18, fontWeight: 'bold' },
-  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  avatar: { width: 32, height: 32, borderRadius: 16, borderWidth: 1, borderColor: '#ddd' },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+    zIndex: 10,
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+  avatar: { width: 40, height: 40, borderRadius: 20, borderWidth: 2, borderColor: '#4CAF50' },
   scrollContent: { paddingHorizontal: 16, paddingVertical: 20, paddingBottom: 100 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 20, marginTop: 10, textAlign: 'center' },
-  areaCard: { borderRadius: 12, padding: 16, marginBottom: 16, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 },
-  areaHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  locationBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#4CAF50', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 },
-  locationText: { color: '#fff', fontSize: 12, marginLeft: 4 },
-  areaDirection: { fontSize: 12, marginBottom: 4 },
-  areaTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
-  areaDescription: { fontSize: 14 },
+  areaCard: {
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 16,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  areaHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
+  locationBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  locationText: { color: '#fff', fontSize: 12, marginLeft: 4, fontWeight: '600' },
+  areaDirection: { fontSize: 12, marginBottom: 8, fontWeight: '500' },
+  areaTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 8 },
+  areaDescription: { fontSize: 14, lineHeight: 20 },
 
-  bottomNav: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', borderTopWidth: 1, paddingVertical: 8, position: 'absolute', bottom: 0, left: 0, right: 0 },
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    paddingVertical: 8,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+  },
   navItem: { alignItems: 'center', paddingVertical: 8 },
   navIcon: { width: 24, height: 24, marginBottom: 4, resizeMode: 'contain' },
-  navLabel: { fontSize: 10, textAlign: 'center', color: '#333' },
+  navLabel: { fontSize: 10, textAlign: 'center' },
   navItemActive: { borderTopWidth: 2, borderTopColor: '#4CAF50' },
   navIconActive: { tintColor: '#4CAF50' },
   navLabelActive: { color: '#4CAF50', fontWeight: 'bold' },

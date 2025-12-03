@@ -1,4 +1,5 @@
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { Redirect, usePathname, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
@@ -31,7 +32,7 @@ const { width } = Dimensions.get('window');
 const SOCIAL_LINKS = socialData;
 
 export default function AccountScreen() {
-    const { user, loading, reloadUser } = useAuth();
+    const { user, loading, reloadUser, signOut } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
     const { theme } = useTheme();
@@ -43,10 +44,20 @@ export default function AccountScreen() {
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     const [isProfileImageVisible, setIsProfileImageVisible] = useState(false);
+    const [localProfileImage, setLocalProfileImage] = useState<string | null>(null);
 
     useFocusEffect(
         useCallback(() => {
             if (reloadUser) reloadUser();
+            const loadLocalImage = async () => {
+                try {
+                    const savedPhoto = await AsyncStorage.getItem('userPhotoURL');
+                    if (savedPhoto) setLocalProfileImage(savedPhoto);
+                } catch (error) {
+                    console.error('Error loading local profile image:', error);
+                }
+            };
+            loadLocalImage();
         }, [reloadUser])
     );
 
@@ -101,9 +112,11 @@ export default function AccountScreen() {
                         <TouchableOpacity onPress={() => setIsProfileImageVisible(true)}>
                             <Image
                                 source={
-                                    user.photoURL
-                                        ? { uri: user.photoURL }
-                                        : require('../assets/images/avatar-default.png')
+                                    localProfileImage
+                                        ? { uri: localProfileImage }
+                                        : user.photoURL
+                                            ? { uri: user.photoURL }
+                                            : require('../assets/images/avatar-default.png')
                                 }
                                 style={styles.avatar}
                             />
@@ -466,7 +479,7 @@ export default function AccountScreen() {
                                 <TouchableOpacity
                                     style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
                                     onPress={() => {
-                                        router.push('/login');
+                                        signOut();
                                         setIsMenuOpen(false);
                                     }}
                                 >
@@ -488,9 +501,7 @@ export default function AccountScreen() {
                 <ImageViewer
                     imageUrls={[
                         {
-                            url: user.photoURL
-                                ? user.photoURL
-                                : 'https://via.placeholder.com/400x400?text=Default+Avatar',
+                            url: localProfileImage || user.photoURL || 'https://via.placeholder.com/400x400?text=Default+Avatar',
                         },
                     ]}
                     enableSwipeDown={true}
@@ -522,25 +533,33 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        borderBottomWidth: 1,
+        paddingVertical: 16,
+        paddingHorizontal: 20,
+        backgroundColor: 'transparent', // Modern look
+        // Shadow for depth
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 2,
+        zIndex: 10,
     },
     headerTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
+        fontSize: 22,
+        fontWeight: '800',
+        letterSpacing: 0.5,
     },
     headerRight: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 12,
+        gap: 16,
     },
     avatar: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        borderWidth: 1,
-        borderColor: '#ddd',
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        borderWidth: 2,
+        borderColor: '#4CAF50', // Brand color accent
     },
     overlay: {
         position: 'absolute',
@@ -577,11 +596,16 @@ const styles = StyleSheet.create({
     },
     banner: {
         position: 'relative',
-        marginHorizontal: 16,
-        marginTop: 16,
-        borderRadius: 12,
+        marginHorizontal: 20,
+        marginTop: 20,
+        borderRadius: 20,
         overflow: 'hidden',
-        height: 150,
+        height: 180,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        elevation: 6,
     },
     bannerImage: { width: '100%', height: '100%', resizeMode: 'cover' },
     bannerContent: {
@@ -619,13 +643,18 @@ const styles = StyleSheet.create({
     newsContainerHorizontal: { paddingHorizontal: 16, paddingVertical: 8 },
     newsCardHorizontal: {
         flexDirection: 'row',
-        borderRadius: 12,
-        borderWidth: 1,
+        borderRadius: 16,
+        borderWidth: 0, // Remove border for cleaner look
         overflow: 'hidden',
-        width: 400,
-        height: 181,
+        width: 320, // Slightly smaller width for better carousel feel
+        height: 180, // Restored height to fit buttons
         marginRight: 16,
         flexShrink: 0,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+        elevation: 3,
     },
     newsImage: {
         width: 180,
