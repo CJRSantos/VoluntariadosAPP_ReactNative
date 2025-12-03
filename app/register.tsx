@@ -1,9 +1,12 @@
 // app/register.tsx
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Google from 'expo-auth-session/providers/google';
 import { useRouter } from 'expo-router';
+import * as WebBrowser from 'expo-web-browser';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+    Alert,
     Image,
     KeyboardAvoidingView,
     Platform,
@@ -15,6 +18,9 @@ import {
     View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { auth } from '../src/config/firebaseConfig';
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function RegisterScreen() {
     const [email, setEmail] = useState('');
@@ -23,31 +29,45 @@ export default function RegisterScreen() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const { t } = useTranslation();
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        // TODO: Add your Client IDs here
+        androidClientId: 'YOUR_ANDROID_CLIENT_ID',
+        iosClientId: 'YOUR_IOS_CLIENT_ID',
+        webClientId: 'YOUR_WEB_CLIENT_ID',
+    });
 
     const router = useRouter();
 
+    React.useEffect(() => {
+        if (response?.type === 'success') {
+            const { id_token } = response.params;
+            const credential = GoogleAuthProvider.credential(id_token);
+            signInWithCredential(auth, credential)
+                .then(() => {
+                    // AuthProvider will handle redirect
+                })
+                .catch((error) => {
+                    Alert.alert(t('register.errorTitle'), error.message);
+                });
+        }
+    }, [response]);
+
     const handleRegister = async () => {
         if (!email || !password || !confirmPassword) {
-            alert(t('register.errorMissingFields'));
+            Alert.alert(t('register.errorTitle'), t('register.errorMissingFields'));
             return;
         }
         if (password !== confirmPassword) {
-            alert(t('register.errorPasswordMismatch'));
+            Alert.alert(t('register.errorTitle'), t('register.errorPasswordMismatch'));
             return;
         }
 
-        const newUser = {
-            uid: `vol_${Date.now()}`,
-            email: email,
-            displayName: email.split('@')[0] || 'Voluntario',
-            photoURL: 'https://via.placeholder.com/40/4CAF50/FFFFFF?text=V',
-        };
-
-        await AsyncStorage.setItem('user', JSON.stringify(newUser));
-        await AsyncStorage.setItem('@user_logged_in', 'true');
-
-        console.log(t('register.successLog'), email);
-        router.replace('/account');
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            // AuthProvider will handle redirect
+        } catch (error: any) {
+            Alert.alert(t('register.errorTitle'), error.message);
+        }
     };
 
     const handleLoginRedirect = () => {
@@ -82,6 +102,8 @@ export default function RegisterScreen() {
                         keyboardType="email-address"
                         autoCapitalize="none"
                         placeholderTextColor="#999"
+                        textContentType="username"
+                        autoComplete="email"
                     />
 
                     <Text style={styles.label}>{t('register.passwordLabel')}</Text>
@@ -93,6 +115,8 @@ export default function RegisterScreen() {
                             onChangeText={setPassword}
                             secureTextEntry={!showPassword}
                             placeholderTextColor="#999"
+                            textContentType="newPassword"
+                            autoComplete="password-new"
                         />
                         <TouchableOpacity
                             style={styles.eyeButton}
@@ -110,11 +134,13 @@ export default function RegisterScreen() {
                     <View style={styles.passwordContainer}>
                         <TextInput
                             style={[styles.input, styles.passwordInput]}
-                            placeholder={t('register.confirmPasswordPlaceholder')}
+                            placeholder={t('Confirmar Contraseña')}
                             value={confirmPassword}
                             onChangeText={setConfirmPassword}
                             secureTextEntry={!showConfirmPassword}
                             placeholderTextColor="#999"
+                            textContentType="newPassword"
+                            autoComplete="password-new"
                         />
                         <TouchableOpacity
                             style={styles.eyeButton}
@@ -129,11 +155,19 @@ export default function RegisterScreen() {
                     </View>
 
                     <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-                        <Text style={styles.registerButtonText}>{t('register.registerButton')}</Text>
+                        <Text style={styles.registerButtonText}>{t('Registrarse')}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.registerButton, { backgroundColor: '#DB4437', marginBottom: 16 }]}
+                        onPress={() => promptAsync()}
+                        disabled={!request}
+                    >
+                        <Text style={styles.registerButtonText}>Registrarse con Google</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={handleLoginRedirect}>
-                        <Text style={styles.loginLink}>{t('register.loginLink')}</Text>
+                        <Text style={styles.login}>{t('register.loginLink')}</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -214,7 +248,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '600',
     },
-    loginLink: {
+    login: {
         textAlign: 'center',
         color: '#666',
         fontSize: 14,

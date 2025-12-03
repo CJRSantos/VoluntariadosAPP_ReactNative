@@ -47,7 +47,8 @@
             "deleteAll": "Delete all data",
             "export": "Export my data",
             "close": "Close"
-        }
+        },
+        "loginLink": "Log In"
     },
     "nosotros": {
         "title": "About Us",

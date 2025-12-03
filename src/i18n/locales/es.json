@@ -5,7 +5,7 @@
         "emailPlaceholder": "Ingresa tu correo",
         "passwordLabel": "Contraseña",
         "passwordPlaceholder": "Ingresa tu contraseña",
-        "loginButton": "Iniciar sesión",
+        "loginButton": "Iniciar Sesión",
         "createAccount": "Crear una cuenta",
         "errorTitle": "Error",
         "errorMissingFields": "Por favor completa todos los campos",
@@ -17,7 +17,7 @@
         "emailPlaceholder": "Ingresa tu correo",
         "passwordLabel": "Contraseña",
         "passwordPlaceholder": "Ingresa tu contraseña",
-        "confirmPasswordLabel": "Confirmar contraseña",
+        "confirmPasswordLabel": "Confirmar Contraseña",
         "appearance": {
             "title": "Apariencia",
             "dark": "Modo oscuro",
@@ -27,7 +27,7 @@
         },
         "language": {
             "title": "Idioma",
-            "subtitle": "Selecciona el idioma de la aplicación",
+            "subtitle": "Seleccionar idioma de la app",
             "modalTitle": "Seleccionar Idioma"
         },
         "notifications": {
@@ -36,24 +36,25 @@
         },
         "privacy": {
             "title": "Privacidad",
-            "subtitle": "Ajusta preferencias"
+            "subtitle": "Ajustar preferencias"
         },
         "storage": {
             "title": "Almacenamiento",
-            "subtitle": "Gestiona datos y espacio",
+            "subtitle": "Gestionar datos y espacio",
             "modalTitle": "Opciones de Almacenamiento",
             "viewSize": "Ver tamaño de almacenamiento",
-            "clearCache": "Limpar caché de imágenes",
+            "clearCache": "Limpiar caché de imágenes",
             "deleteAll": "Eliminar todos los datos",
             "export": "Exportar mis datos",
             "close": "Cerrar"
-        }
+        },
+        "loginLink": "Volver a Login"
     },
     "nosotros": {
         "title": "Nosotros",
         "headerTitle": "Cuenta de Voluntario",
-        "whyJoin": "¿Por qué unirte a nosotros?",
-        "joinDescription": "Únete a nuestra institución y sé parte de un equipo que impulsa innovación, sostenibilidad e impacto positivo.",
+        "whyJoin": "¿Por qué unirte?",
+        "joinDescription": "Únete a nuestra institución y sé parte de un equipo que impulsa la innovación, la sostenibilidad y el impacto positivo.",
         "ourHistory": "Nuestra historia",
         "historyDescription": "Desde nuestros inicios, hemos trabajado en fortalecer la educación, la investigación y los proyectos sociales.",
         "ourMission": "Nuestra misión",

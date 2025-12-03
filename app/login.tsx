@@ -1,6 +1,8 @@
 // app/login.tsx
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Google from 'expo-auth-session/providers/google';
 import { Link, useRouter } from 'expo-router';
+import * as WebBrowser from 'expo-web-browser';
+import { GoogleAuthProvider, signInWithCredential, signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -16,14 +18,37 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { auth } from '../src/config/firebaseConfig';
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { t } = useTranslation();
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    // TODO: Add your Client IDs here
+    androidClientId: 'YOUR_ANDROID_CLIENT_ID',
+    iosClientId: 'YOUR_IOS_CLIENT_ID',
+    webClientId: 'YOUR_WEB_CLIENT_ID',
+  });
 
   const router = useRouter();
+
+  React.useEffect(() => {
+    if (response?.type === 'success') {
+      const { id_token } = response.params;
+      const credential = GoogleAuthProvider.credential(id_token);
+      signInWithCredential(auth, credential)
+        .then(() => {
+          // AuthProvider will handle redirect
+        })
+        .catch((error) => {
+          Alert.alert(t('login.errorTitle'), error.message);
+        });
+    }
+  }, [response]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -32,19 +57,10 @@ export default function LoginScreen() {
     }
 
     try {
-      const mockUser = {
-        uid: 'vol_123',
-        email,
-        displayName: email.split('@')[0],
-        photoURL: 'https://via.placeholder.com/40/4CAF50/FFFFFF?text=V',
-      };
-
-      await AsyncStorage.setItem('user', JSON.stringify(mockUser));
-      await AsyncStorage.setItem('@user_logged_in', 'true');
-
-      router.replace('/account');
-    } catch (error) {
-      Alert.alert(t('login.errorTitle'), t('login.errorLoginFailed'));
+      await signInWithEmailAndPassword(auth, email, password);
+      // AuthProvider will handle redirect
+    } catch (error: any) {
+      Alert.alert(t('login.errorTitle'), error.message);
     }
   };
 
@@ -73,6 +89,8 @@ export default function LoginScreen() {
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
+            textContentType="username"
+            autoComplete="email"
           />
 
           <Text style={styles.label}>{t('login.passwordLabel')}</Text>
@@ -83,6 +101,8 @@ export default function LoginScreen() {
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
+              textContentType="password"
+              autoComplete="password"
             />
             <TouchableOpacity
               style={styles.eyeButton}
@@ -94,6 +114,14 @@ export default function LoginScreen() {
 
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.loginButtonText}>{t('login.loginButton')}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.loginButton, { backgroundColor: '#DB4437', marginTop: 10 }]}
+            onPress={() => promptAsync()}
+            disabled={!request}
+          >
+            <Text style={styles.loginButtonText}>Registrarse con Google</Text>
           </TouchableOpacity>
 
           <Link href="/register">

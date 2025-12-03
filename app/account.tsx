@@ -1,4 +1,3 @@
-import { useAuth } from '@/hooks/useAuth';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { Redirect, usePathname, useRouter } from 'expo-router';
@@ -23,6 +22,7 @@ import { IMAGES } from '../assets/data/imageMap';
 import newsData from '../assets/data/news.json';
 import socialData from '../assets/data/social.json';
 import videosData from '../assets/data/videos.json';
+import { useAuth } from './providers/AuthProvider';
 import { useTheme } from './providers/ThemeProvider';
 
 const { width } = Dimensions.get('window');

@@ -1,5 +1,4 @@
 // app/convocatoria.tsx
-import { useAuth } from '@/hooks/useAuth';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Stack, usePathname, useRouter } from 'expo-router';
@@ -19,6 +18,7 @@ import ImageZoom from 'react-native-image-pan-zoom';
 import Modal from 'react-native-modal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
+import { useAuth } from './providers/AuthProvider';
 
 const { width, height } = Dimensions.get('window');
 

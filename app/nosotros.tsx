@@ -14,8 +14,8 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '../app/providers/AuthProvider';
 import { useTheme } from '../app/providers/ThemeProvider';
-import { useAuth } from '../hooks/useAuth';
 
 const { width } = Dimensions.get('window');
 
