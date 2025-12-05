@@ -1,5 +1,6 @@
 // app/areas.tsx
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import { usePathname, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -7,16 +8,18 @@ import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Dimensions,
-  Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
+import { GestureDetector } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
 import areasData from '../assets/data/areas.json';
+import { Header } from '../src/components/Header';
+import { useSwipeNavigation } from './hooks/useSwipeNavigation';
 import { useAuth } from './providers/AuthProvider';
 const { width } = Dimensions.get('window');
 
@@ -31,6 +34,12 @@ export default function AreasScreen() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  const { composedGesture } = useSwipeNavigation({
+    onSwipeLeft: () => router.push('/convocatoria'),
+    onSwipeRight: () => router.push('/account'),
+  });
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -43,6 +52,9 @@ export default function AreasScreen() {
   useEffect(() => {
     (async () => {
       try {
+        const savedPhoto = await AsyncStorage.getItem('userPhotoURL');
+        if (savedPhoto) setProfileImage(savedPhoto);
+
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
           setErrorMsg(t('areas.locationPermissionDenied'));
@@ -83,206 +95,177 @@ export default function AreasScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-      <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-        {/* Encabezado Moderno */}
-        <View
-          style={[
-            styles.header,
-            {
-              backgroundColor: isDark ? '#111' : '#E0E0E0',
-              borderBottomColor: isDark ? '#333' : '#CCC',
-            },
-          ]}
-        >
-          <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>
-            {t('areas.headerTitle')}
-          </Text>
-          <View style={styles.headerRight}>
-            <Image
-              source={
-                user?.photoURL
-                  ? { uri: user.photoURL }
-                  : require('../assets/images/avatar-default.png')
-              }
-              style={styles.avatar}
-            />
-            <TouchableOpacity onPress={toggleMenu}>
-              <Ionicons name="menu" size={24} color={isDark ? '#FFF' : '#333'} />
+    <GestureDetector gesture={composedGesture}>
+      <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+        <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+          {/* Encabezado Moderno con Header Component */}
+          <Header
+            user={user}
+            isDark={isDark}
+            t={t}
+            toggleMenu={toggleMenu}
+            localProfileImage={profileImage}
+          />
+
+          {/* Menú desplegable */}
+          {isMenuOpen && (
+            <>
+              <TouchableOpacity
+                style={styles.overlay}
+                activeOpacity={1}
+                onPress={() => setIsMenuOpen(false)}
+              />
+              <View style={[styles.menuOverlay, { backgroundColor: isDark ? '#111' : '#FFF' }]}>
+                <View style={[styles.menuContainer, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                  <TouchableOpacity
+                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                    onPress={() => {
+                      router.push('/profile');
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
+                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                      {t('areas.menu.profile')}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                    onPress={() => {
+                      router.push('/settings');
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
+                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                      {t('areas.menu.settings')}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                    onPress={() => {
+                      Alert.alert(t('areas.menu.soon'), t('areas.menu.helpSoon'));
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
+                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('areas.menu.help')}</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                    onPress={() => {
+                      signOut();
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
+                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                      {t('areas.menu.logout')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </>
+          )}
+
+          {/* Contenido principal */}
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+              {t('areas.sectionTitle')}
+            </Text>
+
+            {areas.map((area) => (
+              <TouchableOpacity
+                key={area.id}
+                style={[
+                  styles.areaCard,
+                  {
+                    backgroundColor: isDark ? '#111' : '#FFF',
+                    shadowColor: '#000',
+                  },
+                ]}
+                onPress={() => router.push({
+                  pathname: '/area-details',
+                  params: { id: area.id }
+                })}
+              >
+                <View style={styles.areaHeader}>
+                  <View style={styles.locationBadge}>
+                    <Ionicons name="location" size={14} color="#fff" />
+                    <Text style={styles.locationText}>
+                      {errorMsg ? t('areas.noLocation') : address || t('areas.gettingLocation')}
+                    </Text>
+                  </View>
+                </View>
+                <Text style={[styles.areaDirection, { color: isDark ? '#AAA' : '#666' }]}>
+                  {area.direction[currentLang]}
+                </Text>
+                <Text style={[styles.areaTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                  {area.title[currentLang]}
+                </Text>
+                <Text style={[styles.areaDescription, { color: isDark ? '#AAA' : '#666' }]}>
+                  {area.description[currentLang]}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+          {/* Barra inferior */}
+          <View style={[styles.bottomNav, { borderTopColor: isDark ? '#333' : '#EEE', backgroundColor: isDark ? '#111' : '#FFF' }]}>
+            <TouchableOpacity
+              style={[styles.navItem, pathname === '/account' && styles.navItemActive]}
+              onPress={() => router.replace('/account')}
+            >
+              <Ionicons
+                name="home"
+                size={24}
+                color={pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+              />
+              <Text style={[styles.navLabel, pathname === '/account' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('areas.nav.home')}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
+              onPress={() => router.replace('/areas')}
+            >
+              <Ionicons
+                name="grid-outline"
+                size={24}
+                color={pathname === '/areas' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+              />
+              <Text style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive, { color: '#4CAF50' }]}>{t('areas.nav.areas')}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.navItem, pathname === '/convocatoria' && styles.navItemActive]}
+              onPress={() => router.replace('/convocatoria')}
+            >
+              <Ionicons
+                name="briefcase-outline"
+                size={24}
+                color={pathname === '/convocatoria' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+              />
+              <Text style={[styles.navLabel, pathname === '/convocatoria' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('areas.nav.convocatory')}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.navItem, pathname === '/nosotros' && styles.navItemActive]}
+              onPress={() => router.replace('/nosotros')}
+            >
+              <Ionicons
+                name="people-outline"
+                size={24}
+                color={pathname === '/nosotros' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+              />
+              <Text style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('areas.nav.about')}</Text>
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* Menú desplegable */}
-        {isMenuOpen && (
-          <>
-            <TouchableOpacity
-              style={styles.overlay}
-              activeOpacity={1}
-              onPress={() => setIsMenuOpen(false)}
-            />
-            <View style={[styles.menuOverlay, { backgroundColor: isDark ? '#111' : '#FFF' }]}>
-              <View style={[styles.menuContainer, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
-                <TouchableOpacity
-                  style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                  onPress={() => {
-                    router.push('/profile');
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
-                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                    {t('areas.menu.profile')}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                  onPress={() => {
-                    router.push('/settings');
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
-                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                    {t('areas.menu.settings')}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                  onPress={() => {
-                    Alert.alert(t('areas.menu.soon'), t('areas.menu.helpSoon'));
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
-                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('areas.menu.help')}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                  onPress={() => {
-                    signOut();
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
-                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                    {t('areas.menu.logout')}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </>
-        )}
-
-        {/* Contenido principal */}
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-            {t('areas.sectionTitle')}
-          </Text>
-
-          {areas.map((area) => (
-            <TouchableOpacity
-              key={area.id}
-              style={[
-                styles.areaCard,
-                {
-                  backgroundColor: isDark ? '#111' : '#FFF',
-                  shadowColor: '#000',
-                },
-              ]}
-              onPress={() => router.push({
-                pathname: '/area-details',
-                params: { id: area.id }
-              })}
-            >
-              <View style={styles.areaHeader}>
-                <View style={styles.locationBadge}>
-                  <Ionicons name="location" size={14} color="#fff" />
-                  <Text style={styles.locationText}>
-                    {errorMsg ? t('areas.noLocation') : address || t('areas.gettingLocation')}
-                  </Text>
-                </View>
-              </View>
-              <Text style={[styles.areaDirection, { color: isDark ? '#AAA' : '#666' }]}>
-                {area.direction[currentLang]}
-              </Text>
-              <Text style={[styles.areaTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                {area.title[currentLang]}
-              </Text>
-              <Text style={[styles.areaDescription, { color: isDark ? '#AAA' : '#666' }]}>
-                {area.description[currentLang]}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-
-        {/* Barra inferior */}
-        <View style={[styles.bottomNav, { borderTopColor: isDark ? '#333' : '#EEE', backgroundColor: isDark ? '#111' : '#FFF' }]}>
-          <TouchableOpacity
-            style={[styles.navItem, pathname === '/account' && styles.navItemActive]}
-            onPress={() => router.push('/account')}
-          >
-            <Image
-              source={require('../assets/images/home-icon.png')}
-              style={[
-                styles.navIcon,
-                { tintColor: pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
-                pathname === '/account' && styles.navIconActive
-              ]}
-            />
-            <Text style={[styles.navLabel, pathname === '/account' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('areas.nav.home')}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
-            onPress={() => router.push('/areas')}
-          >
-            <Image
-              source={require('../assets/images/areas-icon.png')}
-              style={[
-                styles.navIcon,
-                { tintColor: pathname === '/areas' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
-                pathname === '/areas' && styles.navIconActive
-              ]}
-            />
-            <Text style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive, { color: '#4CAF50' }]}>{t('areas.nav.areas')}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.navItem, pathname === '/convocatoria' && styles.navItemActive]}
-            onPress={() => router.push('/convocatoria')}
-          >
-            <Image
-              source={require('../assets/images/convocatory-icon.png')}
-              style={[
-                styles.navIcon,
-                { tintColor: pathname === '/convocatoria' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
-                pathname === '/convocatoria' && styles.navIconActive
-              ]}
-            />
-            <Text style={[styles.navLabel, pathname === '/convocatoria' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('areas.nav.convocatory')}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.navItem, pathname === '/nosotros' && styles.navItemActive]}
-            onPress={() => router.push('/nosotros')}
-          >
-            <Image
-              source={require('../assets/images/nosotros-icon.png')}
-              style={[
-                styles.navIcon,
-                { tintColor: pathname === '/nosotros' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
-                pathname === '/nosotros' && styles.navIconActive
-              ]}
-            />
-            <Text style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('areas.nav.about')}</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </GestureDetector>
   );
 }
 
@@ -292,27 +275,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   overlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'transparent', zIndex: 999 },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-    zIndex: 10,
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: '800',
-    letterSpacing: 0.5,
-  },
-  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 16 },
-  avatar: { width: 40, height: 40, borderRadius: 20, borderWidth: 2, borderColor: '#4CAF50' },
+  // Removed old header styles
   scrollContent: { paddingHorizontal: 16, paddingVertical: 20, paddingBottom: 100 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 20, marginTop: 10, textAlign: 'center' },
   areaCard: {
@@ -351,13 +314,11 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   navItem: { alignItems: 'center', paddingVertical: 8 },
-  navIcon: { width: 24, height: 24, marginBottom: 4, resizeMode: 'contain' },
-  navLabel: { fontSize: 10, textAlign: 'center' },
+  navLabel: { fontSize: 10, marginTop: 4, textAlign: 'center' },
   navItemActive: { borderTopWidth: 2, borderTopColor: '#4CAF50' },
-  navIconActive: { tintColor: '#4CAF50' },
   navLabelActive: { color: '#4CAF50', fontWeight: 'bold' },
 
-  menuOverlay: { position: 'absolute', top: 60, right: 16, zIndex: 1000, borderRadius: 8, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 5 },
+  menuOverlay: { position: 'absolute', top: 70, right: 16, zIndex: 1000, borderRadius: 8, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 5 },
   menuContainer: { padding: 8, minWidth: 160 },
   menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 4 },
   menuText: { marginLeft: 8, fontSize: 14 },

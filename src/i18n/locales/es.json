@@ -86,7 +86,7 @@
         "headerTitle": "Cuenta de Voluntario",
         "banner": {
             "title": "Aquí comienza tu espacio exclusivo de usuario",
-            "subtitle": "Bienvenido usuario se parte de este nuevo...",
+            "subtitle": "Bienvenido {{name}}, sé parte de este nuevo...",
             "button": "Conocer más"
         },
         "news": {
@@ -111,6 +111,7 @@
             "sectionTitle": "Videos",
             "errorTitle": "Error",
             "errorMessage": "No se pudo abrir el video. Por favor, copia y pega el enlace en tu navegador.",
+            "clickToWatch": "Haz clic para ver el video",
             "copyLink": "Copiar enlace",
             "items": {
                 "1": "Video 1: Bienvenidos al IIAP",
@@ -131,11 +132,16 @@
         "social": {
             "web": "Sitio Web"
         },
+        "quickAccess": "Accesos Rápidos",
+        "newsSection": "Noticias",
+        "videosSection": "Videos",
+        "socialSection": "Redes Sociales",
         "loading": "Cargando...",
         "nav": {
             "home": "Inicio",
             "areas": "Áreas",
             "convocatory": "Convocatoria",
+            "Convocatory": "Convocatorias",
             "about": "Nosotros"
         },
         "menu": {
@@ -152,7 +158,9 @@
         "save": "Guardar",
         "warning": "Advertencia",
         "searchCountry": "Buscar país...",
-        "searchInstitution": "Buscar institución..."
+        "searchInstitution": "Buscar institución...",
+        "readMore": "Leer más",
+        "video": "Video"
     },
     "profile": {
         "currently": "Actualmente",
@@ -167,6 +175,12 @@
         "education": "Formación",
         "experience": "Experiencia",
         "additional": "Adicional",
+        "tab": {
+            "info": "Perfil",
+            "education": "Formación",
+            "experience": "Experiencia",
+            "additional": "Adicional"
+        },
         "addAcademic": "Agregar Formación Académica",
         "addTechnical": "Agregar Formación Técnica",
         "addComplementary": "Agregar Formación Complementaria",
@@ -259,7 +273,8 @@
             "graduated": "Graduado",
             "titled": "Titulado",
             "truncated": "Trunco"
-        }
+        },
+        "missingFieldsMessage": "Llena los campos faltantes"
     },
     "areas": {
         "title": "Áreas",

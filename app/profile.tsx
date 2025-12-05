@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -21,9 +21,13 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import Autocomplete from 'react-native-autocomplete-input';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
+import { auth } from '../src/config/firebaseConfig';
+import institutionsData from '../src/constants/Institutions.json';
+import countriesData from '../src/constants/countries.json';
 
 interface Section {
     title: string;
@@ -153,6 +157,32 @@ export default function ProfileScreen() {
     const [editingPublication, setEditingPublication] = useState<any>(null);
     const [editingLanguage, setEditingLanguage] = useState<any>(null);
 
+    // Auto-complete Data
+    const [filteredInstitutions, setFilteredInstitutions] = useState<string[]>([]);
+    const [filteredCountries, setFilteredCountries] = useState<string[]>([]);
+    const [hideResultsInstitution, setHideResultsInstitution] = useState(true);
+    const [hideResultsCountry, setHideResultsCountry] = useState(true);
+
+    const findInstitution = (query: string) => {
+        if (query) {
+            const regex = new RegExp(`${query.trim()}`, 'i');
+            setFilteredInstitutions(institutionsData.filter((item) => item.search(regex) >= 0));
+        } else {
+            setFilteredInstitutions([]);
+        }
+    };
+
+    const findCountry = (query: string) => {
+        if (query) {
+            const regex = new RegExp(`${query.trim()}`, 'i');
+            setFilteredCountries(countriesData.filter((item) => item.search(regex) >= 0));
+        } else {
+            setFilteredCountries([]);
+        }
+    };
+
+
+
     useEffect(() => {
         const loadAllData = async () => {
             try {
@@ -160,8 +190,23 @@ export default function ProfileScreen() {
                 if (savedBanner) setBannerImage(savedBanner);
                 const savedPhoto = await AsyncStorage.getItem('userPhotoURL');
                 if (savedPhoto) setProfileImage(savedPhoto);
+
                 const savedPersonal = await AsyncStorage.getItem('personalInfo');
-                if (savedPersonal) setPersonalInfo(JSON.parse(savedPersonal));
+                if (savedPersonal) {
+                    setPersonalInfo(JSON.parse(savedPersonal));
+                } else if (auth.currentUser) {
+                    // Fallback to auth data if no local data
+                    setPersonalInfo({
+                        name: { es: auth.currentUser.displayName || '', en: auth.currentUser.displayName || '' },
+                        email: auth.currentUser.email || '',
+                        // Keep other fields empty or default
+                        birthDate: '',
+                        phone: '',
+                        documentType: '',
+                        documentNumber: '',
+                        gender: ''
+                    });
+                }
                 const savedAcademic = await AsyncStorage.getItem('academicRecords');
                 if (savedAcademic) setAcademicRecords(JSON.parse(savedAcademic));
                 const savedTechnical = await AsyncStorage.getItem('technicalRecords');
@@ -541,7 +586,7 @@ export default function ProfileScreen() {
 
     const showAlertIfMissingFields = (missingField: string | null) => {
         if (missingField) {
-            Alert.alert(t('profile.incompleteFieldsTitle'), `${t('profile.incompleteFieldsMessage')}: ${missingField}`);
+            Alert.alert("", `${t('profile.missingFieldsMessage')}: ${missingField}`);
             return true;
         }
         return false;
@@ -818,7 +863,7 @@ export default function ProfileScreen() {
                 <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
                     <Ionicons name="arrow-back" size={24} color={isDark ? '#FFF' : '#333'} />
                 </TouchableOpacity>
-                <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.headerTitle')}</Text>
+                <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>{t('Perfil')}</Text>
                 <TouchableOpacity onPress={handleSettings} style={styles.settingsButton}>
                     <Ionicons name="settings-outline" size={24} color={isDark ? '#FFF' : '#333'} />
                 </TouchableOpacity>
@@ -871,16 +916,16 @@ export default function ProfileScreen() {
 
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsContainer}>
                             <TouchableOpacity onPress={() => setActiveTab('info')} style={[styles.tabButton, activeTab === 'info' && styles.tabButtonActive]}>
-                                <Text style={[styles.tabText, activeTab === 'info' && styles.tabTextActive, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.tabs.info')}</Text>
+                                <Text style={[styles.tabText, activeTab === 'info' && styles.tabTextActive, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.tab.info')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setActiveTab('formacion')} style={[styles.tabButton, activeTab === 'formacion' && styles.tabButtonActive]}>
-                                <Text style={[styles.tabText, activeTab === 'formacion' && styles.tabTextActive, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.tabs.education')}</Text>
+                                <Text style={[styles.tabText, activeTab === 'formacion' && styles.tabTextActive, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.tab.education')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setActiveTab('experiencia')} style={[styles.tabButton, activeTab === 'experiencia' && styles.tabButtonActive]}>
-                                <Text style={[styles.tabText, activeTab === 'experiencia' && styles.tabTextActive, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.tabs.experience')}</Text>
+                                <Text style={[styles.tabText, activeTab === 'experiencia' && styles.tabTextActive, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.tab.experience')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setActiveTab('adicional')} style={[styles.tabButton, activeTab === 'adicional' && styles.tabButtonActive]}>
-                                <Text style={[styles.tabText, activeTab === 'adicional' && styles.tabTextActive, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.tabs.additional')}</Text>
+                                <Text style={[styles.tabText, activeTab === 'adicional' && styles.tabTextActive, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.tab.additional')}</Text>
                             </TouchableOpacity>
                         </ScrollView>
                     </View>
@@ -1028,8 +1073,590 @@ export default function ProfileScreen() {
                 </KeyboardAvoidingView>
             </Modal>
 
-            {/* Other modals would follow similar pattern with updated styles... */}
-            {/* For brevity, I'm not duplicating all modals here, but they should use the same styles as above */}
+            {/* Academic Modal */}
+            <Modal visible={showAcademicModal} animationType="slide" transparent>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalContainer}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView keyboardShouldPersistTaps="always">
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingAcademic ? t('profile.editAcademicTitle') : t('profile.addAcademicTitle')}</Text>
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.degreeLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={degreeInput} onChangeText={setDegreeInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.institutionLabel')}</Text>
+                            <View style={styles.autocompleteContainer}>
+                                <Autocomplete
+                                    data={filteredInstitutions}
+                                    defaultValue={institutionInput}
+                                    onChangeText={(text) => {
+                                        setInstitutionInput(text);
+                                        findInstitution(text);
+                                        setHideResultsInstitution(false);
+                                    }}
+                                    hideResults={hideResultsInstitution}
+                                    renderResultList={({ data }) => (
+                                        data && data.length > 0 ? (
+                                            <View style={{ maxHeight: 150, borderWidth: 1, borderColor: '#DDD' }}>
+                                                {(data as string[]).map((item: string, idx: number) => (
+                                                    <TouchableOpacity key={idx} onPress={() => {
+                                                        setInstitutionInput(item);
+                                                        setHideResultsInstitution(true);
+                                                    }}>
+                                                        <Text style={styles.itemText}>{item}</Text>
+                                                    </TouchableOpacity>
+                                                ))}
+                                            </View>
+                                        ) : null
+                                    )}
+                                    inputContainerStyle={[styles.input, { borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9', borderWidth: 0 }]}
+                                    style={{ backgroundColor: 'transparent', color: isDark ? '#FFF' : '#333' }}
+                                />
+                            </View>
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.countryLabel')}</Text>
+                            <View style={styles.autocompleteContainer}>
+                                <Autocomplete
+                                    data={filteredCountries}
+                                    defaultValue={countryInput}
+                                    onChangeText={(text) => {
+                                        setCountryInput(text);
+                                        findCountry(text);
+                                        setHideResultsCountry(false);
+                                    }}
+                                    hideResults={hideResultsCountry}
+                                    renderResultList={({ data }) => (
+                                        data && data.length > 0 ? (
+                                            <View style={{ maxHeight: 150, borderWidth: 1, borderColor: '#DDD' }}>
+                                                {(data as string[]).map((item: string, idx: number) => (
+                                                    <TouchableOpacity key={idx} onPress={() => {
+                                                        setCountryInput(item);
+                                                        setHideResultsCountry(true);
+                                                    }}>
+                                                        <Text style={styles.itemText}>{item}</Text>
+                                                    </TouchableOpacity>
+                                                ))}
+                                            </View>
+                                        ) : null
+                                    )}
+                                    inputContainerStyle={[styles.input, { borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9', borderWidth: 0 }]}
+                                    style={{ backgroundColor: 'transparent', color: isDark ? '#FFF' : '#333' }}
+                                />
+                            </View>
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.startDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowAcademicStartDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{startDateInput || 'DD/MM/YYYY'}</Text>
+                            </TouchableOpacity>
+                            {showAcademicStartDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, date) => {
+                                        setShowAcademicStartDatePicker(false);
+                                        if (date) setStartDateInput(date.toLocaleDateString('es-ES'));
+                                    }}
+                                />
+                            )}
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.endDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowAcademicEndDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{endDateInput || 'DD/MM/YYYY'}</Text>
+                            </TouchableOpacity>
+                            {showAcademicEndDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, date) => {
+                                        setShowAcademicEndDatePicker(false);
+                                        if (date) setEndDateInput(date.toLocaleDateString('es-ES'));
+                                    }}
+                                />
+                            )}
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.statusLabel')}</Text>
+                            <View style={[styles.pickerContainer, { borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]}>
+                                <Picker selectedValue={academicStatus} onValueChange={setAcademicStatus} style={{ color: isDark ? '#FFF' : '#333' }}>
+                                    <Picker.Item label="Actualmente" value="Actualmente" />
+                                    <Picker.Item label="Graduado" value="Graduado" />
+                                    <Picker.Item label="Titulado" value="Titulado" />
+                                    <Picker.Item label="Trunco" value="Trunco" />
+                                </Picker>
+                            </View>
+
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowAcademicModal(false)}>
+                                    <Text style={styles.modalButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.modalButton} onPress={() => {
+                                    const error = validateAcademicFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const newRecord = {
+                                        degree: editingAcademic ? updateLocalizedField(editingAcademic, 'degree', degreeInput) : { [i18n.language]: degreeInput },
+                                        institution: editingAcademic ? updateLocalizedField(editingAcademic, 'institution', institutionInput) : { [i18n.language]: institutionInput },
+                                        country: editingAcademic ? updateLocalizedField(editingAcademic, 'country', countryInput) : { [i18n.language]: countryInput },
+                                        startDate: startDateInput,
+                                        endDate: endDateInput,
+                                        status: academicStatus
+                                    };
+                                    if (editingAcademic) {
+                                        updateRecord(academicRecords, setAcademicRecords, { ...editingAcademic, ...newRecord }, 'academicRecords');
+                                    } else {
+                                        addRecord(academicRecords, setAcademicRecords, newRecord, 'academicRecords');
+                                    }
+                                    setShowAcademicModal(false);
+                                }}>
+                                    <Text style={styles.modalButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Technical Modal */}
+            <Modal visible={showTechnicalModal} animationType="slide" transparent>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalContainer}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingTechnical ? t('profile.editTechnicalTitle') : t('profile.addTechnicalTitle')}</Text>
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.courseLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={courseInput} onChangeText={setCourseInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.platformLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={platformInput} onChangeText={setPlatformInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.durationLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={durationInput} onChangeText={setDurationInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.endDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowTechnicalEndDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{endDateInput || 'DD/MM/YYYY'}</Text>
+                            </TouchableOpacity>
+                            {showTechnicalEndDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, date) => {
+                                        setShowTechnicalEndDatePicker(false);
+                                        if (date) setEndDateInput(date.toLocaleDateString('es-ES'));
+                                    }}
+                                />
+                            )}
+
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowTechnicalModal(false)}>
+                                    <Text style={styles.modalButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.modalButton} onPress={() => {
+                                    const error = validateTechnicalFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const newRecord = {
+                                        course: editingTechnical ? updateLocalizedField(editingTechnical, 'course', courseInput) : { [i18n.language]: courseInput },
+                                        platform: editingTechnical ? updateLocalizedField(editingTechnical, 'platform', platformInput) : { [i18n.language]: platformInput },
+                                        duration: editingTechnical ? updateLocalizedField(editingTechnical, 'duration', durationInput) : { [i18n.language]: durationInput },
+                                        endDate: endDateInput
+                                    };
+                                    if (editingTechnical) {
+                                        updateRecord(technicalRecords, setTechnicalRecords, { ...editingTechnical, ...newRecord }, 'technicalRecords');
+                                    } else {
+                                        addRecord(technicalRecords, setTechnicalRecords, newRecord, 'technicalRecords');
+                                    }
+                                    setShowTechnicalModal(false);
+                                }}>
+                                    <Text style={styles.modalButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Complementary Modal */}
+            <Modal visible={showComplementaryModal} animationType="slide" transparent>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalContainer}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingComplementary ? t('profile.editComplementaryTitle') : t('profile.addComplementaryTitle')}</Text>
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.activityLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={activityInput} onChangeText={setActivityInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.descriptionLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={descriptionInput} onChangeText={setDescriptionInput} multiline />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.dateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowComplementaryDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{dateInput || 'DD/MM/YYYY'}</Text>
+                            </TouchableOpacity>
+                            {showComplementaryDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, date) => {
+                                        setShowComplementaryDatePicker(false);
+                                        if (date) setDateInput(date.toLocaleDateString('es-ES'));
+                                    }}
+                                />
+                            )}
+
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowComplementaryModal(false)}>
+                                    <Text style={styles.modalButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.modalButton} onPress={() => {
+                                    const error = validateComplementaryFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const newRecord = {
+                                        activity: editingComplementary ? updateLocalizedField(editingComplementary, 'activity', activityInput) : { [i18n.language]: activityInput },
+                                        description: editingComplementary ? updateLocalizedField(editingComplementary, 'description', descriptionInput) : { [i18n.language]: descriptionInput },
+                                        date: dateInput
+                                    };
+                                    if (editingComplementary) {
+                                        updateRecord(complementaryRecords, setComplementaryRecords, { ...editingComplementary, ...newRecord }, 'complementaryRecords');
+                                    } else {
+                                        addRecord(complementaryRecords, setComplementaryRecords, newRecord, 'complementaryRecords');
+                                    }
+                                    setShowComplementaryModal(false);
+                                }}>
+                                    <Text style={styles.modalButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Experience Modal */}
+            <Modal visible={showExperienceModal} animationType="slide" transparent>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalContainer}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView keyboardShouldPersistTaps="always">
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingExperience ? t('profile.editExperienceTitle') : t('profile.addExperienceTitle')}</Text>
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.positionLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={positionInput} onChangeText={setPositionInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.institutionLabel')}</Text>
+                            <View style={styles.autocompleteContainer}>
+                                <Autocomplete
+                                    data={filteredInstitutions}
+                                    defaultValue={institutionInput}
+                                    onChangeText={(text) => {
+                                        setInstitutionInput(text);
+                                        findInstitution(text);
+                                        setHideResultsInstitution(false);
+                                    }}
+                                    hideResults={hideResultsInstitution}
+                                    renderResultList={({ data }) => (
+                                        data && data.length > 0 ? (
+                                            <View style={{ maxHeight: 150, borderWidth: 1, borderColor: '#DDD' }}>
+                                                {(data as string[]).map((item: string, idx: number) => (
+                                                    <TouchableOpacity key={idx} onPress={() => {
+                                                        setInstitutionInput(item);
+                                                        setHideResultsInstitution(true);
+                                                    }}>
+                                                        <Text style={styles.itemText}>{item}</Text>
+                                                    </TouchableOpacity>
+                                                ))}
+                                            </View>
+                                        ) : null
+                                    )}
+                                    inputContainerStyle={[styles.input, { borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9', borderWidth: 0 }]}
+                                    style={{ backgroundColor: 'transparent', color: isDark ? '#FFF' : '#333' }}
+                                />
+                            </View>
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.areaLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={areaInput} onChangeText={setAreaInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.countryLabel')}</Text>
+                            <View style={styles.autocompleteContainer}>
+                                <Autocomplete
+                                    data={filteredCountries}
+                                    defaultValue={countryInput}
+                                    onChangeText={(text) => {
+                                        setCountryInput(text);
+                                        findCountry(text);
+                                        setHideResultsCountry(false);
+                                    }}
+                                    hideResults={hideResultsCountry}
+                                    renderResultList={({ data }) => (
+                                        data && data.length > 0 ? (
+                                            <View style={{ maxHeight: 150, borderWidth: 1, borderColor: '#DDD' }}>
+                                                {(data as string[]).map((item: string, idx: number) => (
+                                                    <TouchableOpacity key={idx} onPress={() => {
+                                                        setCountryInput(item);
+                                                        setHideResultsCountry(true);
+                                                    }}>
+                                                        <Text style={styles.itemText}>{item}</Text>
+                                                    </TouchableOpacity>
+                                                ))}
+                                            </View>
+                                        ) : null
+                                    )}
+                                    inputContainerStyle={[styles.input, { borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9', borderWidth: 0 }]}
+                                    style={{ backgroundColor: 'transparent', color: isDark ? '#FFF' : '#333' }}
+                                />
+                            </View>
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.startDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowExperienceStartDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{startDateInput || 'DD/MM/YYYY'}</Text>
+                            </TouchableOpacity>
+                            {showExperienceStartDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, date) => {
+                                        setShowExperienceStartDatePicker(false);
+                                        if (date) setStartDateInput(date.toLocaleDateString('es-ES'));
+                                    }}
+                                />
+                            )}
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.endDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowExperienceEndDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{endDateInput || 'DD/MM/YYYY'}</Text>
+                            </TouchableOpacity>
+                            {showExperienceEndDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, date) => {
+                                        setShowExperienceEndDatePicker(false);
+                                        if (date) setEndDateInput(date.toLocaleDateString('es-ES'));
+                                    }}
+                                />
+                            )}
+
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowExperienceModal(false)}>
+                                    <Text style={styles.modalButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.modalButton} onPress={() => {
+                                    const error = validateExperienceFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const newRecord = {
+                                        position: editingExperience ? updateLocalizedField(editingExperience, 'position', positionInput) : { [i18n.language]: positionInput },
+                                        institution: editingExperience ? updateLocalizedField(editingExperience, 'institution', institutionInput) : { [i18n.language]: institutionInput },
+                                        area: editingExperience ? updateLocalizedField(editingExperience, 'area', areaInput) : { [i18n.language]: areaInput },
+                                        country: editingExperience ? updateLocalizedField(editingExperience, 'country', countryInput) : { [i18n.language]: countryInput },
+                                        startDate: startDateInput,
+                                        endDate: endDateInput
+                                    };
+                                    if (editingExperience) {
+                                        updateRecord(experienceRecords, setExperienceRecords, { ...editingExperience, ...newRecord }, 'experienceRecords');
+                                    } else {
+                                        addRecord(experienceRecords, setExperienceRecords, newRecord, 'experienceRecords');
+                                    }
+                                    setShowExperienceModal(false);
+                                }}>
+                                    <Text style={styles.modalButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Volunteer Modal */}
+            <Modal visible={showVolunteerModal} animationType="slide" transparent>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalContainer}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingVolunteer ? t('profile.editVolunteerTitle') : t('profile.addVolunteerTitle')}</Text>
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.organizationLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={orgInput} onChangeText={setOrgInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.roleLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={roleInput} onChangeText={setRoleInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.causeLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={causeInput} onChangeText={setCauseInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.startDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{startDateInput || 'DD/MM/YYYY'}</Text>
+                            </TouchableOpacity>
+                            {showStartDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, date) => {
+                                        setShowStartDatePicker(false);
+                                        if (date) setStartDateInput(date.toLocaleDateString('es-ES'));
+                                    }}
+                                />
+                            )}
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.endDateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{endDateInput || 'DD/MM/YYYY'}</Text>
+                            </TouchableOpacity>
+                            {showEndDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, date) => {
+                                        setShowEndDatePicker(false);
+                                        if (date) setEndDateInput(date.toLocaleDateString('es-ES'));
+                                    }}
+                                />
+                            )}
+
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowVolunteerModal(false)}>
+                                    <Text style={styles.modalButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.modalButton} onPress={() => {
+                                    const error = validateVolunteerFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const newRecord = {
+                                        organization: editingVolunteer ? updateLocalizedField(editingVolunteer, 'organization', orgInput) : { [i18n.language]: orgInput },
+                                        role: editingVolunteer ? updateLocalizedField(editingVolunteer, 'role', roleInput) : { [i18n.language]: roleInput },
+                                        cause: editingVolunteer ? updateLocalizedField(editingVolunteer, 'cause', causeInput) : { [i18n.language]: causeInput },
+                                        startDate: startDateInput,
+                                        endDate: endDateInput,
+                                        currentlyInRole
+                                    };
+                                    if (editingVolunteer) {
+                                        updateRecord(volunteerRecords, setVolunteerRecords, { ...editingVolunteer, ...newRecord }, 'volunteerRecords');
+                                    } else {
+                                        addRecord(volunteerRecords, setVolunteerRecords, newRecord, 'volunteerRecords');
+                                    }
+                                    setShowVolunteerModal(false);
+                                }}>
+                                    <Text style={styles.modalButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Publication Modal */}
+            <Modal visible={showPublicationModal} animationType="slide" transparent>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalContainer}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingPublication ? t('profile.editPublicationTitle') : t('profile.addPublicationTitle')}</Text>
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.titleLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={pubTitleInput} onChangeText={setPubTitleInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.editorialLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={pubEditorialInput} onChangeText={setPubEditorialInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.authorLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={pubAuthorInput} onChangeText={setPubAuthorInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.dateLabel')}</Text>
+                            <TouchableOpacity onPress={() => setShowPubDatePicker(true)} style={[styles.input, { justifyContent: 'center', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]}>
+                                <Text style={{ color: isDark ? '#FFF' : '#333' }}>{pubDateInput || 'DD/MM/YYYY'}</Text>
+                            </TouchableOpacity>
+                            {showPubDatePicker && (
+                                <DateTimePicker
+                                    value={new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, date) => {
+                                        setShowPubDatePicker(false);
+                                        if (date) setPubDateInput(date.toLocaleDateString('es-ES'));
+                                    }}
+                                />
+                            )}
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.urlLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={pubUrlInput} onChangeText={setPubUrlInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.abstractLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={pubAbstractInput} onChangeText={setPubAbstractInput} multiline />
+
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowPublicationModal(false)}>
+                                    <Text style={styles.modalButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.modalButton} onPress={() => {
+                                    const error = validatePublicationFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const newRecord = {
+                                        title: editingPublication ? updateLocalizedField(editingPublication, 'title', pubTitleInput) : { [i18n.language]: pubTitleInput },
+                                        editorial: editingPublication ? updateLocalizedField(editingPublication, 'editorial', pubEditorialInput) : { [i18n.language]: pubEditorialInput },
+                                        author: editingPublication ? updateLocalizedField(editingPublication, 'author', pubAuthorInput) : { [i18n.language]: pubAuthorInput },
+                                        date: pubDateInput,
+                                        url: pubUrlInput,
+                                        abstract: editingPublication ? updateLocalizedField(editingPublication, 'abstract', pubAbstractInput) : { [i18n.language]: pubAbstractInput }
+                                    };
+                                    if (editingPublication) {
+                                        updateRecord(publicationRecords, setPublicationRecords, { ...editingPublication, ...newRecord }, 'publicationRecords');
+                                    } else {
+                                        addRecord(publicationRecords, setPublicationRecords, newRecord, 'publicationRecords');
+                                    }
+                                    setShowPublicationModal(false);
+                                }}>
+                                    <Text style={styles.modalButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
+            {/* Language Modal */}
+            <Modal visible={showLanguageModal} animationType="slide" transparent>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalContainer}>
+                    <View style={[styles.modalContent, { backgroundColor: isDark ? '#222' : '#FFF' }]}>
+                        <ScrollView>
+                            <Text style={[styles.modalTitle, { color: isDark ? '#FFF' : '#333' }]}>{editingLanguage ? t('profile.editLanguageTitle') : t('profile.addLanguageTitle')}</Text>
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.languageLabel')}</Text>
+                            <TextInput style={[styles.input, { color: isDark ? '#FFF' : '#333', borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]} value={languageInput} onChangeText={setLanguageInput} />
+
+                            <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('profile.proficiencyLabel')}</Text>
+                            <View style={[styles.pickerContainer, { borderColor: isDark ? '#444' : '#DDD', backgroundColor: isDark ? '#333' : '#F9F9F9' }]}>
+                                <Picker selectedValue={languageProficiency} onValueChange={setLanguageProficiency} style={{ color: isDark ? '#FFF' : '#333' }}>
+                                    <Picker.Item label="Básico" value="Básico" />
+                                    <Picker.Item label="Intermedio" value="Intermedio" />
+                                    <Picker.Item label="Avanzado" value="Avanzado" />
+                                    <Picker.Item label="Nativo" value="Nativo" />
+                                </Picker>
+                            </View>
+
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowLanguageModal(false)}>
+                                    <Text style={styles.modalButtonText}>{t('common.cancel')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.modalButton} onPress={() => {
+                                    const error = validateLanguageFields();
+                                    if (showAlertIfMissingFields(error)) return;
+                                    const newRecord = {
+                                        language: editingLanguage ? updateLocalizedField(editingLanguage, 'language', languageInput) : { [i18n.language]: languageInput },
+                                        proficiency: editingLanguage ? updateLocalizedField(editingLanguage, 'proficiency', languageProficiency) : { [i18n.language]: languageProficiency }
+                                    };
+                                    if (editingLanguage) {
+                                        updateRecord(languageRecords, setLanguageRecords, { ...editingLanguage, ...newRecord }, 'languageRecords');
+                                    } else {
+                                        addRecord(languageRecords, setLanguageRecords, newRecord, 'languageRecords');
+                                    }
+                                    setShowLanguageModal(false);
+                                }}>
+                                    <Text style={styles.modalButtonText}>{t('common.save')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
 
         </SafeAreaView>
     );
@@ -1199,4 +1826,15 @@ const styles = StyleSheet.create({
     modalButtons: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, marginBottom: 40 },
     modalButton: { flex: 1, backgroundColor: '#4CAF50', padding: 14, borderRadius: 8, alignItems: 'center', marginHorizontal: 6 },
     modalButtonText: { color: '#FFF', fontWeight: 'bold', fontSize: 16 },
+
+    // Autocomplete
+    autocompleteContainer: {
+        marginBottom: 16,
+        zIndex: 1,
+    },
+    itemText: {
+        fontSize: 15,
+        margin: 2,
+        padding: 5,
+    },
 });

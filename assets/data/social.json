@@ -51,8 +51,7 @@
     {
         "id": "spotify",
         "name": "Spotify",
-        "icon": "spotify",
-        "type": "fontawesome",
+        "icon": "musical-notes",
         "color": "#1DB954",
         "url": "https://open.spotify.com/show/22EKStrMUkA8MciXSj9EaE?si=3454d74d68a244b1"
     }

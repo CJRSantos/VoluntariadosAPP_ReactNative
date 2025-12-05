@@ -5,21 +5,21 @@ import { useTranslation } from 'react-i18next';
 import {
     Dimensions,
     Image,
+    Modal,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
 } from 'react-native';
-import ImageZoom from 'react-native-image-pan-zoom';
-import Modal from 'react-native-modal';
+import ImageViewer from 'react-native-image-zoom-viewer';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IMAGES } from '../assets/data/imageMap';
 import newsData from '../assets/data/news.json';
 import uiData from '../assets/data/ui.json';
 import { useTheme } from './providers/ThemeProvider';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default function NewsDetailsScreen() {
     const router = useRouter();
@@ -55,6 +55,13 @@ export default function NewsDetailsScreen() {
     const displayDescription = description[currentLang];
 
     const images = carouselImages ? carouselImages.map(imgKey => IMAGES[imgKey]) : [];
+    // Prepare images for ImageViewer
+    const viewerImages = images.map(img => ({
+        url: '', // Local images don't need URL if props.source is provided
+        props: {
+            source: img
+        }
+    }));
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
@@ -123,39 +130,34 @@ export default function NewsDetailsScreen() {
                 </View>
             </ScrollView>
 
-            {/* FULL-SCREEN ZOOM MODAL */}
+            {/* FULL-SCREEN SWIPEABLE MODAL */}
             <Modal
-                isVisible={selectedImageIndex !== null}
-                onBackdropPress={closeModal}
-                onBackButtonPress={closeModal}
-                style={styles.modal}
-                backdropOpacity={1}
-                animationIn="fadeIn"
-                animationOut="fadeOut"
+                visible={selectedImageIndex !== null}
+                transparent={true}
+                onRequestClose={closeModal}
             >
-                <View style={styles.modalContent}>
-                    <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-                        <Ionicons name="close" size={28} color="#FFF" />
-                    </TouchableOpacity>
-                    {selectedImageIndex !== null && images.length > 0 && (
-                        // @ts-ignore
-                        <ImageZoom
-                            cropWidth={width}
-                            cropHeight={height}
-                            imageWidth={width}
-                            imageHeight={height * 0.8}
-                            minScale={1}
-                            maxScale={3}
-                            pinchToZoom
+                <ImageViewer
+                    imageUrls={viewerImages}
+                    index={selectedImageIndex || 0}
+                    onSwipeDown={closeModal}
+                    enableSwipeDown={true}
+                    backgroundColor="black"
+                    renderHeader={() => (
+                        <TouchableOpacity
+                            onPress={closeModal}
+                            style={styles.closeButton}
                         >
-                            <Image
-                                source={images[selectedImageIndex]}
-                                style={{ width, height: height * 0.8 }}
-                                resizeMode="contain"
-                            />
-                        </ImageZoom>
+                            <Ionicons name="close" size={28} color="#FFF" />
+                        </TouchableOpacity>
                     )}
-                </View>
+                    renderIndicator={(currentIndex, allSize) => (
+                        <View style={styles.indicatorContainer}>
+                            <Text style={styles.indicatorText}>
+                                {currentIndex} / {allSize}
+                            </Text>
+                        </View>
+                    )}
+                />
             </Modal>
         </SafeAreaView>
     );
@@ -199,20 +201,29 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
-    modal: {
-        margin: 0,
-    },
-    modalContent: {
-        flex: 1,
-        backgroundColor: '#000',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     closeButton: {
         position: 'absolute',
-        top: 50,
+        top: 40,
         right: 20,
         zIndex: 10,
         padding: 8,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        borderRadius: 20,
     },
+    indicatorContainer: {
+        position: 'absolute',
+        top: 40,
+        left: 0,
+        right: 0,
+        alignItems: 'center',
+        zIndex: 10,
+    },
+    indicatorText: {
+        color: '#FFF',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowOffset: { width: -1, height: 1 },
+        textShadowRadius: 10
+    }
 });

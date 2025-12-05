@@ -78,7 +78,7 @@
         "nav": {
             "home": "Home",
             "areas": "Areas",
-            "convocatory": "Convocatoria",
+            "convocatory": "Convocatory",
             "about": "About Us"
         }
     },
@@ -86,7 +86,7 @@
         "headerTitle": "Volunteer Account",
         "banner": {
             "title": "Your exclusive user space starts here",
-            "subtitle": "Welcome user, be part of this new...",
+            "subtitle": "Welcome {{name}}, be part of this new...",
             "button": "Learn more"
         },
         "news": {
@@ -111,6 +111,7 @@
             "sectionTitle": "Videos",
             "errorTitle": "Error",
             "errorMessage": "Could not open video. Please copy and paste the link in your browser.",
+            "clickToWatch": "Click to watch video",
             "copyLink": "Copy link",
             "items": {
                 "1": "Video 1: Welcome to IIAP",
@@ -131,11 +132,16 @@
         "social": {
             "web": "Website"
         },
+        "quickAccess": "Quick Access",
+        "newsSection": "News",
+        "videosSection": "Videos",
+        "socialSection": "Social Networks",
         "loading": "Loading...",
         "nav": {
             "home": "Home",
             "areas": "Areas",
-            "convocatory": "Convocatoria",
+            "convocatory": "Convocatory",
+            "Convocatory": "Convocatory",
             "about": "About Us"
         },
         "menu": {
@@ -152,7 +158,9 @@
         "save": "Save",
         "warning": "Warning",
         "searchCountry": "Search country...",
-        "searchInstitution": "Search institution..."
+        "searchInstitution": "Search institution...",
+        "readMore": "Read more",
+        "video": "Video"
     },
     "profile": {
         "currently": "Currently",
@@ -167,6 +175,12 @@
         "education": "Education",
         "experience": "Experience",
         "additional": "Additional",
+        "tab": {
+            "info": "Profile",
+            "education": "Education",
+            "experience": "Experience",
+            "additional": "Additional"
+        },
         "addAcademic": "Add Academic Education",
         "addTechnical": "Add Technical Education",
         "addComplementary": "Add Complementary Education",
@@ -259,7 +273,8 @@
             "graduated": "Graduated",
             "titled": "Titled",
             "truncated": "Incomplete"
-        }
+        },
+        "missingFieldsMessage": "Fill in missing fields"
     },
     "areas": {
         "title": "Areas",
@@ -294,7 +309,7 @@
         "nav": {
             "home": "Home",
             "areas": "Areas",
-            "convocatory": "Convocatoria",
+            "convocatory": "Convocatory",
             "about": "About Us"
         }
     },
@@ -343,7 +358,7 @@
         "nav": {
             "home": "Home",
             "areas": "Areas",
-            "convocatory": "Convocatoria",
+            "convocatory": "Convocatory",
             "about": "About Us"
         }
     },

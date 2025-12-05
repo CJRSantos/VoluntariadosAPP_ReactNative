@@ -1,7 +1,8 @@
 // app/nosotros.tsx
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Stack, usePathname, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Alert,
@@ -13,9 +14,12 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { GestureDetector } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../app/providers/AuthProvider';
 import { useTheme } from '../app/providers/ThemeProvider';
+import { Header } from '../src/components/Header';
+import { useSwipeNavigation } from './hooks/useSwipeNavigation';
+import { useAuth } from './providers/AuthProvider';
 
 const { width } = Dimensions.get('window');
 
@@ -31,6 +35,23 @@ export default function NosotrosScreen() {
     const isDark = theme === 'dark';
     const { t } = useTranslation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [profileImage, setProfileImage] = useState<string | null>(null);
+
+    const { composedGesture } = useSwipeNavigation({
+        onSwipeRight: () => router.push('/convocatoria'),
+    });
+
+    useEffect(() => {
+        const loadProfileImage = async () => {
+            try {
+                const savedPhoto = await AsyncStorage.getItem('userPhotoURL');
+                if (savedPhoto) setProfileImage(savedPhoto);
+            } catch (error) {
+                console.log('Error loading profile image:', error);
+            }
+        };
+        loadProfileImage();
+    }, []);
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -52,304 +73,275 @@ export default function NosotrosScreen() {
     }
 
     return (
-        <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-            <Stack.Screen options={{ headerShown: false }} />
+        <GestureDetector gesture={composedGesture}>
+            <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+                <Stack.Screen options={{ headerShown: false }} />
 
-            <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-                {/* Encabezado Moderno */}
-                <View
-                    style={[
-                        styles.header,
-                        {
-                            backgroundColor: isDark ? '#111' : '#E0E0E0',
-                            borderBottomColor: isDark ? '#333' : '#CCC',
-                        },
-                    ]}
-                >
-                    <Text style={[styles.headerTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                        {t('nosotros.headerTitle')}
-                    </Text>
-                    <View style={styles.headerRight}>
-                        <Image
-                            source={
-                                user?.photoURL
-                                    ? { uri: user.photoURL }
-                                    : require('../assets/images/avatar-default.png')
-                            }
-                            style={styles.avatar}
-                        />
-                        <TouchableOpacity onPress={toggleMenu}>
-                            <Ionicons name="menu" size={24} color={isDark ? '#FFF' : '#333'} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+                    {/* Encabezado Moderno con Header Component */}
+                    <Header
+                        user={user}
+                        isDark={isDark}
+                        t={t}
+                        toggleMenu={toggleMenu}
+                        localProfileImage={profileImage}
+                    />
 
-                {/* Menú desplegable */}
-                {isMenuOpen && (
-                    <>
-                        <TouchableOpacity
-                            style={styles.overlay}
-                            activeOpacity={1}
-                            onPress={() => setIsMenuOpen(false)}
-                        />
-                        <View
-                            style={[
-                                styles.menuOverlay,
-                                { backgroundColor: isDark ? '#111' : '#FFF' },
-                            ]}
-                        >
+                    {/* Menú desplegable */}
+                    {isMenuOpen && (
+                        <>
+                            <TouchableOpacity
+                                style={styles.overlay}
+                                activeOpacity={1}
+                                onPress={() => setIsMenuOpen(false)}
+                            />
                             <View
                                 style={[
-                                    styles.menuContainer,
-                                    { backgroundColor: isDark ? '#222' : '#FFF' },
-                                ]}
-                            >
-                                <TouchableOpacity
-                                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                                    onPress={() => {
-                                        router.push('/profile');
-                                        setIsMenuOpen(false);
-                                    }}
-                                >
-                                    <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
-                                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                                        {t('nosotros.menu.profile')}
-                                    </Text>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                                    onPress={() => {
-                                        router.push('/settings');
-                                        setIsMenuOpen(false);
-                                    }}
-                                >
-                                    <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
-                                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                                        {t('nosotros.menu.settings')}
-                                    </Text>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                                    onPress={() => {
-                                        Alert.alert(t('nosotros.menu.soon'), t('nosotros.menu.helpSoon'));
-                                        setIsMenuOpen(false);
-                                    }}
-                                >
-                                    <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
-                                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('nosotros.menu.help')}</Text>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                                    onPress={() => {
-                                        signOut();
-                                        setIsMenuOpen(false);
-                                    }}
-                                >
-                                    <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
-                                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                                        {t('nosotros.menu.logout')}
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </>
-                )}
-
-                {/* Contenido principal */}
-                <ScrollView contentContainerStyle={styles.scrollViewContent}>
-                    <View style={styles.content}>
-                        <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                            {t('nosotros.whyJoin')}
-                        </Text>
-                        <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                            {t('nosotros.joinDescription')}
-                        </Text>
-
-                        <View style={styles.iconsSection}>
-                            <View
-                                style={[
-                                    styles.iconCard,
+                                    styles.menuOverlay,
                                     { backgroundColor: isDark ? '#111' : '#FFF' },
                                 ]}
                             >
-                                <Ionicons name="people" size={40} color="#FF5722" />
-                                <Text style={[styles.iconTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                                    {t('nosotros.ourHistory')}
-                                </Text>
-                                <Text style={[styles.iconText, { color: isDark ? '#AAA' : '#666' }]}>
-                                    {t('nosotros.historyDescription')}
-                                </Text>
-                            </View>
-
-                            <View
-                                style={[
-                                    styles.iconCard,
-                                    { backgroundColor: isDark ? '#111' : '#FFF' },
-                                ]}
-                            >
-                                <Ionicons name="rocket" size={40} color="#FF9800" />
-                                <Text style={[styles.iconTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                                    {t('nosotros.ourMission')}
-                                </Text>
-                                <Text style={[styles.iconText, { color: isDark ? '#AAA' : '#666' }]}>
-                                    {t('nosotros.missionDescription')}
-                                </Text>
-                            </View>
-
-                            <View
-                                style={[
-                                    styles.iconCard,
-                                    { backgroundColor: isDark ? '#111' : '#FFF' },
-                                ]}
-                            >
-                                <Ionicons name="water" size={40} color="#2196F3" />
-                                <Text style={[styles.iconTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                                    {t('nosotros.difference')}
-                                </Text>
-                                <Text style={[styles.iconText, { color: isDark ? '#AAA' : '#666' }]}>
-                                    {t('nosotros.differenceDescription')}
-                                </Text>
-                            </View>
-                        </View>
-
-                        <Image
-                            source={require('../assets/images/tutorial1.jpg')}
-                            style={styles.labImage}
-                            resizeMode="cover"
-                        />
-
-                        <View style={styles.statsSection}>
-                            {stats.map((stat, i) => (
                                 <View
-                                    key={i}
                                     style={[
-                                        styles.statCard,
+                                        styles.menuContainer,
+                                        { backgroundColor: isDark ? '#222' : '#FFF' },
+                                    ]}
+                                >
+                                    <TouchableOpacity
+                                        style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                                        onPress={() => {
+                                            router.push('/profile');
+                                            setIsMenuOpen(false);
+                                        }}
+                                    >
+                                        <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
+                                        <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                                            {t('nosotros.menu.profile')}
+                                        </Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                                        onPress={() => {
+                                            router.push('/settings');
+                                            setIsMenuOpen(false);
+                                        }}
+                                    >
+                                        <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
+                                        <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                                            {t('nosotros.menu.settings')}
+                                        </Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                                        onPress={() => {
+                                            Alert.alert(t('nosotros.menu.soon'), t('nosotros.menu.helpSoon'));
+                                            setIsMenuOpen(false);
+                                        }}
+                                    >
+                                        <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
+                                        <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>{t('nosotros.menu.help')}</Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                                        onPress={() => {
+                                            signOut();
+                                            setIsMenuOpen(false);
+                                        }}
+                                    >
+                                        <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
+                                        <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                                            {t('nosotros.menu.logout')}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </>
+                    )}
+
+                    {/* Contenido principal */}
+                    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                        <View style={styles.content}>
+                            <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                {t('nosotros.whyJoin')}
+                            </Text>
+                            <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
+                                {t('nosotros.joinDescription')}
+                            </Text>
+
+                            <View style={styles.iconsSection}>
+                                <View
+                                    style={[
+                                        styles.iconCard,
                                         { backgroundColor: isDark ? '#111' : '#FFF' },
                                     ]}
                                 >
-                                    <Text style={[styles.statValue, { color: isDark ? '#FFF' : '#333' }]}>
-                                        {stat.value}
+                                    <Ionicons name="people" size={40} color="#FF5722" />
+                                    <Text style={[styles.iconTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                        {t('nosotros.ourHistory')}
                                     </Text>
-                                    <Text style={[styles.statLabel, { color: isDark ? '#AAA' : '#666' }]}>
-                                        {stat.label}
+                                    <Text style={[styles.iconText, { color: isDark ? '#AAA' : '#666' }]}>
+                                        {t('nosotros.historyDescription')}
                                     </Text>
                                 </View>
-                            ))}
+
+                                <View
+                                    style={[
+                                        styles.iconCard,
+                                        { backgroundColor: isDark ? '#111' : '#FFF' },
+                                    ]}
+                                >
+                                    <Ionicons name="rocket" size={40} color="#FF9800" />
+                                    <Text style={[styles.iconTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                        {t('nosotros.ourMission')}
+                                    </Text>
+                                    <Text style={[styles.iconText, { color: isDark ? '#AAA' : '#666' }]}>
+                                        {t('nosotros.missionDescription')}
+                                    </Text>
+                                </View>
+
+                                <View
+                                    style={[
+                                        styles.iconCard,
+                                        { backgroundColor: isDark ? '#111' : '#FFF' },
+                                    ]}
+                                >
+                                    <Ionicons name="water" size={40} color="#2196F3" />
+                                    <Text style={[styles.iconTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                        {t('nosotros.difference')}
+                                    </Text>
+                                    <Text style={[styles.iconText, { color: isDark ? '#AAA' : '#666' }]}>
+                                        {t('nosotros.differenceDescription')}
+                                    </Text>
+                                </View>
+                            </View>
+
+                            <Image
+                                source={require('../assets/images/tutorial1.jpg')}
+                                style={styles.labImage}
+                                resizeMode="cover"
+                            />
+
+                            <View style={styles.statsSection}>
+                                {stats.map((stat, i) => (
+                                    <View
+                                        key={i}
+                                        style={[
+                                            styles.statCard,
+                                            { backgroundColor: isDark ? '#111' : '#FFF' },
+                                        ]}
+                                    >
+                                        <Text style={[styles.statValue, { color: isDark ? '#FFF' : '#333' }]}>
+                                            {stat.value}
+                                        </Text>
+                                        <Text style={[styles.statLabel, { color: isDark ? '#AAA' : '#666' }]}>
+                                            {stat.label}
+                                        </Text>
+                                    </View>
+                                ))}
+                            </View>
                         </View>
+                    </ScrollView>
+
+                    {/* Barra inferior con resaltado */}
+                    <View
+                        style={[
+                            styles.bottomNav,
+                            {
+                                borderTopColor: isDark ? '#333' : '#EEE',
+                                backgroundColor: isDark ? '#111' : '#FFF',
+                            },
+                        ]}
+                    >
+                        {/* Inicio */}
+                        <TouchableOpacity
+                            style={[styles.navItem, pathname === '/account' && styles.navItemActive]}
+                            onPress={() => router.replace('/account')}
+                        >
+                            <Ionicons
+                                name="home"
+                                size={24}
+                                color={pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+                            />
+                            <Text
+                                style={[
+                                    styles.navLabel,
+                                    pathname === '/account' && styles.navLabelActive,
+                                    { color: isDark ? '#AAA' : '#666' }
+                                ]}
+                            >
+                                {t('nosotros.nav.home')}
+                            </Text>
+                        </TouchableOpacity>
+
+                        {/* Áreas */}
+                        <TouchableOpacity
+                            style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
+                            onPress={() => router.replace('/areas')}
+                        >
+                            <Ionicons
+                                name="grid-outline"
+                                size={24}
+                                color={pathname === '/areas' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+                            />
+                            <Text
+                                style={[
+                                    styles.navLabel,
+                                    pathname === '/areas' && styles.navLabelActive,
+                                    { color: isDark ? '#AAA' : '#666' }
+                                ]}
+                            >
+                                {t('nosotros.nav.areas')}
+                            </Text>
+                        </TouchableOpacity>
+
+                        {/* Convocatoria */}
+                        <TouchableOpacity
+                            style={[styles.navItem, pathname === '/convocatoria' && styles.navItemActive]}
+                            onPress={() => router.replace('/convocatoria')}
+                        >
+                            <Ionicons
+                                name="briefcase-outline"
+                                size={24}
+                                color={pathname === '/convocatoria' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+                            />
+                            <Text
+                                style={[
+                                    styles.navLabel,
+                                    pathname === '/convocatoria' && styles.navLabelActive,
+                                    { color: isDark ? '#AAA' : '#666' }
+                                ]}
+                            >
+                                {t('nosotros.nav.convocatory')}
+                            </Text>
+                        </TouchableOpacity>
+
+                        {/* Nosotros */}
+                        <TouchableOpacity
+                            style={[styles.navItem, pathname === '/nosotros' && styles.navItemActive]}
+                            onPress={() => router.replace('/nosotros')}
+                        >
+                            <Ionicons
+                                name="people-outline"
+                                size={24}
+                                color={pathname === '/nosotros' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+                            />
+                            <Text
+                                style={[
+                                    styles.navLabel,
+                                    pathname === '/nosotros' && styles.navLabelActive,
+                                    { color: '#4CAF50' }
+                                ]}
+                            >
+                                {t('nosotros.nav.about')}
+                            </Text>
+                        </TouchableOpacity>
                     </View>
-                </ScrollView>
-
-                {/* Barra inferior con resaltado */}
-                <View
-                    style={[
-                        styles.bottomNav,
-                        {
-                            borderTopColor: isDark ? '#333' : '#EEE',
-                            backgroundColor: isDark ? '#111' : '#FFF',
-                        },
-                    ]}
-                >
-                    {/* Inicio */}
-                    <TouchableOpacity
-                        style={[styles.navItem, pathname === '/account' && styles.navItemActive]}
-                        onPress={() => router.push('/account')}
-                    >
-                        <Image
-                            source={require('../assets/images/home-icon.png')}
-                            style={[
-                                styles.navIcon,
-                                { tintColor: pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
-                                pathname === '/account' && styles.navIconActive
-                            ]}
-                        />
-                        <Text
-                            style={[
-                                styles.navLabel,
-                                pathname === '/account' && styles.navLabelActive,
-                                { color: isDark ? '#AAA' : '#666' }
-                            ]}
-                        >
-                            {t('nosotros.nav.home')}
-                        </Text>
-                    </TouchableOpacity>
-
-                    {/* Áreas */}
-                    <TouchableOpacity
-                        style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
-                        onPress={() => router.push('/areas')}
-                    >
-                        <Image
-                            source={require('../assets/images/areas-icon.png')}
-                            style={[
-                                styles.navIcon,
-                                { tintColor: pathname === '/areas' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
-                                pathname === '/areas' && styles.navIconActive
-                            ]}
-                        />
-                        <Text
-                            style={[
-                                styles.navLabel,
-                                pathname === '/areas' && styles.navLabelActive,
-                                { color: isDark ? '#AAA' : '#666' }
-                            ]}
-                        >
-                            {t('nosotros.nav.areas')}
-                        </Text>
-                    </TouchableOpacity>
-
-                    {/* Convocatoria */}
-                    <TouchableOpacity
-                        style={[styles.navItem, pathname === '/convocatoria' && styles.navItemActive]}
-                        onPress={() => router.push('/convocatoria')}
-                    >
-                        <Image
-                            source={require('../assets/images/convocatory-icon.png')}
-                            style={[
-                                styles.navIcon,
-                                { tintColor: pathname === '/convocatoria' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
-                                pathname === '/convocatoria' && styles.navIconActive
-                            ]}
-                        />
-                        <Text
-                            style={[
-                                styles.navLabel,
-                                pathname === '/convocatoria' && styles.navLabelActive,
-                                { color: isDark ? '#AAA' : '#666' }
-                            ]}
-                        >
-                            {t('nosotros.nav.convocatory')}
-                        </Text>
-                    </TouchableOpacity>
-
-                    {/* Nosotros */}
-                    <TouchableOpacity
-                        style={[styles.navItem, pathname === '/nosotros' && styles.navItemActive]}
-                        onPress={() => router.push('/nosotros')}
-                    >
-                        <Image
-                            source={require('../assets/images/nosotros-icon.png')}
-                            style={[
-                                styles.navIcon,
-                                { tintColor: pathname === '/nosotros' ? '#4CAF50' : (isDark ? '#AAA' : '#666') },
-                                pathname === '/nosotros' && styles.navIconActive
-                            ]}
-                        />
-                        <Text
-                            style={[
-                                styles.navLabel,
-                                pathname === '/nosotros' && styles.navLabelActive,
-                                { color: '#4CAF50' }
-                            ]}
-                        >
-                            {t('nosotros.nav.about')}
-                        </Text>
-                    </TouchableOpacity>
                 </View>
-            </View>
-        </SafeAreaView>
+            </SafeAreaView>
+        </GestureDetector>
     );
 }
 
@@ -367,36 +359,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         zIndex: 999,
     },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 16,
-        paddingHorizontal: 20,
-        borderBottomWidth: 1,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 2,
-        zIndex: 10,
-    },
-    headerTitle: {
-        fontSize: 22,
-        fontWeight: '800',
-        letterSpacing: 0.5,
-    },
-    headerRight: { flexDirection: 'row', alignItems: 'center', gap: 16 },
-    avatar: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        borderWidth: 2,
-        borderColor: '#4CAF50',
-    },
     menuOverlay: {
         position: 'absolute',
-        top: 60,
+        top: 70,
         right: 16,
         zIndex: 1000,
         borderRadius: 8,
@@ -455,9 +420,7 @@ const styles = StyleSheet.create({
         zIndex: 1000,
     },
     navItem: { alignItems: 'center', paddingVertical: 8 },
-    navIcon: { width: 24, height: 24, marginBottom: 4, resizeMode: 'contain' },
     navLabel: { fontSize: 10, marginTop: 4, textAlign: 'center' },
     navItemActive: { borderTopWidth: 2, borderTopColor: '#4CAF50' },
-    navIconActive: { tintColor: '#4CAF50' },
     navLabelActive: { color: '#4CAF50', fontWeight: 'bold' },
 });
