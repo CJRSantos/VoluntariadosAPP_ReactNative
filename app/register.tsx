@@ -41,8 +41,8 @@ export default function RegisterScreen() {
         // TODO: Add your Client IDs here
         expoClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
         webClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
-        androidClientId: undefined,
-        iosClientId: undefined,
+        androidClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
+        iosClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
 
     });
 
