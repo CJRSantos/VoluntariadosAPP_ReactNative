@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { usePathname, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useFocusEffect, usePathname, useRouter } from 'expo-router'; // <--- Agregado useFocusEffect
+import { useCallback, useEffect, useState } from 'react'; // <--- Agregado useCallback
 import { useTranslation } from 'react-i18next';
 import {
     Alert,
@@ -50,18 +50,24 @@ export default function AccountScreen() {
     const [isProfileImageVisible, setIsProfileImageVisible] = useState(false);
     const [localProfileImage, setLocalProfileImage] = useState<string | null>(null);
 
-    // Optimized: Use useEffect instead of useFocusEffect for initial load
-    useEffect(() => {
-        const loadLocalImage = async () => {
-            try {
-                const savedPhoto = await AsyncStorage.getItem('userPhotoURL');
-                if (savedPhoto) setLocalProfileImage(savedPhoto);
-            } catch (error) {
-                console.error('Error loading local profile image:', error);
-            }
-        };
-        loadLocalImage();
-    }, []);
+    // Optimized: Reemplazado useEffect por useFocusEffect para recargar la imagen al volver
+    useFocusEffect(
+        useCallback(() => {
+            const loadLocalImage = async () => {
+                try {
+                    const savedPhoto = await AsyncStorage.getItem('userPhotoURL');
+                    if (savedPhoto) {
+                        setLocalProfileImage(savedPhoto);
+                    } else if (user?.photoURL) {
+                        setLocalProfileImage(user.photoURL);
+                    }
+                } catch (error) {
+                    console.error('Error loading local profile image:', error);
+                }
+            };
+            loadLocalImage();
+        }, [user])
+    );
 
     const [news] = useState(newsData);
 

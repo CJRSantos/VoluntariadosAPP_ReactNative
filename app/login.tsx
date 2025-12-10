@@ -1,9 +1,9 @@
 // app/login.tsx
-import * as Google from 'expo-auth-session/providers/google';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Link, useRouter } from 'expo-router';
-import * as WebBrowser from 'expo-web-browser';
-import { GoogleAuthProvider, signInWithCredential, signInWithEmailAndPassword } from 'firebase/auth';
-import React, { useState } from 'react';
+import * as SecureStore from 'expo-secure-store';
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -12,6 +12,7 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -22,40 +23,45 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../app/providers/ThemeProvider';
 import { auth } from '../src/config/firebaseConfig';
 
-WebBrowser.maybeCompleteAuthSession();
-
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberPassword, setRememberPassword] = useState(false);
   const { t } = useTranslation();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    // TODO: Add your Client IDs here
-    expoClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
-    webClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
-    androidClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
-    iosClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
-
-  });
-
   const router = useRouter();
 
-  React.useEffect(() => {
-    if (response?.type === 'success') {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential)
-        .then(() => {
-          // AuthProvider will handle redirect
-        })
-        .catch((error) => {
-          Alert.alert(t('login.errorTitle'), error.message);
-        });
-    }
-  }, [response]);
+  // 🔥 Autologin + cargar email/contraseña guardados
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const savedEmail = await AsyncStorage.getItem('savedEmail');
+        if (savedEmail) {
+          setEmail(savedEmail);
+        }
+
+        const savedPassword = await SecureStore.getItemAsync('savedPassword');
+        if (savedPassword) {
+          setPassword(savedPassword);
+          setRememberPassword(true);
+        }
+      } catch (e) {
+        console.log('Error leyendo credenciales guardadas', e);
+      }
+    };
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Ya está logueado → lo mandamos al home/principal
+        router.replace('/');
+      }
+    });
+
+    init();
+    return unsubscribe;
+  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -65,7 +71,18 @@ export default function LoginScreen() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // AuthProvider will handle redirect
+
+      // Guardar siempre el email
+      await AsyncStorage.setItem('savedEmail', email);
+
+      // Si quiere recordar contraseña → guardamos en SecureStore
+      if (rememberPassword) {
+        await SecureStore.setItemAsync('savedPassword', password);
+      } else {
+        await SecureStore.deleteItemAsync('savedPassword');
+      }
+
+      // AuthProvider / onAuthStateChanged se encarga de redirigir
     } catch (error: any) {
       Alert.alert(t('login.errorTitle'), error.message);
     }
@@ -88,19 +105,28 @@ export default function LoginScreen() {
               resizeMode="contain"
             />
 
-            <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{t('login.title')}</Text>
-            <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>{t('login.subtitle', 'Bienvenido de nuevo')}</Text>
+            <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>
+              {t('login.title')}
+            </Text>
+            <Text
+              style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}
+            >
+              {t('login.subtitle', 'Bienvenido de nuevo')}
+            </Text>
 
+            {/* Email */}
             <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('login.emailLabel')}</Text>
+              <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>
+                {t('login.emailLabel')}
+              </Text>
               <TextInput
                 style={[
                   styles.input,
                   {
                     backgroundColor: isDark ? '#111' : '#f8f9fa',
                     borderColor: isDark ? '#333' : '#ddd',
-                    color: isDark ? '#FFF' : '#333'
-                  }
+                    color: isDark ? '#FFF' : '#333',
+                  },
                 ]}
                 placeholder={t('login.emailPlaceholder')}
                 placeholderTextColor={isDark ? '#666' : '#999'}
@@ -113,15 +139,20 @@ export default function LoginScreen() {
               />
             </View>
 
+            {/* Password */}
             <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>{t('login.passwordLabel')}</Text>
-              <View style={[
-                styles.passwordWrapper,
-                {
-                  backgroundColor: isDark ? '#111' : '#f8f9fa',
-                  borderColor: isDark ? '#333' : '#ddd',
-                }
-              ]}>
+              <Text style={[styles.label, { color: isDark ? '#AAA' : '#666' }]}>
+                {t('login.passwordLabel')}
+              </Text>
+              <View
+                style={[
+                  styles.passwordWrapper,
+                  {
+                    backgroundColor: isDark ? '#111' : '#f8f9fa',
+                    borderColor: isDark ? '#333' : '#ddd',
+                  },
+                ]}
+              >
                 <TextInput
                   style={[styles.passwordInput, { color: isDark ? '#FFF' : '#333' }]}
                   placeholder={t('login.passwordPlaceholder')}
@@ -136,35 +167,100 @@ export default function LoginScreen() {
                   style={styles.eyeButton}
                   onPress={() => setShowPassword(!showPassword)}
                 >
-                  <Icon name={showPassword ? 'eye-off' : 'eye'} size={20} color={isDark ? '#AAA' : '#999'} />
+                  <Icon
+                    name={showPassword ? 'eye-off' : 'eye'}
+                    size={20}
+                    color={isDark ? '#AAA' : '#999'}
+                  />
                 </TouchableOpacity>
               </View>
             </View>
 
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Text style={styles.loginButtonText}>{t('login.loginButton')}</Text>
-            </TouchableOpacity>
-
-            <View style={styles.dividerContainer}>
-              <View style={[styles.dividerLine, { backgroundColor: isDark ? '#333' : '#ddd' }]} />
-              <Text style={[styles.dividerText, { color: isDark ? '#666' : '#999' }]}>{t('common.or', 'O')}</Text>
-              <View style={[styles.dividerLine, { backgroundColor: isDark ? '#333' : '#ddd' }]} />
+            {/* Recordar contraseña */}
+            <View style={styles.rememberRow}>
+              <Switch
+                value={rememberPassword}
+                onValueChange={setRememberPassword}
+              />
+              <Text style={[styles.rememberText, { color: isDark ? '#FFF' : '#333' }]}>
+                Recordar contraseña
+              </Text>
             </View>
 
-            <TouchableOpacity
-              style={[styles.googleButton, { backgroundColor: isDark ? '#111' : '#FFF', borderColor: isDark ? '#333' : '#ddd' }]}
-              onPress={() => promptAsync()}
-              disabled={!request}
-            >
-              <Image source={require('../assets/images/Logo_Google.png')} style={styles.googleIcon} />
-              <Text style={[styles.googleButtonText, { color: isDark ? '#FFF' : '#333' }]}>{t('login.googleButton', 'Continuar con Google')}</Text>
+            {/* Botón login */}
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+              <Text style={styles.loginButtonText}>
+                {t('login.loginButton')}
+              </Text>
             </TouchableOpacity>
 
-            <View style={styles.footer}>
-              <Text style={[styles.footerText, { color: isDark ? '#AAA' : '#666' }]}>{t('login.noAccount', '¿No tienes una cuenta?')}</Text>
+            {/* Divider */}
+            <View style={styles.dividerContainer}>
+              <View
+                style={[
+                  styles.dividerLine,
+                  { backgroundColor: isDark ? '#333' : '#ddd' },
+                ]}
+              />
+              <Text
+                style={[styles.dividerText, { color: isDark ? '#666' : '#999' }]}
+              >
+                {t('common.or', 'O')}
+              </Text>
+              <View
+                style={[
+                  styles.dividerLine,
+                  { backgroundColor: isDark ? '#333' : '#ddd' },
+                ]}
+              />
+            </View>
+
+            {/* Botón Google solo mensaje */}
+            <TouchableOpacity
+              style={[
+                styles.googleButton,
+                {
+                  backgroundColor: isDark ? '#111' : '#FFF',
+                  borderColor: isDark ? '#333' : '#ddd',
+                  opacity: 0.8,
+                },
+              ]}
+              onPress={() =>
+                Alert.alert(
+                  'Login con Google',
+                  'No disponible por el momento.'
+                )
+              }
+            >
+              <Image
+                source={require('../assets/images/Logo_Google.png')}
+                style={styles.googleIcon}
+              />
+              <Text
+                style={[
+                  styles.googleButtonText,
+                  { color: isDark ? '#FFF' : '#333' },
+                ]}
+              >
+                {t('login.googleButton', 'Continuar con Google')}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Footer */}
+            <View className="footer" style={styles.footer}>
+              <Text
+                style={[
+                  styles.footerText,
+                  { color: isDark ? '#AAA' : '#666' },
+                ]}
+              >
+                {t('login.noAccount', '¿No tienes una cuenta?')}
+              </Text>
               <Link href="/register" asChild>
                 <TouchableOpacity>
-                  <Text style={styles.createAccount}>{t('login.createAccount')}</Text>
+                  <Text style={styles.createAccount}>
+                    {t('login.createAccount')}
+                  </Text>
                 </TouchableOpacity>
               </Link>
             </View>
@@ -205,6 +301,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   eyeButton: { padding: 4 },
+
+  rememberRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    gap: 8,
+  },
+  rememberText: {
+    fontSize: 14,
+  },
 
   loginButton: {
     backgroundColor: '#4CAF50',
