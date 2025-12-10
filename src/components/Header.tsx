@@ -11,7 +11,7 @@ interface HeaderProps {
     onImagePress?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({
+export const Header = React.memo<HeaderProps>(({
     user,
     isDark,
     t,
@@ -61,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({
             </TouchableOpacity>
         </View>
     );
-};
+});
 
 const styles = StyleSheet.create({
     header: {

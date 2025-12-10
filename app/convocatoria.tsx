@@ -15,14 +15,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { GestureDetector } from 'react-native-gesture-handler';
 import ImageZoom from 'react-native-image-pan-zoom';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Modal from 'react-native-modal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
 import { Header } from '../src/components/Header';
-import { useSwipeNavigation } from './hooks/useSwipeNavigation';
+
 import { useAuth } from './providers/AuthProvider';
 
 const { width, height } = Dimensions.get('window');
@@ -44,10 +43,7 @@ export default function ConvocatoriaScreen() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [isProfileImageVisible, setIsProfileImageVisible] = useState(false);
 
-  const { composedGesture } = useSwipeNavigation({
-    onSwipeLeft: () => router.push('/nosotros'),
-    onSwipeRight: () => router.push('/areas'),
-  });
+
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -116,363 +112,361 @@ export default function ConvocatoriaScreen() {
   }
 
   return (
-    <GestureDetector gesture={composedGesture}>
-      <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-        <Stack.Screen options={{ headerShown: false }} />
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+      <Stack.Screen options={{ headerShown: false }} />
 
-        <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-          {/* Encabezado Moderno con Header Component */}
-          <Header
-            user={user}
-            isDark={isDark}
-            t={t}
-            toggleMenu={toggleMenu}
-            localProfileImage={profileImage}
-            onImagePress={() => setIsProfileImageVisible(true)}
-          />
+      <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+        {/* Encabezado Moderno con Header Component */}
+        <Header
+          user={user}
+          isDark={isDark}
+          t={t}
+          toggleMenu={toggleMenu}
+          localProfileImage={profileImage}
+          onImagePress={() => setIsProfileImageVisible(true)}
+        />
 
-          {/* Menú desplegable */}
-          {isMenuOpen && (
-            <>
-              <TouchableOpacity
-                style={styles.overlay}
-                activeOpacity={1}
-                onPress={() => setIsMenuOpen(false)}
-              />
+        {/* Menú desplegable */}
+        {isMenuOpen && (
+          <>
+            <TouchableOpacity
+              style={styles.overlay}
+              activeOpacity={1}
+              onPress={() => setIsMenuOpen(false)}
+            />
+            <View
+              style={[
+                styles.menuOverlay,
+                { backgroundColor: isDark ? '#111' : '#FFF' },
+              ]}
+            >
               <View
                 style={[
-                  styles.menuOverlay,
-                  { backgroundColor: isDark ? '#111' : '#FFF' },
+                  styles.menuContainer,
+                  { backgroundColor: isDark ? '#222' : '#FFF' },
                 ]}
               >
-                <View
-                  style={[
-                    styles.menuContainer,
-                    { backgroundColor: isDark ? '#222' : '#FFF' },
-                  ]}
+                <TouchableOpacity
+                  style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                  onPress={() => {
+                    router.push('/profile');
+                    setIsMenuOpen(false);
+                  }}
                 >
-                  <TouchableOpacity
-                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                    onPress={() => {
-                      router.push('/profile');
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
-                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                      {t('convocatoria.menu.profile')}
-                    </Text>
-                  </TouchableOpacity>
+                  <Ionicons name="person" size={20} color={isDark ? '#FFF' : '#333'} />
+                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                    {t('convocatoria.menu.profile')}
+                  </Text>
+                </TouchableOpacity>
 
-                  <TouchableOpacity
-                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                    onPress={() => {
-                      router.push('/settings');
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
-                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                      {t('convocatoria.menu.settings')}
-                    </Text>
-                  </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                  onPress={() => {
+                    router.push('/settings');
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <Ionicons name="settings" size={20} color={isDark ? '#FFF' : '#333'} />
+                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                    {t('convocatoria.menu.settings')}
+                  </Text>
+                </TouchableOpacity>
 
-                  <TouchableOpacity
-                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                    onPress={() => {
-                      Alert.alert(t('convocatoria.menu.soon'), t('convocatoria.menu.helpSoon'));
-                    }}
-                  >
-                    <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
-                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                      {t('convocatoria.menu.help')}
-                    </Text>
-                  </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                  onPress={() => {
+                    Alert.alert(t('convocatoria.menu.soon'), t('convocatoria.menu.helpSoon'));
+                  }}
+                >
+                  <Ionicons name="help-circle" size={20} color={isDark ? '#FFF' : '#333'} />
+                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                    {t('convocatoria.menu.help')}
+                  </Text>
+                </TouchableOpacity>
 
-                  <TouchableOpacity
-                    style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
-                    onPress={() => {
-                      signOut();
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
-                    <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                      {t('convocatoria.menu.logout')}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                  style={[styles.menuItem, { backgroundColor: isDark ? '#222' : '#FFF' }]}
+                  onPress={() => {
+                    signOut();
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <Ionicons name="log-out" size={20} color={isDark ? '#FFF' : '#333'} />
+                  <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                    {t('convocatoria.menu.logout')}
+                  </Text>
+                </TouchableOpacity>
               </View>
-            </>
-          )}
+            </View>
+          </>
+        )}
 
-          {/* Contenido principal */}
-          <ScrollView contentContainerStyle={styles.scrollViewContent}>
-            <View style={styles.content}>
-              {convocatorias.map((convocatoria) => (
-                <View
-                  key={convocatoria.id}
-                  style={[
-                    styles.convocatoriaCard,
-                    {
-                      backgroundColor: isDark ? '#111' : '#FFF', // Cleaner white background
-                      shadowColor: '#000',
-                    },
-                  ]}
-                >
-                  <TouchableOpacity onPress={() => setSelectedImage(convocatoria.image)}>
-                    <Image
-                      source={convocatoria.image}
-                      style={styles.cardImage}
-                      resizeMode="cover"
-                    />
-                  </TouchableOpacity>
-                  <View style={styles.cardContent}>
-                    <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                      {convocatoria.title}
-                    </Text>
-                    <Text style={[styles.cardInfo, { color: isDark ? '#AAA' : '#666' }]}>
-                      {convocatoria.location} · {convocatoria.participants}
-                    </Text>
-                    <Text style={[styles.cardDate, { color: isDark ? '#AAA' : '#666' }]}>
-                      {t('convocatoria.card.start')}: {convocatoria.startDate}
-                    </Text>
-                    <Text style={[styles.cardDate, { color: isDark ? '#AAA' : '#666' }]}>
-                      {t('convocatoria.card.end')}: {convocatoria.endDate}
-                    </Text>
-                    <View style={styles.buttonGroup}>
-                      <TouchableOpacity
-                        style={[styles.button, styles.secondaryButton]}
-                        onPress={() => router.push('/requisitos')}
-                      >
-                        <Text style={[styles.buttonText, styles.secondaryButtonText]}>
-                          {t('convocatoria.card.requirements')}
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[styles.button, styles.secondaryButton]}
-                        onPress={() => router.push('/mas-info')}
-                      >
-                        <Text style={[styles.buttonText, styles.secondaryButtonText]}>
-                          {t('convocatoria.card.moreInfo')}
-                        </Text>
-                      </TouchableOpacity>
+        {/* Contenido principal */}
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <View style={styles.content}>
+            {convocatorias.map((convocatoria) => (
+              <View
+                key={convocatoria.id}
+                style={[
+                  styles.convocatoriaCard,
+                  {
+                    backgroundColor: isDark ? '#111' : '#FFF', // Cleaner white background
+                    shadowColor: '#000',
+                  },
+                ]}
+              >
+                <TouchableOpacity onPress={() => setSelectedImage(convocatoria.image)}>
+                  <Image
+                    source={convocatoria.image}
+                    style={styles.cardImage}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
+                <View style={styles.cardContent}>
+                  <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                    {convocatoria.title}
+                  </Text>
+                  <Text style={[styles.cardInfo, { color: isDark ? '#AAA' : '#666' }]}>
+                    {convocatoria.location} · {convocatoria.participants}
+                  </Text>
+                  <Text style={[styles.cardDate, { color: isDark ? '#AAA' : '#666' }]}>
+                    {t('convocatoria.card.start')}: {convocatoria.startDate}
+                  </Text>
+                  <Text style={[styles.cardDate, { color: isDark ? '#AAA' : '#666' }]}>
+                    {t('convocatoria.card.end')}: {convocatoria.endDate}
+                  </Text>
+                  <View style={styles.buttonGroup}>
+                    <TouchableOpacity
+                      style={[styles.button, styles.secondaryButton]}
+                      onPress={() => router.push('/requisitos')}
+                    >
+                      <Text style={[styles.buttonText, styles.secondaryButtonText]}>
+                        {t('convocatoria.card.requirements')}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.button, styles.secondaryButton]}
+                      onPress={() => router.push('/mas-info')}
+                    >
+                      <Text style={[styles.buttonText, styles.secondaryButtonText]}>
+                        {t('convocatoria.card.moreInfo')}
+                      </Text>
+                    </TouchableOpacity>
 
-                      {/* ✅ BOTÓN DE POSTULACIÓN CONDICIONAL */}
-                      {postulaciones[convocatoria.id] ? (
-                        <View
+                    {/* ✅ BOTÓN DE POSTULACIÓN CONDICIONAL */}
+                    {postulaciones[convocatoria.id] ? (
+                      <View
+                        style={[
+                          styles.button,
+                          { backgroundColor: isDark ? '#444' : '#ccc' },
+                        ]}
+                      >
+                        <Text
                           style={[
-                            styles.button,
-                            { backgroundColor: isDark ? '#444' : '#ccc' },
+                            styles.buttonText,
+                            { color: isDark ? '#bbb' : '#666' },
                           ]}
                         >
-                          <Text
-                            style={[
-                              styles.buttonText,
-                              { color: isDark ? '#bbb' : '#666' },
-                            ]}
-                          >
-                            {t('Postulado')}
-                          </Text>
-                        </View>
-                      ) : (
-                        <TouchableOpacity
-                          style={[styles.button, { backgroundColor: '#4CAF50' }]}
-                          onPress={() =>
-                            router.push({
-                              pathname: '/postulacion-paso1',
-                              params: { convocatoriaId: convocatoria.id }
-                            })
-                          }
-                        >
-                          <Text style={styles.buttonText}>
-                            {t('convocatoria.card.apply')}
-                          </Text>
-                        </TouchableOpacity>
-                      )}
-                    </View>
+                          {t('Postulado')}
+                        </Text>
+                      </View>
+                    ) : (
+                      <TouchableOpacity
+                        style={[styles.button, { backgroundColor: '#4CAF50' }]}
+                        onPress={() =>
+                          router.push({
+                            pathname: '/postulacion-paso1',
+                            params: { convocatoriaId: convocatoria.id }
+                          })
+                        }
+                      >
+                        <Text style={styles.buttonText}>
+                          {t('convocatoria.card.apply')}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </View>
-              ))}
-            </View>
-          </ScrollView>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
 
-          {/* Barra inferior con resaltado */}
-          <View
+        {/* Barra inferior con resaltado */}
+        <View
+          style={[
+            styles.bottomNav,
+            {
+              borderTopColor: isDark ? '#333' : '#EEE',
+              backgroundColor: isDark ? '#111' : '#FFF',
+            },
+          ]}
+        >
+          {/* Inicio */}
+          <TouchableOpacity
             style={[
-              styles.bottomNav,
-              {
-                borderTopColor: isDark ? '#333' : '#EEE',
-                backgroundColor: isDark ? '#111' : '#FFF',
-              },
+              styles.navItem,
+              pathname === '/account' && styles.navItemActive,
             ]}
+            onPress={() => router.replace('/account')}
           >
-            {/* Inicio */}
-            <TouchableOpacity
+            <Ionicons
+              name="home"
+              size={24}
+              color={pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+            />
+            <Text
               style={[
-                styles.navItem,
-                pathname === '/account' && styles.navItemActive,
+                styles.navLabel,
+                pathname === '/account' && styles.navLabelActive,
+                { color: isDark ? '#AAA' : '#666' },
               ]}
-              onPress={() => router.replace('/account')}
             >
-              <Ionicons
-                name="home"
-                size={24}
-                color={pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
-              />
-              <Text
-                style={[
-                  styles.navLabel,
-                  pathname === '/account' && styles.navLabelActive,
-                  { color: isDark ? '#AAA' : '#666' },
-                ]}
-              >
-                {t('convocatoria.nav.home')}
-              </Text>
-            </TouchableOpacity>
+              {t('convocatoria.nav.home')}
+            </Text>
+          </TouchableOpacity>
 
-            {/* Áreas */}
-            <TouchableOpacity
-              style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
-              onPress={() => router.replace('/areas')}
-            >
-              <Ionicons
-                name="grid-outline"
-                size={24}
-                color={pathname === '/areas' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
-              />
-              <Text
-                style={[
-                  styles.navLabel,
-                  pathname === '/areas' && styles.navLabelActive,
-                  { color: isDark ? '#AAA' : '#666' },
-                ]}
-              >
-                {t('convocatoria.nav.areas')}
-              </Text>
-            </TouchableOpacity>
-
-            {/* Convocatoria */}
-            <TouchableOpacity
+          {/* Áreas */}
+          <TouchableOpacity
+            style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
+            onPress={() => router.replace('/areas')}
+          >
+            <Ionicons
+              name="grid-outline"
+              size={24}
+              color={pathname === '/areas' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+            />
+            <Text
               style={[
-                styles.navItem,
-                pathname === '/convocatoria' && styles.navItemActive,
+                styles.navLabel,
+                pathname === '/areas' && styles.navLabelActive,
+                { color: isDark ? '#AAA' : '#666' },
               ]}
-              onPress={() => router.replace('/convocatoria')}
             >
-              <Ionicons
-                name="briefcase-outline"
-                size={24}
-                color={pathname === '/convocatoria' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
-              />
-              <Text
-                style={[
-                  styles.navLabel,
-                  pathname === '/convocatoria' && styles.navLabelActive,
-                  { color: '#4CAF50' },
-                ]}
-              >
-                {t('convocatoria.nav.convocatory')}
-              </Text>
-            </TouchableOpacity>
+              {t('convocatoria.nav.areas')}
+            </Text>
+          </TouchableOpacity>
 
-            {/* Nosotros */}
-            <TouchableOpacity
-              style={[
-                styles.navItem,
-                pathname === '/nosotros' && styles.navItemActive,
-              ]}
-              onPress={() => router.replace('/nosotros')}
-            >
-              <Ionicons
-                name="people-outline"
-                size={24}
-                color={pathname === '/nosotros' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
-              />
-              <Text
-                style={[
-                  styles.navLabel,
-                  pathname === '/nosotros' && styles.navLabelActive,
-                  { color: isDark ? '#AAA' : '#666' },
-                ]}
-              >
-                {t('convocatoria.nav.about')}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Zoom Modal */}
-        <Modal
-          isVisible={selectedImage !== null}
-          onBackdropPress={() => setSelectedImage(null)}
-          onBackButtonPress={() => setSelectedImage(null)}
-          style={{ margin: 0 }}
-          backdropOpacity={1}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-        >
-          <View style={{ flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' }}>
-            <TouchableOpacity
-              onPress={() => setSelectedImage(null)}
-              style={{ position: 'absolute', top: 50, right: 20, zIndex: 10, padding: 8 }}
-            >
-              <Ionicons name="close" size={28} color="#FFF" />
-            </TouchableOpacity>
-            {selectedImage && (
-              // @ts-ignore
-              <ImageZoom
-                cropWidth={width}
-                cropHeight={height}
-                imageWidth={width}
-                imageHeight={height * 0.8}
-                minScale={1}
-                maxScale={3}
-                pinchToZoom
-              >
-                <Image
-                  source={selectedImage}
-                  style={{ width: width, height: height * 0.8 }}
-                  resizeMode="contain"
-                />
-              </ImageZoom>
-            )}
-          </View>
-        </Modal>
-
-        {/* Modal para ver la foto de perfil */}
-        <RNModal
-          visible={isProfileImageVisible}
-          transparent={true}
-          onRequestClose={() => setIsProfileImageVisible(false)}
-        >
-          <ImageViewer
-            imageUrls={[
-              {
-                url: profileImage || user?.photoURL || '',
-                props: {
-                  source: profileImage
-                    ? { uri: profileImage }
-                    : user?.photoURL
-                      ? { uri: user.photoURL }
-                      : require('../assets/images/avatar-default.png'),
-                },
-              },
+          {/* Convocatoria */}
+          <TouchableOpacity
+            style={[
+              styles.navItem,
+              pathname === '/convocatoria' && styles.navItemActive,
             ]}
-            onSwipeDown={() => setIsProfileImageVisible(false)}
-            enableSwipeDown={true}
-            renderHeader={() => (
-              <TouchableOpacity
-                style={{ position: 'absolute', top: 40, right: 20, zIndex: 1 }}
-                onPress={() => setIsProfileImageVisible(false)}
-              >
-                <Ionicons name="close" size={30} color="#fff" />
-              </TouchableOpacity>
-            )}
-          />
-        </RNModal>
-      </SafeAreaView>
-    </GestureDetector>
+            onPress={() => router.replace('/convocatoria')}
+          >
+            <Ionicons
+              name="briefcase-outline"
+              size={24}
+              color={pathname === '/convocatoria' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+            />
+            <Text
+              style={[
+                styles.navLabel,
+                pathname === '/convocatoria' && styles.navLabelActive,
+                { color: '#4CAF50' },
+              ]}
+            >
+              {t('convocatoria.nav.convocatory')}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Nosotros */}
+          <TouchableOpacity
+            style={[
+              styles.navItem,
+              pathname === '/nosotros' && styles.navItemActive,
+            ]}
+            onPress={() => router.replace('/nosotros')}
+          >
+            <Ionicons
+              name="people-outline"
+              size={24}
+              color={pathname === '/nosotros' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+            />
+            <Text
+              style={[
+                styles.navLabel,
+                pathname === '/nosotros' && styles.navLabelActive,
+                { color: isDark ? '#AAA' : '#666' },
+              ]}
+            >
+              {t('convocatoria.nav.about')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Zoom Modal */}
+      <Modal
+        isVisible={selectedImage !== null}
+        onBackdropPress={() => setSelectedImage(null)}
+        onBackButtonPress={() => setSelectedImage(null)}
+        style={{ margin: 0 }}
+        backdropOpacity={1}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+      >
+        <View style={{ flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity
+            onPress={() => setSelectedImage(null)}
+            style={{ position: 'absolute', top: 50, right: 20, zIndex: 10, padding: 8 }}
+          >
+            <Ionicons name="close" size={28} color="#FFF" />
+          </TouchableOpacity>
+          {selectedImage && (
+            // @ts-ignore
+            <ImageZoom
+              cropWidth={width}
+              cropHeight={height}
+              imageWidth={width}
+              imageHeight={height * 0.8}
+              minScale={1}
+              maxScale={3}
+              pinchToZoom
+            >
+              <Image
+                source={selectedImage}
+                style={{ width: width, height: height * 0.8 }}
+                resizeMode="contain"
+              />
+            </ImageZoom>
+          )}
+        </View>
+      </Modal>
+
+      {/* Modal para ver la foto de perfil */}
+      <RNModal
+        visible={isProfileImageVisible}
+        transparent={true}
+        onRequestClose={() => setIsProfileImageVisible(false)}
+      >
+        <ImageViewer
+          imageUrls={[
+            {
+              url: profileImage || user?.photoURL || '',
+              props: {
+                source: profileImage
+                  ? { uri: profileImage }
+                  : user?.photoURL
+                    ? { uri: user.photoURL }
+                    : require('../assets/images/avatar-default.png'),
+              },
+            },
+          ]}
+          onSwipeDown={() => setIsProfileImageVisible(false)}
+          enableSwipeDown={true}
+          renderHeader={() => (
+            <TouchableOpacity
+              style={{ position: 'absolute', top: 40, right: 20, zIndex: 1 }}
+              onPress={() => setIsProfileImageVisible(false)}
+            >
+              <Ionicons name="close" size={30} color="#fff" />
+            </TouchableOpacity>
+          )}
+        />
+      </RNModal>
+    </SafeAreaView>
   );
 }
 
