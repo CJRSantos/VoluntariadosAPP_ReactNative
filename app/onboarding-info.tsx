@@ -67,74 +67,76 @@ export default function OnboardingInfo() {
 
             {/* Encabezado */}
             <View style={styles.header}>
-                <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{onboardingData.title[currentLang]}</Text>
+                <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{onboardingData.title?.[currentLang] || ''}</Text>
                 <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>
-                    {onboardingData.subtitle[currentLang]}
+                    {onboardingData.subtitle?.[currentLang] || ''}
                 </Text>
             </View>
 
             {/* Sección 1: ¿Qué es Voluntariados IIAP? */}
             <View style={[styles.section, { borderColor: isDark ? '#333' : '#EEE' }]}>
                 {/* Imagen ahora clickeable para zoom */}
-                <TouchableOpacity onPress={async () => await openImage(IMAGES[onboardingData.sections[0].image!])}>
+                <TouchableOpacity onPress={async () => onboardingData.sections[0].image && await openImage(IMAGES[onboardingData.sections[0].image])}>
                     <Image
-                        source={IMAGES[onboardingData.sections[0].image!]}
+                        source={IMAGES[onboardingData.sections[0].image!] || IMAGES['tutorial_1']}
                         style={styles.sectionImage}
                         resizeMode="cover"
                     />
                 </TouchableOpacity>
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    {onboardingData.sections[0].title[currentLang]}
+                    {onboardingData.sections[0].title?.[currentLang] || ''}
                 </Text>
                 <Text style={[styles.sectionText, { color: isDark ? '#DDD' : '#444' }]}>
-                    {onboardingData.sections[0].text[currentLang]}
+                    {onboardingData.sections[0].text?.[currentLang] || ''}
                 </Text>
             </View>
 
             {/* Sección 2: ¿Cómo funciona? */}
             <View style={[styles.section, { borderColor: isDark ? '#333' : '#EEE' }]}>
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    {onboardingData.sections[1].title[currentLang]}
+                    {onboardingData.sections[1].title?.[currentLang] || ''}
                 </Text>
                 <Text style={[styles.sectionText, { color: isDark ? '#DDD' : '#444' }]}>
-                    {onboardingData.sections[1].text[currentLang]}
+                    {onboardingData.sections[1].text?.[currentLang] || ''}
                 </Text>
 
                 {/* Botón para abrir video de YouTube */}
                 <TouchableOpacity
                     style={[styles.videoButton, { backgroundColor: '#FF0000', marginTop: 16 }]}
                     onPress={() => {
-                        const youtubeUrl = onboardingData.sections[1].videoUrl!;
-                        Linking.openURL(youtubeUrl).catch((err) => {
-                            console.error('Error al abrir YouTube:', err);
-                            Alert.alert(
-                                t('login.errorTitle'),
-                                t('account.videos.errorMessage'),
-                                [{ text: t('account.videos.copyLink'), onPress: () => Clipboard.setString(youtubeUrl) }]
-                            );
-                        });
+                        const youtubeUrl = onboardingData.sections[1].videoUrl || '';
+                        if (youtubeUrl) {
+                            Linking.openURL(youtubeUrl).catch((err) => {
+                                console.error('Error al abrir YouTube:', err);
+                                Alert.alert(
+                                    t('login.errorTitle'),
+                                    t('account.videos.errorMessage'),
+                                    [{ text: t('account.videos.copyLink'), onPress: () => Clipboard.setString(youtubeUrl) }]
+                                );
+                            });
+                        }
                     }}
                 >
                     <Ionicons name="play-circle" size={24} color="#FFF" style={{ marginRight: 8 }} />
-                    <Text style={styles.videoButtonText}>{onboardingData.sections[1].buttonText![currentLang]}</Text>
+                    <Text style={styles.videoButtonText}>{onboardingData.sections[1].buttonText?.[currentLang] || ''}</Text>
                 </TouchableOpacity>
             </View>
 
             {/* Sección 3: Beneficios */}
             <View style={[styles.section, { borderColor: isDark ? '#333' : '#EEE' }]}>
                 {/* Imagen ahora clickeable para zoom */}
-                <TouchableOpacity onPress={async () => await openImage(IMAGES[onboardingData.sections[2].image!])}>
+                <TouchableOpacity onPress={async () => onboardingData.sections[2].image && await openImage(IMAGES[onboardingData.sections[2].image])}>
                     <Image
-                        source={IMAGES[onboardingData.sections[2].image!]}
+                        source={IMAGES[onboardingData.sections[2].image!] || IMAGES['tutorial_3']}
                         style={styles.sectionImage}
                         resizeMode="cover"
                     />
                 </TouchableOpacity>
                 <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                    {onboardingData.sections[2].title[currentLang]}
+                    {onboardingData.sections[2].title?.[currentLang] || ''}
                 </Text>
                 <Text style={[styles.sectionText, { color: isDark ? '#DDD' : '#444' }]}>
-                    {onboardingData.sections[2].text[currentLang]}
+                    {onboardingData.sections[2].text?.[currentLang] || ''}
                 </Text>
             </View>
 
@@ -143,7 +145,7 @@ export default function OnboardingInfo() {
                 style={[styles.ctaButton, { backgroundColor: '#4CAF50' }]}
                 onPress={() => router.push('/convocatoria')}
             >
-                <Text style={styles.ctaButtonText}>{onboardingData.ctaButton[currentLang]}</Text>
+                <Text style={styles.ctaButtonText}>{onboardingData.ctaButton?.[currentLang] || ''}</Text>
             </TouchableOpacity>
 
             {/* Modal para ver imagen con zoom */}

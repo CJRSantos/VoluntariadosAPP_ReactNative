@@ -34,7 +34,12 @@ export default function PostulacionConfirmadaScreen() {
             const guardarPostulacion = async () => {
                 try {
                     const saved = await AsyncStorage.getItem('postulaciones');
-                    const postulaciones = saved ? JSON.parse(saved) : {};
+                    let postulaciones;
+                    try {
+                        postulaciones = saved ? JSON.parse(saved) : {};
+                    } catch (e) {
+                        postulaciones = {};
+                    }
                     postulaciones[convId] = true;
                     await AsyncStorage.setItem('postulaciones', JSON.stringify(postulaciones));
                     console.log(`✅ Marcada como postulada: convocatoria ID ${convId}`);

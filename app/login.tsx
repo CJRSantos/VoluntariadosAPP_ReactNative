@@ -34,9 +34,11 @@ export default function LoginScreen() {
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     // TODO: Add your Client IDs here
-    androidClientId: 'YOUR_ANDROID_CLIENT_ID',
-    iosClientId: 'YOUR_IOS_CLIENT_ID',
-    webClientId: 'YOUR_WEB_CLIENT_ID',
+    expoClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
+    webClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
+    androidClientId: undefined,
+    iosClientId: undefined,
+
   });
 
   const router = useRouter();

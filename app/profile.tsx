@@ -191,9 +191,18 @@ export default function ProfileScreen() {
                 const savedPhoto = await AsyncStorage.getItem('userPhotoURL');
                 if (savedPhoto) setProfileImage(savedPhoto);
 
+                const safeParse = (data: string | null, fallback: any = []) => {
+                    try {
+                        return data ? JSON.parse(data) : fallback;
+                    } catch (e) {
+                        console.warn('Error parsing data:', e);
+                        return fallback;
+                    }
+                };
+
                 const savedPersonal = await AsyncStorage.getItem('personalInfo');
                 if (savedPersonal) {
-                    setPersonalInfo(JSON.parse(savedPersonal));
+                    setPersonalInfo(safeParse(savedPersonal, {}));
                 } else if (auth.currentUser) {
                     // Fallback to auth data if no local data
                     setPersonalInfo({
@@ -208,19 +217,19 @@ export default function ProfileScreen() {
                     });
                 }
                 const savedAcademic = await AsyncStorage.getItem('academicRecords');
-                if (savedAcademic) setAcademicRecords(JSON.parse(savedAcademic));
+                if (savedAcademic) setAcademicRecords(safeParse(savedAcademic));
                 const savedTechnical = await AsyncStorage.getItem('technicalRecords');
-                if (savedTechnical) setTechnicalRecords(JSON.parse(savedTechnical));
+                if (savedTechnical) setTechnicalRecords(safeParse(savedTechnical));
                 const savedComplementary = await AsyncStorage.getItem('complementaryRecords');
-                if (savedComplementary) setComplementaryRecords(JSON.parse(savedComplementary));
+                if (savedComplementary) setComplementaryRecords(safeParse(savedComplementary));
                 const savedExperience = await AsyncStorage.getItem('experienceRecords');
-                if (savedExperience) setExperienceRecords(JSON.parse(savedExperience));
+                if (savedExperience) setExperienceRecords(safeParse(savedExperience));
                 const savedVolunteer = await AsyncStorage.getItem('volunteerRecords');
-                if (savedVolunteer) setVolunteerRecords(JSON.parse(savedVolunteer));
+                if (savedVolunteer) setVolunteerRecords(safeParse(savedVolunteer));
                 const savedPublication = await AsyncStorage.getItem('publicationRecords');
-                if (savedPublication) setPublicationRecords(JSON.parse(savedPublication));
+                if (savedPublication) setPublicationRecords(safeParse(savedPublication));
                 const savedLanguage = await AsyncStorage.getItem('languageRecords');
-                if (savedLanguage) setLanguageRecords(JSON.parse(savedLanguage));
+                if (savedLanguage) setLanguageRecords(safeParse(savedLanguage));
             } catch (error) {
                 console.log('Error cargando datos:', error);
             }
@@ -941,7 +950,7 @@ export default function ProfileScreen() {
                             <Text style={[styles.menuOptionText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.viewImage')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.menuOption} onPress={changeBannerFromGallery}>
-                            <Text style={[styles.menuOptionText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.uploadGallery')}</Text>
+                            <Text style={[styles.menuOptionText, { color: isDark ? '#FFF' : '#333' }]}>{t('Abrir Galería')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.menuOption} onPress={takeNewBannerPhoto}>
                             <Text style={[styles.menuOptionText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.takePhoto')}</Text>
@@ -957,7 +966,7 @@ export default function ProfileScreen() {
                             <Text style={[styles.menuOptionText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.viewImage')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.menuOption} onPress={changeProfileFromGallery}>
-                            <Text style={[styles.menuOptionText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.uploadGallery')}</Text>
+                            <Text style={[styles.menuOptionText, { color: isDark ? '#FFF' : '#333' }]}>{t('Abrir Galería')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.menuOption} onPress={takeNewProfilePhoto}>
                             <Text style={[styles.menuOptionText, { color: isDark ? '#FFF' : '#333' }]}>{t('profile.takePhoto')}</Text>

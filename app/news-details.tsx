@@ -49,10 +49,10 @@ export default function NewsDetailsScreen() {
 
     const { title, date, endDate, description, carouselImages } = newsItem;
     const currentLang = (i18n.language === 'en' ? 'en' : 'es') as 'es' | 'en';
-    const displayTitle = title[currentLang];
-    const displayDate = date[currentLang];
-    const displayEndDate = endDate[currentLang];
-    const displayDescription = description[currentLang];
+    const displayTitle = title?.[currentLang] || '';
+    const displayDate = date?.[currentLang] || '';
+    const displayEndDate = endDate?.[currentLang] || '';
+    const displayDescription = description?.[currentLang] || '';
 
     const images = carouselImages ? carouselImages.map(imgKey => IMAGES[imgKey]) : [];
     // Prepare images for ImageViewer
