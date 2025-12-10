@@ -36,7 +36,7 @@ export default function LoginScreen() {
     // TODO: Add your Client IDs here
     androidClientId: 'YOUR_ANDROID_CLIENT_ID',
     iosClientId: 'YOUR_IOS_CLIENT_ID',
-    webClientId: 'YOUR_WEB_CLIENT_ID',
+    webClientId: '789999672240-vtbnf64flcr64u94g3hvp1lqvporrbmn.apps.googleusercontent.com',
   });
 
   const router = useRouter();
