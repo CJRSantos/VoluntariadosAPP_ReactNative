@@ -8,6 +8,7 @@ import {
     Alert,
     Dimensions,
     Image,
+    Modal,
     ScrollView,
     StyleSheet,
     Text,
@@ -15,6 +16,7 @@ import {
     View,
 } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
+import ImageViewer from 'react-native-image-zoom-viewer';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
 import { Header } from '../src/components/Header';
@@ -36,6 +38,7 @@ export default function NosotrosScreen() {
     const { t } = useTranslation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [profileImage, setProfileImage] = useState<string | null>(null);
+    const [isProfileImageVisible, setIsProfileImageVisible] = useState(false);
 
     const { composedGesture } = useSwipeNavigation({
         onSwipeRight: () => router.push('/convocatoria'),
@@ -85,6 +88,7 @@ export default function NosotrosScreen() {
                         t={t}
                         toggleMenu={toggleMenu}
                         localProfileImage={profileImage}
+                        onImagePress={() => setIsProfileImageVisible(true)}
                     />
 
                     {/* Menú desplegable */}
@@ -340,6 +344,37 @@ export default function NosotrosScreen() {
                         </TouchableOpacity>
                     </View>
                 </View>
+                {/* Modal para ver la foto de perfil */}
+                <Modal
+                    visible={isProfileImageVisible}
+                    transparent={true}
+                    onRequestClose={() => setIsProfileImageVisible(false)}
+                >
+                    <ImageViewer
+                        imageUrls={[
+                            {
+                                url: profileImage || user?.photoURL || '',
+                                props: {
+                                    source: profileImage
+                                        ? { uri: profileImage }
+                                        : user?.photoURL
+                                            ? { uri: user.photoURL }
+                                            : require('../assets/images/avatar-default.png'),
+                                },
+                            },
+                        ]}
+                        onSwipeDown={() => setIsProfileImageVisible(false)}
+                        enableSwipeDown={true}
+                        renderHeader={() => (
+                            <TouchableOpacity
+                                style={{ position: 'absolute', top: 40, right: 20, zIndex: 1 }}
+                                onPress={() => setIsProfileImageVisible(false)}
+                            >
+                                <Ionicons name="close" size={30} color="#fff" />
+                            </TouchableOpacity>
+                        )}
+                    />
+                </Modal>
             </SafeAreaView>
         </GestureDetector>
     );

@@ -83,10 +83,11 @@ export default function AccountScreen() {
     };
 
     const renderNewsItem = ({ item }: { item: any }) => {
-        const displayTitle = item.title[currentLang];
-        const displayDate = item.date[currentLang];
-        const displayDescription = item.description[currentLang];
-        const imageSource = IMAGES[item.image];
+        if (!item) return null;
+        const displayTitle = item.title?.[currentLang] || item.title?.es || '';
+        const displayDate = item.date?.[currentLang] || item.date?.es || '';
+        const displayDescription = item.description?.[currentLang] || item.description?.es || '';
+        const imageSource = IMAGES[item.image] || IMAGES['banner']; // Fallback image
 
         return (
             <View
@@ -130,6 +131,7 @@ export default function AccountScreen() {
     };
 
     const renderVideoItem = ({ item }: { item: any }) => {
+        if (!item || !item.videoUrl) return null;
         const videoId = extractVideoId(item.videoUrl);
         const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/0.jpg`;
 
@@ -192,6 +194,7 @@ export default function AccountScreen() {
                         t={t}
                         toggleMenu={toggleMenu}
                         localProfileImage={localProfileImage}
+                        onImagePress={() => setIsProfileImageVisible(true)}
                     />
 
                     {isMenuOpen && (
@@ -420,11 +423,11 @@ export default function AccountScreen() {
                         <ImageViewer
                             imageUrls={[
                                 {
-                                    url: '',
+                                    url: localProfileImage || user?.photoURL || '',
                                     props: {
                                         source: localProfileImage
                                             ? { uri: localProfileImage }
-                                            : user.photoURL
+                                            : user?.photoURL
                                                 ? { uri: user.photoURL }
                                                 : require('../assets/images/avatar-default.png'),
                                     },

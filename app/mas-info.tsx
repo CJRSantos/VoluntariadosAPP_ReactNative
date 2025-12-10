@@ -27,7 +27,7 @@ export default function MasInfoScreen() {
         {/* Imagen */}
         <View style={styles.imageContainer}>
           <Image
-            source={IMAGES[moreInfoData.image]}
+            source={IMAGES[moreInfoData.image] || IMAGES['banner']}
             style={styles.image}
             resizeMode="cover"
           />

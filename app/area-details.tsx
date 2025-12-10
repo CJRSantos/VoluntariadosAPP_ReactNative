@@ -102,15 +102,15 @@ export default function AreaDetailsScreen() {
                 )}
                 <View style={styles.detailsContainer}>
                     <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>
-                        {area.title[currentLang]}
+                        {area.title?.[currentLang] || ''}
                     </Text>
 
                     <Text style={[styles.direction, { color: isDark ? '#AAA' : '#666' }]}>
-                        {area.direction[currentLang]}
+                        {area.direction?.[currentLang] || ''}
                     </Text>
 
                     <Text style={[styles.description, { color: isDark ? '#DDD' : '#444' }]}>
-                        {area.content[currentLang]}
+                        {area.content?.[currentLang] || ''}
                     </Text>
                 </View>
             </ScrollView>

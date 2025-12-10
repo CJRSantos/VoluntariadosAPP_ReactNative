@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Dimensions,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,6 +16,7 @@ import {
   View
 } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
+import ImageViewer from 'react-native-image-zoom-viewer'; // Added ImageViewer
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
 import areasData from '../assets/data/areas.json';
@@ -35,6 +37,7 @@ export default function AreasScreen() {
   const [address, setAddress] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [isProfileImageVisible, setIsProfileImageVisible] = useState(false);
 
   const { composedGesture } = useSwipeNavigation({
     onSwipeLeft: () => router.push('/convocatoria'),
@@ -105,6 +108,7 @@ export default function AreasScreen() {
             t={t}
             toggleMenu={toggleMenu}
             localProfileImage={profileImage}
+            onImagePress={() => setIsProfileImageVisible(true)}
           />
 
           {/* Menú desplegable */}
@@ -201,13 +205,13 @@ export default function AreasScreen() {
                   </View>
                 </View>
                 <Text style={[styles.areaDirection, { color: isDark ? '#AAA' : '#666' }]}>
-                  {area.direction[currentLang]}
+                  {area.direction?.[currentLang] || ''}
                 </Text>
                 <Text style={[styles.areaTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                  {area.title[currentLang]}
+                  {area.title?.[currentLang] || ''}
                 </Text>
                 <Text style={[styles.areaDescription, { color: isDark ? '#AAA' : '#666' }]}>
-                  {area.description[currentLang]}
+                  {area.description?.[currentLang] || ''}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -264,6 +268,37 @@ export default function AreasScreen() {
             </TouchableOpacity>
           </View>
         </View>
+        {/* Modal para ver la foto de perfil */}
+        <Modal
+          visible={isProfileImageVisible}
+          transparent={true}
+          onRequestClose={() => setIsProfileImageVisible(false)}
+        >
+          <ImageViewer
+            imageUrls={[
+              {
+                url: profileImage || user?.photoURL || '',
+                props: {
+                  source: profileImage
+                    ? { uri: profileImage }
+                    : user?.photoURL
+                      ? { uri: user.photoURL }
+                      : require('../assets/images/avatar-default.png'),
+                },
+              },
+            ]}
+            onSwipeDown={() => setIsProfileImageVisible(false)}
+            enableSwipeDown={true}
+            renderHeader={() => (
+              <TouchableOpacity
+                style={{ position: 'absolute', top: 40, right: 20, zIndex: 1 }}
+                onPress={() => setIsProfileImageVisible(false)}
+              >
+                <Ionicons name="close" size={30} color="#fff" />
+              </TouchableOpacity>
+            )}
+          />
+        </Modal>
       </SafeAreaView>
     </GestureDetector>
   );

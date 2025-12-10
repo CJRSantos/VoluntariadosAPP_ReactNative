@@ -8,6 +8,7 @@ import {
   Alert,
   Dimensions,
   Image,
+  Modal as RNModal,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,6 +17,7 @@ import {
 } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import ImageZoom from 'react-native-image-pan-zoom';
+import ImageViewer from 'react-native-image-zoom-viewer';
 import Modal from 'react-native-modal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../app/providers/ThemeProvider';
@@ -40,6 +42,7 @@ export default function ConvocatoriaScreen() {
   const [postulaciones, setPostulaciones] = useState<Record<number, boolean>>({});
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [isProfileImageVisible, setIsProfileImageVisible] = useState(false);
 
   const { composedGesture } = useSwipeNavigation({
     onSwipeLeft: () => router.push('/nosotros'),
@@ -54,7 +57,11 @@ export default function ConvocatoriaScreen() {
       try {
         const savedPostulaciones = await AsyncStorage.getItem('postulaciones');
         if (savedPostulaciones) {
-          setPostulaciones(JSON.parse(savedPostulaciones));
+          try {
+            setPostulaciones(JSON.parse(savedPostulaciones));
+          } catch (e) {
+            setPostulaciones({});
+          }
         }
         const savedPhoto = await AsyncStorage.getItem('userPhotoURL');
         if (savedPhoto) {
@@ -121,6 +128,7 @@ export default function ConvocatoriaScreen() {
             t={t}
             toggleMenu={toggleMenu}
             localProfileImage={profileImage}
+            onImagePress={() => setIsProfileImageVisible(true)}
           />
 
           {/* Menú desplegable */}
@@ -431,6 +439,38 @@ export default function ConvocatoriaScreen() {
             )}
           </View>
         </Modal>
+
+        {/* Modal para ver la foto de perfil */}
+        <RNModal
+          visible={isProfileImageVisible}
+          transparent={true}
+          onRequestClose={() => setIsProfileImageVisible(false)}
+        >
+          <ImageViewer
+            imageUrls={[
+              {
+                url: profileImage || user?.photoURL || '',
+                props: {
+                  source: profileImage
+                    ? { uri: profileImage }
+                    : user?.photoURL
+                      ? { uri: user.photoURL }
+                      : require('../assets/images/avatar-default.png'),
+                },
+              },
+            ]}
+            onSwipeDown={() => setIsProfileImageVisible(false)}
+            enableSwipeDown={true}
+            renderHeader={() => (
+              <TouchableOpacity
+                style={{ position: 'absolute', top: 40, right: 20, zIndex: 1 }}
+                onPress={() => setIsProfileImageVisible(false)}
+              >
+                <Ionicons name="close" size={30} color="#fff" />
+              </TouchableOpacity>
+            )}
+          />
+        </RNModal>
       </SafeAreaView>
     </GestureDetector>
   );
