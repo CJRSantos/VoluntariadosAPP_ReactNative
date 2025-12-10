@@ -9,6 +9,47 @@ import { ThemeProvider } from '../app/providers/ThemeProvider';
 import { ThemedStatusBar } from '../src/components/ThemedStatusBar';
 import '../src/i18n/i18n';
 
+import { useTheme } from '../app/providers/ThemeProvider';
+
+function ThemedStack() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  return (
+    <Stack
+      screenOptions={{
+        contentStyle: { backgroundColor: isDark ? '#121212' : '#F5F5F5' },
+        animation: 'fade', // Set default animation to fade
+      }}
+    >
+      <Stack.Screen name="splash" options={{ headerShown: false }} />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="account" options={{ headerShown: false, animation: 'none' }} />
+      <Stack.Screen name="settings" options={{ headerShown: false }} />
+      <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack.Screen name="register" options={{ headerShown: false }} />
+      <Stack.Screen name="profile" options={{ headerShown: false }} />
+      <Stack.Screen name="areas" options={{ headerShown: false, animation: 'none' }} />
+      <Stack.Screen name="convocatoria" options={{ headerShown: false, animation: 'none' }} />
+      <Stack.Screen name="nosotros" options={{ headerShown: false, animation: 'none' }} />
+      <Stack.Screen name="mas-info" options={{ headerShown: false }} />
+      <Stack.Screen name="presencial-info" options={{ headerTitle: '' }} />
+      <Stack.Screen name="virtual-tutorial" options={{ headerTitle: '' }} />
+      <Stack.Screen
+        name="onboarding-info"
+        options={({ navigation }) => ({
+          headerTitle: '',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="arrow-back" size={24} color="#000" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+    </Stack>
+  );
+}
+
 export default function RootLayout() {
   const { t } = useTranslation();
 
@@ -18,32 +59,7 @@ export default function RootLayout() {
         <ThemeProvider>
           <ThemedStatusBar />
           <AuthProvider>
-            <Stack>
-              <Stack.Screen name="splash" options={{ headerShown: false }} />
-              <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen name="account" options={{ headerShown: false }} />
-              <Stack.Screen name="settings" options={{ headerShown: false }} />
-              <Stack.Screen name="login" options={{ headerShown: false }} />
-              <Stack.Screen name="register" options={{ headerShown: false }} />
-              <Stack.Screen name="profile" options={{ headerShown: false }} />
-              <Stack.Screen name="areas" options={{ headerShown: false }} />
-              <Stack.Screen name="convocatoria" options={{ headerShown: false }} />
-              <Stack.Screen name="nosotros" options={{ headerShown: false }} />
-              <Stack.Screen name="mas-info" options={{ headerShown: false }} />
-              <Stack.Screen name="presencial-info" options={{ headerTitle: '' }} />
-              <Stack.Screen name="virtual-tutorial" options={{ headerTitle: '' }} />
-              <Stack.Screen
-                name="onboarding-info"
-                options={({ navigation }) => ({
-                  headerTitle: '',
-                  headerLeft: () => (
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                      <Ionicons name="arrow-back" size={24} color="#000" />
-                    </TouchableOpacity>
-                  ),
-                })}
-              />
-            </Stack>
+            <ThemedStack />
           </AuthProvider>
         </ThemeProvider>
       </SafeAreaProvider>

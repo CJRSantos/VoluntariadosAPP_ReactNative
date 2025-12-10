@@ -14,7 +14,7 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import { FlatList, GestureDetector, ScrollView } from 'react-native-gesture-handler';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IMAGES } from '../assets/data/imageMap';
@@ -22,7 +22,7 @@ import newsData from '../assets/data/news.json';
 import socialData from '../assets/data/social.json';
 import videosData from '../assets/data/videos.json';
 import { Header } from '../src/components/Header';
-import { useSwipeNavigation } from './hooks/useSwipeNavigation';
+
 import { useAuth } from './providers/AuthProvider';
 import { useTheme } from './providers/ThemeProvider';
 
@@ -40,9 +40,7 @@ export default function AccountScreen() {
     const { t, i18n } = useTranslation();
     const currentLang = (i18n.language === 'en' ? 'en' : 'es') as 'es' | 'en';
 
-    const { composedGesture } = useSwipeNavigation({
-        onSwipeLeft: () => router.push('/areas'),
-    });
+
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -185,269 +183,270 @@ export default function AccountScreen() {
     }
 
     return (
-        <GestureDetector gesture={composedGesture}>
-            <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#121212' : '#F5F5F5' }]}>
-                <View style={styles.container}>
-                    <Header
-                        user={user}
-                        isDark={isDark}
-                        t={t}
-                        toggleMenu={toggleMenu}
-                        localProfileImage={localProfileImage}
-                        onImagePress={() => setIsProfileImageVisible(true)}
+        <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#121212' : '#F5F5F5' }]}>
+            <View style={styles.container}>
+                <Header
+                    user={user}
+                    isDark={isDark}
+                    t={t}
+                    toggleMenu={toggleMenu}
+                    localProfileImage={localProfileImage}
+                    onImagePress={() => setIsProfileImageVisible(true)}
+                />
+
+                {isMenuOpen && (
+                    <TouchableOpacity
+                        style={styles.menuOverlay}
+                        activeOpacity={1}
+                        onPress={() => setIsMenuOpen(false)}
                     />
+                )}
 
-                    {isMenuOpen && (
+                {isMenuOpen && (
+                    <View style={[styles.dropdownMenu, { backgroundColor: isDark ? '#1E1E1E' : '#FFF' }]}>
                         <TouchableOpacity
-                            style={styles.menuOverlay}
-                            activeOpacity={1}
-                            onPress={() => setIsMenuOpen(false)}
-                        />
-                    )}
-
-                    {isMenuOpen && (
-                        <View style={[styles.dropdownMenu, { backgroundColor: isDark ? '#1E1E1E' : '#FFF' }]}>
-                            <TouchableOpacity
-                                style={styles.menuItem}
-                                onPress={() => {
-                                    toggleMenu();
-                                    router.push('/profile');
-                                }}
-                            >
-                                <Ionicons name="person-outline" size={20} color={isDark ? '#FFF' : '#333'} />
-                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                                    {t('account.menu.profile')}
-                                </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.menuItem}
-                                onPress={() => {
-                                    toggleMenu();
-                                    router.push('/settings');
-                                }}
-                            >
-                                <Ionicons name="settings-outline" size={20} color={isDark ? '#FFF' : '#333'} />
-                                <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
-                                    {t('account.menu.settings')}
-                                </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.menuItem}
-                                onPress={() => {
-                                    toggleMenu();
-                                    signOut();
-                                }}
-                            >
-                                <Ionicons name="log-out-outline" size={20} color="#FF5252" />
-                                <Text style={[styles.menuText, { color: '#FF5252' }]}>
-                                    {t('account.menu.logout')}
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-
-                    <ScrollView contentContainerStyle={styles.scrollContent}>
-                        {/* Banner */}
-                        <View style={styles.bannerContainer}>
-                            <Image
-                                source={require('../assets/images/banner.png')}
-                                style={styles.bannerImage}
-                                resizeMode="cover"
-                            />
-                            <View style={styles.bannerOverlay}>
-                                <Text style={styles.bannerTitle}>{t('account.banner.title')}</Text>
-                                <Text style={styles.bannerSubtitle}>{t('account.banner.subtitle', { name: user?.displayName || t('account.user') })}</Text>
-                                <TouchableOpacity style={styles.bannerButton} onPress={() => router.push('/mas-info')}>
-                                    <Text style={styles.bannerButtonText}>{t('account.banner.button')}</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        {/* Accesos Rápidos */}
-                        <View style={styles.quickAccessContainer}>
-                            <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                                {t('account.quickAccess')}
+                            style={styles.menuItem}
+                            onPress={() => {
+                                toggleMenu();
+                                router.push('/profile');
+                            }}
+                        >
+                            <Ionicons name="person-outline" size={20} color={isDark ? '#FFF' : '#333'} />
+                            <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                                {t('account.menu.profile')}
                             </Text>
-                            <View style={styles.quickAccessGrid}>
-                                <TouchableOpacity
-                                    style={[styles.quickAccessItem, { backgroundColor: isDark ? '#1E1E1E' : '#F5F5F5' }]}
-                                    onPress={() => router.replace('/areas')}
-                                >
-                                    <View style={[styles.iconCircle, { backgroundColor: '#E8F5E9' }]}>
-                                        <Ionicons name="grid-outline" size={24} color="#4CAF50" />
-                                    </View>
-                                    <Text style={[styles.quickAccessText, { color: isDark ? '#FFF' : '#333' }]}>
-                                        {t('account.nav.areas')}
-                                    </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={[styles.quickAccessItem, { backgroundColor: isDark ? '#1E1E1E' : '#F5F5F5' }]}
-                                    onPress={() => router.replace('/convocatoria')}
-                                >
-                                    <View style={[styles.iconCircle, { backgroundColor: '#E3F2FD' }]}>
-                                        <Ionicons name="briefcase-outline" size={24} color="#2196F3" />
-                                    </View>
-                                    <Text style={[styles.quickAccessText, { color: isDark ? '#FFF' : '#333' }]}>
-                                        {t('account.nav.convocatory')}
-                                    </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={[styles.quickAccessItem, { backgroundColor: isDark ? '#1E1E1E' : '#F5F5F5' }]}
-                                    onPress={() => router.replace('/nosotros')}
-                                >
-                                    <View style={[styles.iconCircle, { backgroundColor: '#FFF3E0' }]}>
-                                        <Ionicons name="people-outline" size={24} color="#FF9800" />
-                                    </View>
-                                    <Text style={[styles.quickAccessText, { color: isDark ? '#FFF' : '#333' }]}>
-                                        {t('account.nav.about')}
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        {/* Últimas Noticias */}
-                        <View style={styles.sectionContainer}>
-                            <View style={styles.sectionHeader}>
-                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                                    {t('account.newsSection')}
-                                </Text>
-                            </View>
-                            <FlatList
-                                data={news}
-                                renderItem={renderNewsItem}
-                                keyExtractor={(item) => item.id.toString()}
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={styles.newsContainerHorizontal}
-                            />
-                        </View>
-
-                        {/* Videos y Guías */}
-                        <View style={styles.sectionContainer}>
-                            <View style={styles.sectionHeader}>
-                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                                    {t('account.videosSection')}
-                                </Text>
-                            </View>
-                            <FlatList
-                                data={guides}
-                                renderItem={renderVideoItem}
-                                keyExtractor={(item) => item.id.toString()}
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={styles.videoScrollContainer}
-                            />
-                        </View>
-
-                        {/* Redes Sociales */}
-                        <View style={styles.sectionContainer}>
-                            <View style={styles.sectionHeader}>
-                                <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
-                                    {t('account.socialSection')}
-                                </Text>
-                            </View>
-                            <View style={styles.socialGrid}>
-                                {SOCIAL_LINKS.map((social) => (
-                                    <TouchableOpacity
-                                        key={social.id}
-                                        style={[styles.socialCard, { backgroundColor: social.color }]}
-                                        onPress={() => openSocialLink(social.url)}
-                                    >
-                                        <Ionicons name={social.icon as any} size={24} color="#FFF" />
-                                        <Text style={styles.socialName}>{social.name}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
-                        </View>
-
-                        <View style={{ height: 100 }} />
-                    </ScrollView>
-
-                    {/* Barra de Navegación Inferior */}
-                    <View style={[styles.bottomNav, { borderTopColor: isDark ? '#333' : '#EEE', backgroundColor: isDark ? '#111' : '#FFF' }]}>
-                        <TouchableOpacity
-                            style={[styles.navItem, pathname === '/account' && styles.navItemActive]}
-                            onPress={() => router.replace('/account')}
-                        >
-                            <Ionicons
-                                name="home"
-                                size={24}
-                                color={pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
-                            />
-                            <Text style={[styles.navLabel, pathname === '/account' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('account.nav.home')}</Text>
                         </TouchableOpacity>
-
                         <TouchableOpacity
-                            style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
-                            onPress={() => router.replace('/areas')}
+                            style={styles.menuItem}
+                            onPress={() => {
+                                toggleMenu();
+                                router.push('/settings');
+                            }}
                         >
-                            <Ionicons
-                                name="grid-outline"
-                                size={24}
-                                color={pathname === '/areas' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
-                            />
-                            <Text style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('account.nav.areas')}</Text>
+                            <Ionicons name="settings-outline" size={20} color={isDark ? '#FFF' : '#333'} />
+                            <Text style={[styles.menuText, { color: isDark ? '#FFF' : '#333' }]}>
+                                {t('account.menu.settings')}
+                            </Text>
                         </TouchableOpacity>
-
                         <TouchableOpacity
-                            style={[styles.navItem, pathname === '/convocatoria' && styles.navItemActive]}
-                            onPress={() => router.replace('/convocatoria')}
+                            style={styles.menuItem}
+                            onPress={() => {
+                                toggleMenu();
+                                signOut();
+                            }}
                         >
-                            <Ionicons
-                                name="briefcase-outline"
-                                size={24}
-                                color={pathname === '/convocatoria' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
-                            />
-                            <Text style={[styles.navLabel, pathname === '/convocatoria' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('account.nav.convocatory')}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[styles.navItem, pathname === '/nosotros' && styles.navItemActive]}
-                            onPress={() => router.replace('/nosotros')}
-                        >
-                            <Ionicons
-                                name="people-outline"
-                                size={24}
-                                color={pathname === '/nosotros' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
-                            />
-                            <Text style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('account.nav.about')}</Text>
+                            <Ionicons name="log-out-outline" size={20} color="#FF5252" />
+                            <Text style={[styles.menuText, { color: '#FF5252' }]}>
+                                {t('account.menu.logout')}
+                            </Text>
                         </TouchableOpacity>
                     </View>
+                )}
 
-                    {/* Modal para ver la foto de perfil */}
-                    <Modal
-                        visible={isProfileImageVisible}
-                        transparent={true}
-                        onRequestClose={() => setIsProfileImageVisible(false)}
-                    >
-                        <ImageViewer
-                            imageUrls={[
-                                {
-                                    url: localProfileImage || user?.photoURL || '',
-                                    props: {
-                                        source: localProfileImage
-                                            ? { uri: localProfileImage }
-                                            : user?.photoURL
-                                                ? { uri: user.photoURL }
-                                                : require('../assets/images/avatar-default.png'),
-                                    },
-                                },
-                            ]}
-                            onSwipeDown={() => setIsProfileImageVisible(false)}
-                            enableSwipeDown={true}
-                            renderHeader={() => (
-                                <TouchableOpacity
-                                    style={styles.closeButton}
-                                    onPress={() => setIsProfileImageVisible(false)}
-                                >
-                                    <Ionicons name="close" size={30} color="#fff" />
-                                </TouchableOpacity>
-                            )}
+                <ScrollView contentContainerStyle={styles.scrollContent}>
+                    {/* Banner */}
+                    <View style={styles.bannerContainer}>
+                        <Image
+                            source={require('../assets/images/banner.png')}
+                            style={styles.bannerImage}
+                            resizeMode="cover"
                         />
-                    </Modal>
+                        <View style={styles.bannerOverlay}>
+                            <Text style={styles.bannerTitle}>{t('account.banner.title')}</Text>
+                            <Text style={styles.bannerSubtitle}>{t('account.banner.subtitle', { name: user?.displayName || t('account.user') })}</Text>
+                            <TouchableOpacity style={styles.bannerButton} onPress={() => router.push('/mas-info')}>
+                                <Text style={styles.bannerButtonText}>{t('account.banner.button')}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    {/* Accesos Rápidos */}
+                    <View style={styles.quickAccessContainer}>
+                        <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                            {t('account.quickAccess')}
+                        </Text>
+                        <View style={styles.quickAccessGrid}>
+                            <TouchableOpacity
+                                activeOpacity={1}
+                                style={[styles.quickAccessItem, { backgroundColor: isDark ? '#1E1E1E' : '#F5F5F5' }]}
+                                onPress={() => router.replace('/areas')}
+                            >
+                                <View style={[styles.iconCircle, { backgroundColor: '#E8F5E9' }]}>
+                                    <Ionicons name="grid-outline" size={24} color="#4CAF50" />
+                                </View>
+                                <Text style={[styles.quickAccessText, { color: isDark ? '#FFF' : '#333' }]}>
+                                    {t('account.nav.areas')}
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                activeOpacity={1}
+                                style={[styles.quickAccessItem, { backgroundColor: isDark ? '#1E1E1E' : '#F5F5F5' }]}
+                                onPress={() => router.replace('/convocatoria')}
+                            >
+                                <View style={[styles.iconCircle, { backgroundColor: '#E3F2FD' }]}>
+                                    <Ionicons name="briefcase-outline" size={24} color="#2196F3" />
+                                </View>
+                                <Text style={[styles.quickAccessText, { color: isDark ? '#FFF' : '#333' }]}>
+                                    {t('account.nav.convocatory')}
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                activeOpacity={1}
+                                style={[styles.quickAccessItem, { backgroundColor: isDark ? '#1E1E1E' : '#F5F5F5' }]}
+                                onPress={() => router.replace('/nosotros')}
+                            >
+                                <View style={[styles.iconCircle, { backgroundColor: '#FFF3E0' }]}>
+                                    <Ionicons name="people-outline" size={24} color="#FF9800" />
+                                </View>
+                                <Text style={[styles.quickAccessText, { color: isDark ? '#FFF' : '#333' }]}>
+                                    {t('account.nav.about')}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    {/* Últimas Noticias */}
+                    <View style={styles.sectionContainer}>
+                        <View style={styles.sectionHeader}>
+                            <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                {t('account.newsSection')}
+                            </Text>
+                        </View>
+                        <FlatList
+                            data={news}
+                            renderItem={renderNewsItem}
+                            keyExtractor={(item) => item.id.toString()}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={styles.newsContainerHorizontal}
+                        />
+                    </View>
+
+                    {/* Videos y Guías */}
+                    <View style={styles.sectionContainer}>
+                        <View style={styles.sectionHeader}>
+                            <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                {t('account.videosSection')}
+                            </Text>
+                        </View>
+                        <FlatList
+                            data={guides}
+                            renderItem={renderVideoItem}
+                            keyExtractor={(item) => item.id.toString()}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={styles.videoScrollContainer}
+                        />
+                    </View>
+
+                    {/* Redes Sociales */}
+                    <View style={styles.sectionContainer}>
+                        <View style={styles.sectionHeader}>
+                            <Text style={[styles.sectionTitle, { color: isDark ? '#FFF' : '#333' }]}>
+                                {t('account.socialSection')}
+                            </Text>
+                        </View>
+                        <View style={styles.socialGrid}>
+                            {SOCIAL_LINKS.map((social) => (
+                                <TouchableOpacity
+                                    key={social.id}
+                                    style={[styles.socialCard, { backgroundColor: social.color }]}
+                                    onPress={() => openSocialLink(social.url)}
+                                >
+                                    <Ionicons name={social.icon as any} size={24} color="#FFF" />
+                                    <Text style={styles.socialName}>{social.name}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </View>
+
+                    <View style={{ height: 100 }} />
+                </ScrollView>
+
+                {/* Barra de Navegación Inferior */}
+                <View style={[styles.bottomNav, { borderTopColor: isDark ? '#333' : '#EEE', backgroundColor: isDark ? '#111' : '#FFF' }]}>
+                    <TouchableOpacity
+                        style={[styles.navItem, pathname === '/account' && styles.navItemActive]}
+                        onPress={() => router.replace('/account')}
+                    >
+                        <Ionicons
+                            name="home"
+                            size={24}
+                            color={pathname === '/account' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+                        />
+                        <Text style={[styles.navLabel, pathname === '/account' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('account.nav.home')}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.navItem, pathname === '/areas' && styles.navItemActive]}
+                        onPress={() => router.replace('/areas')}
+                    >
+                        <Ionicons
+                            name="grid-outline"
+                            size={24}
+                            color={pathname === '/areas' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+                        />
+                        <Text style={[styles.navLabel, pathname === '/areas' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('account.nav.areas')}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.navItem, pathname === '/convocatoria' && styles.navItemActive]}
+                        onPress={() => router.replace('/convocatoria')}
+                    >
+                        <Ionicons
+                            name="briefcase-outline"
+                            size={24}
+                            color={pathname === '/convocatoria' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+                        />
+                        <Text style={[styles.navLabel, pathname === '/convocatoria' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('account.nav.convocatory')}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.navItem, pathname === '/nosotros' && styles.navItemActive]}
+                        onPress={() => router.replace('/nosotros')}
+                    >
+                        <Ionicons
+                            name="people-outline"
+                            size={24}
+                            color={pathname === '/nosotros' ? '#4CAF50' : (isDark ? '#AAA' : '#666')}
+                        />
+                        <Text style={[styles.navLabel, pathname === '/nosotros' && styles.navLabelActive, { color: isDark ? '#AAA' : '#666' }]}>{t('account.nav.about')}</Text>
+                    </TouchableOpacity>
                 </View>
-            </SafeAreaView>
-        </GestureDetector>
+
+                {/* Modal para ver la foto de perfil */}
+                <Modal
+                    visible={isProfileImageVisible}
+                    transparent={true}
+                    onRequestClose={() => setIsProfileImageVisible(false)}
+                >
+                    <ImageViewer
+                        imageUrls={[
+                            {
+                                url: localProfileImage || user?.photoURL || '',
+                                props: {
+                                    source: localProfileImage
+                                        ? { uri: localProfileImage }
+                                        : user?.photoURL
+                                            ? { uri: user.photoURL }
+                                            : require('../assets/images/avatar-default.png'),
+                                },
+                            },
+                        ]}
+                        onSwipeDown={() => setIsProfileImageVisible(false)}
+                        enableSwipeDown={true}
+                        renderHeader={() => (
+                            <TouchableOpacity
+                                style={styles.closeButton}
+                                onPress={() => setIsProfileImageVisible(false)}
+                            >
+                                <Ionicons name="close" size={30} color="#fff" />
+                            </TouchableOpacity>
+                        )}
+                    />
+                </Modal>
+            </View>
+        </SafeAreaView>
     );
 }
 
