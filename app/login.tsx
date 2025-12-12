@@ -1,4 +1,5 @@
 // app/login.tsx
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Link, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
@@ -19,7 +20,6 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../app/providers/ThemeProvider';
 import { auth } from '../src/config/firebaseConfig';
 
@@ -167,7 +167,7 @@ export default function LoginScreen() {
                   style={styles.eyeButton}
                   onPress={() => setShowPassword(!showPassword)}
                 >
-                  <Icon
+                  <Ionicons
                     name={showPassword ? 'eye-off' : 'eye'}
                     size={20}
                     color={isDark ? '#AAA' : '#999'}
@@ -215,36 +215,7 @@ export default function LoginScreen() {
               />
             </View>
 
-            {/* Botón Google solo mensaje */}
-            <TouchableOpacity
-              style={[
-                styles.googleButton,
-                {
-                  backgroundColor: isDark ? '#111' : '#FFF',
-                  borderColor: isDark ? '#333' : '#ddd',
-                  opacity: 0.8,
-                },
-              ]}
-              onPress={() =>
-                Alert.alert(
-                  'Login con Google',
-                  'No disponible por el momento.'
-                )
-              }
-            >
-              <Image
-                source={require('../assets/images/Logo_Google.png')}
-                style={styles.googleIcon}
-              />
-              <Text
-                style={[
-                  styles.googleButtonText,
-                  { color: isDark ? '#FFF' : '#333' },
-                ]}
-              >
-                {t('login.googleButton', 'Continuar con Google')}
-              </Text>
-            </TouchableOpacity>
+
 
             {/* Footer */}
             <View className="footer" style={styles.footer}>
@@ -330,17 +301,7 @@ const styles = StyleSheet.create({
   dividerLine: { flex: 1, height: 1 },
   dividerText: { marginHorizontal: 16, fontSize: 14 },
 
-  googleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    borderRadius: 16,
-    borderWidth: 1,
-    marginBottom: 24,
-  },
-  googleIcon: { width: 24, height: 24, marginRight: 12 },
-  googleButtonText: { fontSize: 16, fontWeight: '600' },
+
 
   footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8 },
   footerText: { fontSize: 14 },
