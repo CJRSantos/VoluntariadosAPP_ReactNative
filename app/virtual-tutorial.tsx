@@ -38,7 +38,7 @@ export default function VirtualTutorialScreen() {
                 </View>
 
                 <Text style={[styles.note, { color: isDark ? '#AAA' : '#666' }]}>
-                    {t('virtualTutorial.note')}
+                    {t('Tutorial de como Postular')}
                 </Text>
             </View>
         </SafeAreaView>
