@@ -47,23 +47,39 @@ export default function AccountScreen() {
 
     const [isProfileImageVisible, setIsProfileImageVisible] = useState(false);
     const [localProfileImage, setLocalProfileImage] = useState<string | null>(null);
+    const [localName, setLocalName] = useState<string | null>(null);
 
     // Optimized: Reemplazado useEffect por useFocusEffect para recargar la imagen al volver
     useFocusEffect(
         useCallback(() => {
-            const loadLocalImage = async () => {
+            const loadLocalData = async () => {
                 try {
+                    // Load Profile Image
                     const savedPhoto = await AsyncStorage.getItem('userPhotoURL');
                     if (savedPhoto) {
                         setLocalProfileImage(savedPhoto);
                     } else if (user?.photoURL) {
                         setLocalProfileImage(user.photoURL);
                     }
+
+                    // Load Personal Info (Name)
+                    const savedInfo = await AsyncStorage.getItem('personalInfo');
+                    if (savedInfo) {
+                        const parsed = JSON.parse(savedInfo);
+                        // Handle structure { name: { es: "...", en: "..." } } or simple string
+                        // Based on register.tsx, it saves { name: { es, en }, email }
+                        if (parsed.name && typeof parsed.name === 'object') {
+                            // Assuming current language match or default to 'es'
+                            setLocalName(parsed.name.es || parsed.name.en);
+                        } else if (parsed.name && typeof parsed.name === 'string') {
+                            setLocalName(parsed.name);
+                        }
+                    }
                 } catch (error) {
-                    console.error('Error loading local profile image:', error);
+                    console.error('Error loading local profile data:', error);
                 }
             };
-            loadLocalImage();
+            loadLocalData();
         }, [user])
     );
 
@@ -192,7 +208,7 @@ export default function AccountScreen() {
         <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#121212' : '#F5F5F5' }]}>
             <View style={styles.container}>
                 <Header
-                    user={user}
+                    user={{ ...user, displayName: user?.displayName || localName }}
                     isDark={isDark}
                     t={t}
                     toggleMenu={toggleMenu}
@@ -259,7 +275,7 @@ export default function AccountScreen() {
                         />
                         <View style={styles.bannerOverlay}>
                             <Text style={styles.bannerTitle}>{t('account.banner.title')}</Text>
-                            <Text style={styles.bannerSubtitle}>{t('account.banner.subtitle', { name: user?.displayName || t('account.user') })}</Text>
+                            <Text style={styles.bannerSubtitle}>{t('account.banner.subtitle', { name: user?.displayName || localName || t('account.user') })}</Text>
                             <TouchableOpacity style={styles.bannerButton} onPress={() => router.push('/mas-info')}>
                                 <Text style={styles.bannerButtonText}>{t('account.banner.button')}</Text>
                             </TouchableOpacity>

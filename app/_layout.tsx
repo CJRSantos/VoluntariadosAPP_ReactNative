@@ -19,7 +19,7 @@ function ThemedStack() {
     <Stack
       screenOptions={{
         contentStyle: { backgroundColor: isDark ? '#121212' : '#F5F5F5' },
-        animation: 'fade', // Set default animation to fade
+        animation: 'none', // Disable animations globally to prevent flickering
       }}
     >
       <Stack.Screen name="splash" options={{ headerShown: false }} />
