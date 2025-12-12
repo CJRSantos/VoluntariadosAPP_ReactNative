@@ -1,16 +1,13 @@
 // app/register.tsx
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Google from 'expo-auth-session/providers/google';
 import { Link, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store'; // 🔐 Guardado seguro
-import * as WebBrowser from 'expo-web-browser';
 import {
     createUserWithEmailAndPassword,
-    GoogleAuthProvider,
-    signInWithCredential,
     updateProfile
 } from 'firebase/auth';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Alert,
@@ -25,11 +22,10 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../app/providers/ThemeProvider';
 import { auth } from '../src/config/firebaseConfig';
 
-WebBrowser.maybeCompleteAuthSession();
+
 
 export default function RegisterScreen() {
     const [firstName, setFirstName] = useState('');
@@ -45,20 +41,7 @@ export default function RegisterScreen() {
     const isDark = theme === 'dark';
     const router = useRouter();
 
-    const [request, response, promptAsync] = Google.useAuthRequest({
-        webClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
-        androidClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
-        iosClientId: "692067074723-7q6ds5tjnrsetu93s415kpm78r79231a.apps.googleusercontent.com",
-    });
 
-    useEffect(() => {
-        if (response?.type === 'success') {
-            const { id_token } = response.params;
-            const credential = GoogleAuthProvider.credential(id_token);
-            signInWithCredential(auth, credential)
-                .catch((error) => Alert.alert(t('register.errorTitle'), error.message));
-        }
-    }, [response]);
 
     const handleRegister = async () => {
         if (!firstName || !lastName || !email || !password || !confirmPassword) {
@@ -151,16 +134,7 @@ export default function RegisterScreen() {
                             <View style={[styles.dividerLine, { backgroundColor: isDark ? '#333' : '#ddd' }]} />
                         </View>
 
-                        {/* Google deshabilitado temporalmente */}
-                        <TouchableOpacity
-                            style={[styles.googleButton, { backgroundColor: isDark ? '#111' : '#FFF', borderColor: isDark ? '#333' : '#ddd' }]}
-                            onPress={() => Alert.alert("Google no disponible", "Por ahora el registro con Google estará deshabilitado.")}
-                        >
-                            <Image source={require('../assets/images/Logo_Google.png')} style={styles.googleIcon} />
-                            <Text style={[styles.googleButtonText, { color: isDark ? '#FFF' : '#333' }]}>
-                                Registrarse con Google
-                            </Text>
-                        </TouchableOpacity>
+
 
                         <View style={styles.footer}>
                             <Text style={[styles.footerText, { color: isDark ? '#AAA' : '#666' }]}>¿Ya tienes cuenta?</Text>
@@ -210,7 +184,7 @@ function PasswordInput({ label, value, setValue, show, setShow, isDark }: any) {
                     placeholderTextColor={isDark ? '#666' : '#999'}
                 />
                 <TouchableOpacity onPress={() => setShow(!show)}>
-                    <Icon name={show ? 'eye-off' : 'eye'} size={20} color={isDark ? '#AAA' : '#999'} />
+                    <Ionicons name={show ? 'eye-off' : 'eye'} size={20} color={isDark ? '#AAA' : '#999'} />
                 </TouchableOpacity>
             </View>
         </View>
@@ -236,9 +210,7 @@ const styles = StyleSheet.create({
     dividerContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 24 },
     dividerLine: { flex: 1, height: 1 },
     dividerText: { marginHorizontal: 16, fontSize: 14 },
-    googleButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 16, borderRadius: 16, borderWidth: 1, marginBottom: 24 },
-    googleIcon: { width: 24, height: 24, marginRight: 12 },
-    googleButtonText: { fontSize: 16, fontWeight: '600' },
+
     footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8 },
     footerText: { fontSize: 14 }, loginLink: { color: '#4CAF50', fontWeight: 'bold', fontSize: 14 },
 });

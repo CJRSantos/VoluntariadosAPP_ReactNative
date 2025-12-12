@@ -52,8 +52,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "494e8066-9275-4a62-ba48-9a78497ef439"
+        "projectId": "841c3898-761d-484f-9538-e947785713ef"
       }
-    }
+    },
+    "owner": "jordan_lao"
   }
 }
