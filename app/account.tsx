@@ -451,7 +451,7 @@ export default function AccountScreen() {
                                         ? { uri: localProfileImage }
                                         : user?.photoURL
                                             ? { uri: user.photoURL }
-                                            : require('../assets/images/avatar-default.png'),
+                                            : require('../assets/images/avatar_default.png'),
                                 },
                             },
                         ]}

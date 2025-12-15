@@ -909,7 +909,7 @@ export default function ProfileScreen() {
                         <View style={styles.profileImageContainer}>
                             <TouchableOpacity onPress={showProfileMenu} style={styles.profileTouchable}>
                                 <Image
-                                    source={profileImage ? { uri: profileImage } : require('../assets/images/avatar-default.png')}
+                                    source={profileImage ? { uri: profileImage } : require('../assets/images/avatar_default.png')}
                                     style={[styles.profileImage, { borderColor: isDark ? '#000' : '#fff' }]}
                                 />
                                 <View style={styles.profileCameraIcon}>

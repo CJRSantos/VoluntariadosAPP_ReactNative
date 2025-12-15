@@ -90,7 +90,7 @@ export default function RegisterScreen() {
             >
                 <ScrollView contentContainerStyle={styles.scrollContent}>
                     <View style={styles.content}>
-                        <Image source={require('../assets/images/Volunteer_account.png')} style={styles.headerImage} />
+                        <Image source={require('../assets/images/volunteer_account.png')} style={styles.headerImage} />
 
                         <Text style={[styles.title, { color: isDark ? '#FFF' : '#333' }]}>{t('register.title')}</Text>
                         <Text style={[styles.subtitle, { color: isDark ? '#AAA' : '#666' }]}>

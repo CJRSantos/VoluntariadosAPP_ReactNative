@@ -36,7 +36,7 @@ export default function SplashScreen() {
     return (
         <LinearGradient colors={['#FFFFFF', '#4CAF50']} style={styles.container}>
             <Image
-                source={require('@/assets/images/logo-voluntariado3x.png')}
+                source={require('../assets/images/logo_voluntariado3x.png')}
                 style={styles.logo}
                 resizeMode="contain"
             />

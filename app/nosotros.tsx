@@ -355,7 +355,7 @@ export default function NosotrosScreen() {
                                     ? { uri: profileImage }
                                     : user?.photoURL
                                         ? { uri: user.photoURL }
-                                        : require('../assets/images/avatar-default.png'),
+                                        : require('../assets/images/avatar_default.png'),
                             },
                         },
                     ]}

@@ -100,7 +100,7 @@ export default function LoginScreen() {
         >
           <View style={styles.content}>
             <Image
-              source={require('../assets/images/Volunteer_Intranet.png')}
+              source={require('../assets/images/volunteer_intranet.png')}
               style={styles.headerImage}
               resizeMode="contain"
             />
