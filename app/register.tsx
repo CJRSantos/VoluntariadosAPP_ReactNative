@@ -70,9 +70,15 @@ export default function RegisterScreen() {
             };
             await AsyncStorage.setItem("personalInfo", JSON.stringify(personalInfo));
 
-            // Guardar email y contraseña para autologin
+            // Guardar email y contraseña para autologin (Remember Me por defecto en registro)
             await AsyncStorage.setItem("savedEmail", email);
             await SecureStore.setItemAsync("savedPassword", password); // 🔐 seguro
+
+            // --- GUARDA SESIÓN ROBUSTA (Para que no se salga al día siguiente) ---
+            await SecureStore.setItemAsync('isLoggedIn', 'true');
+            await SecureStore.setItemAsync('sessionEmail', email);
+            await SecureStore.setItemAsync('sessionPassword', password);
+            // ---------------------------------------------------------------------
 
             Alert.alert("Cuenta creada", "Tu registro fue exitoso.");
             router.push("/login");

@@ -12,7 +12,7 @@ export default function SplashScreen() {
     const fadeAnim = useState(new Animated.Value(0))[0];
 
     useEffect(() => {
-        // Mostrar texto después de 3 segundos
+        // Mostrar texto después de 1 segundo
         const timer1 = setTimeout(() => {
             setShowText(true);
             Animated.timing(fadeAnim, {
@@ -20,12 +20,12 @@ export default function SplashScreen() {
                 duration: 500,
                 useNativeDriver: true,
             }).start();
-        }, 3000);
+        }, 1000);
 
         // Redirigir SIEMPRE al Home
         const timer2 = setTimeout(() => {
             router.replace('/account');
-        }, 4000);
+        }, 2500);
 
         return () => {
             clearTimeout(timer1);

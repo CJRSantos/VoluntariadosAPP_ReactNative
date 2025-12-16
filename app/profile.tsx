@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-import * as FileSystem from 'expo-file-system/legacy';
+import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -295,19 +295,31 @@ export default function ProfileScreen() {
         }
     };
 
-    const saveImageToPermanentStorage = async (uri: string): Promise<string> => {
+    const saveImageToPermanentStorage = async (uri: string, targetFilename: string): Promise<string> => {
         try {
-            const filename = uri.split('/').pop();
-            const fs = FileSystem as any;
-            const newPath = (fs.documentDirectory || '') + 'images/' + filename;
+            const documentDirectory = FileSystem.documentDirectory;
 
-            // Ensure directory exists
-            const dirInfo = await fs.getInfoAsync((fs.documentDirectory || '') + 'images/');
-            if (!dirInfo.exists) {
-                await fs.makeDirectoryAsync((fs.documentDirectory || '') + 'images/', { intermediates: true });
+            if (!documentDirectory) {
+                console.warn('documentDirectory is null');
+                return uri;
             }
 
-            await fs.copyAsync({
+            // Make sure the images directory exists
+            const extractPath = documentDirectory + 'images/';
+            const dirInfo = await FileSystem.getInfoAsync(extractPath);
+            if (!dirInfo.exists) {
+                await FileSystem.makeDirectoryAsync(extractPath, { intermediates: true });
+            }
+
+            const newPath = extractPath + targetFilename;
+
+            // Delete existing file if it exists (cleanup/overwrite)
+            const fileInfo = await FileSystem.getInfoAsync(newPath);
+            if (fileInfo.exists) {
+                await FileSystem.deleteAsync(newPath, { idempotent: true });
+            }
+
+            await FileSystem.copyAsync({
                 from: uri,
                 to: newPath
             });
@@ -315,13 +327,16 @@ export default function ProfileScreen() {
             return newPath;
         } catch (error) {
             console.error('Error saving image:', error);
-            return uri; // Return original URI if save fails
+            Alert.alert(t('common.error'), t('profile.errorSavingImage'));
+            return uri; // Return original URI if save fails, but user is warned
         }
     };
 
     const confirmImage = async () => {
         if (pendingImage) {
-            const permanentUri = await saveImageToPermanentStorage(pendingImage.uri);
+            // Use fixed filenames to prevent duplication and ensure consistency
+            const filename = pendingImage.type === 'banner' ? 'banner.jpg' : 'profile.jpg';
+            const permanentUri = await saveImageToPermanentStorage(pendingImage.uri, filename);
 
             if (pendingImage.type === 'banner') {
                 setBannerImage(permanentUri);

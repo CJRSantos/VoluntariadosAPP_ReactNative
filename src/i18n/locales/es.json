@@ -274,7 +274,8 @@
             "titled": "Titulado",
             "truncated": "Trunco"
         },
-        "missingFieldsMessage": "Llena los campos faltantes"
+        "missingFieldsMessage": "Llena los campos faltantes",
+        "errorSavingImage": "Error al guardar la imagen"
     },
     "areas": {
         "title": "Áreas",
