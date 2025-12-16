@@ -274,7 +274,8 @@
             "titled": "Titled",
             "truncated": "Incomplete"
         },
-        "missingFieldsMessage": "Fill in missing fields"
+        "missingFieldsMessage": "Fill in missing fields",
+        "errorSavingImage": "Error saving image"
     },
     "areas": {
         "title": "Areas",

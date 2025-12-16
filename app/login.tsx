@@ -72,10 +72,16 @@ export default function LoginScreen() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
 
-      // Guardar siempre el email
+      // Guardar siempre el email (para sugerirlo después)
       await AsyncStorage.setItem('savedEmail', email);
 
-      // Si quiere recordar contraseña → guardamos en SecureStore
+      // --- GUARDA SESIÓN ROBUSTA (Para que no se salga al día siguiente) ---
+      await SecureStore.setItemAsync('isLoggedIn', 'true');
+      await SecureStore.setItemAsync('sessionEmail', email);
+      await SecureStore.setItemAsync('sessionPassword', password);
+      // ---------------------------------------------------------------------
+
+      // Si quiere recordar contraseña (AUTOFILL) → guardamos en SecureStore aparte
       if (rememberPassword) {
         await SecureStore.setItemAsync('savedPassword', password);
       } else {

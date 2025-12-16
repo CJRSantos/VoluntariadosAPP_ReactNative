@@ -1,5 +1,6 @@
 import { useRouter, useSegments } from 'expo-router';
-import { signOut as firebaseSignOut, onAuthStateChanged, User } from 'firebase/auth';
+import * as SecureStore from 'expo-secure-store';
+import { signOut as firebaseSignOut, onAuthStateChanged, signInWithEmailAndPassword, User } from 'firebase/auth';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { auth } from '../../src/config/firebaseConfig';
@@ -28,12 +29,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
-            setLoading(false);
+            if (currentUser) {
+                setUser(currentUser);
+                setLoading(false);
+            } else {
+                // If Firebase thinks we are logged out, check if we should be logged in
+                checkSessionPersistence().then((restored) => {
+                    if (!restored) {
+                        setUser(null);
+                        setLoading(false);
+                    }
+                });
+            }
         });
 
         return () => unsubscribe();
     }, []);
+
+    const checkSessionPersistence = async () => {
+        try {
+            const isLoggedIn = await SecureStore.getItemAsync('isLoggedIn');
+            if (isLoggedIn === 'true' && !auth.currentUser) {
+                console.log('Attempting to restore session...');
+                const email = await SecureStore.getItemAsync('sessionEmail');
+                const password = await SecureStore.getItemAsync('sessionPassword');
+
+                if (email && password) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    console.log('Session restored successfully');
+                    return true;
+                }
+            }
+        } catch (error) {
+            console.error('Session restoration failed:', error);
+            // If restoration fails, clean up to prevent loops or weird states
+            await SecureStore.deleteItemAsync('isLoggedIn');
+            await SecureStore.deleteItemAsync('sessionEmail');
+            await SecureStore.deleteItemAsync('sessionPassword');
+        }
+        return false;
+    };
 
     useEffect(() => {
         if (loading) return;
@@ -44,14 +79,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             // If user is logged in and trying to access login/register, redirect to account
             router.replace('/account');
         } else if (!user && !inAuthGroup && (segments[0] as string) !== 'index' && (segments[0] as string) !== 'splash' && (segments[0] as string) !== 'onboarding-info') {
-            // Optional: Protect routes here if needed, or handle in individual screens
-            // For now, we allow access to public screens, but maybe redirect from protected ones
+            // Protect all other routes -> Send to Login
+            router.replace('/login');
         }
     }, [user, loading, segments]);
 
     const signOut = async () => {
         try {
             await firebaseSignOut(auth);
+            // Clear Active Session Data
+            await SecureStore.deleteItemAsync('isLoggedIn');
+            await SecureStore.deleteItemAsync('sessionEmail');
+            await SecureStore.deleteItemAsync('sessionPassword');
+            // NOTE: We do NOT clear 'savedEmail'/'savedPassword' here (Remember Me), 
+            // so the user can easily log in again if they chose that option.
+
             router.replace('/login');
         } catch (error) {
             console.error('Error signing out:', error);
