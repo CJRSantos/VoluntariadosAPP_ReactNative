@@ -50,7 +50,11 @@
       "reactCompiler": false
     },
     "extra": {
-      "router": {}
-    }
+      "router": {},
+      "eas": {
+        "projectId": "c9ac82a2-ec20-401a-92ca-f8c933e995a9"
+      }
+    },
+    "owner": "desarrollador-sigma"
   }
 }
