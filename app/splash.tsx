@@ -1,17 +1,24 @@
 // app/splash.tsx
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Animated, Image, StyleSheet, Text } from 'react-native';
 
-export default function SplashScreen() {
+export default function SplashScreenComponent() {
     const { t } = useTranslation();
     const router = useRouter();
     const [showText, setShowText] = useState(false);
     const fadeAnim = useState(new Animated.Value(0))[0];
 
     useEffect(() => {
+        // Ocultar el splash nativo una vez que este componente esté montado
+        const hideNativeSplash = async () => {
+            await SplashScreen.hideAsync();
+        };
+        hideNativeSplash();
+
         // Mostrar texto después de 1 segundo
         const timer1 = setTimeout(() => {
             setShowText(true);

@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { useTranslation } from 'react-i18next';
 import { TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -10,6 +11,9 @@ import { ThemedStatusBar } from '../src/components/ThemedStatusBar';
 import '../src/i18n/i18n';
 
 import { useTheme } from '../app/providers/ThemeProvider';
+
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
 
 function ThemedStack() {
   const { theme } = useTheme();

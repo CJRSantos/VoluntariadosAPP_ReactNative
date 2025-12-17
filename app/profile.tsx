@@ -297,7 +297,7 @@ export default function ProfileScreen() {
 
     const saveImageToPermanentStorage = async (uri: string, targetFilename: string): Promise<string> => {
         try {
-            const documentDirectory = FileSystem.documentDirectory;
+            const documentDirectory = (FileSystem as any).documentDirectory;
 
             if (!documentDirectory) {
                 console.warn('documentDirectory is null');
